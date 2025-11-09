@@ -58,8 +58,10 @@
         .tab-button.active-tab { background-color: #1DB954; color: white; }
         .tab-content-section { display: none; }
         .tab-content-section.active-section { display: block; }
-        .home-tab-content { display: none; } /* Specific for home tabs */
-        .home-tab-content.active { display: block; } /* Specific for home tabs */
+        .home-tab-content { display: none; }
+        .home-tab-content.active { display: block; }
+        .home-tab-link { font-size: 0.85rem; font-weight: 600; color: #a1a1aa; cursor: pointer; transition: color 0.2s ease; padding: 0.5rem 0.25rem; }
+        .home-tab-link.active-home-tab { color: #1DB954; }
         .swipe-container { position: relative; width: 100%; background-color: #121212; border-radius: 9999px; padding: 6px; overflow: hidden; box-shadow: inset 4px 4px 8px #0c0c0c, inset -4px -4px 8px #1a1a1a; }
         .swipe-text { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); text-align: center; color: #a1a1aa; font-weight: bold; z-index: 1; pointer-events: none; }
         .swipe-handle { position: relative; z-index: 2; width: 50px; height: 50px; background-image: linear-gradient(to right, #1DB954, #1ed760); border-radius: 50%; cursor: grab; display: flex; align-items: center; justify-content: center; touch-action: none; transition: transform 0.2s ease; }
@@ -167,16 +169,26 @@
         <main class="w-full h-full text-white overflow-y-auto no-scrollbar">
             <!-- Headers -->
             <header id="main-header" class="sticky top-0 z-40 bg-[#1e1e1e]/80 backdrop-blur-md border-b border-gray-800 p-3 flex justify-between items-center gap-2 rounded-b-2xl">
-                <div class="flex items-center gap-3">
-                    <img id="header-user-avatar" src="" class="w-10 h-10 rounded-full border-2 border-gray-700 object-cover">
-                    <div><h2 id="header-user-name" class="font-bold text-white"></h2></div>
-                </div>
-                <div id="wallet-button" class="bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 rounded-full p-2 px-4 flex items-center gap-3 cursor-pointer hover:border-green-500 transition-all duration-300">
-                    <i class="fa-solid fa-wallet text-xl text-green-400"></i>
-                    <div>
-                        <p class="text-sm font-bold text-white font-oswald tracking-wider"><span id="header-wallet-balance">0.00</span> <span class="text-xs font-normal text-gray-300">TK</span></p>
-                        <p class="text-[10px] text-gray-400 -mt-1 uppercase">Balance</p>
+                <h1 class="text-2xl font-bold font-oswald">LEVEL UP</h1>
+                <div class="flex items-center gap-2">
+                    <button id="home-search-btn" class="text-xl text-gray-300 w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10">
+                        <i class="fa-solid fa-search"></i>
+                    </button>
+                    <div id="wallet-button" class="bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 rounded-full p-2 px-4 flex items-center gap-3 cursor-pointer hover:border-green-500 transition-all duration-300">
+                        <i class="fa-solid fa-wallet text-xl text-green-400"></i>
+                        <div>
+                            <p class="text-sm font-bold text-white font-oswald tracking-wider"><span id="header-wallet-balance">0.00</span> <span class="text-xs font-normal text-gray-300">TK</span></p>
+                        </div>
                     </div>
+                </div>
+            </header>
+            <header id="home-search-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
+                 <button id="back-from-home-search-btn" class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <div class="relative w-full ml-2">
+                    <input id="home-search-input" type="text" placeholder="Search..." class="w-full bg-gray-900/50 border border-gray-700 rounded-full pl-10 pr-4 py-2 text-base focus:outline-none focus:ring-2 focus:ring-green-500">
+                    <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
                 </div>
             </header>
             <header id="search-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
@@ -234,21 +246,26 @@
             <!-- Page Content Area -->
             <div class="pb-24">
                 <div id="home-content" class="dashboard-page">
-                    <div class="p-4">
+                    <div id="home-tabs" class="px-4 py-2 flex items-center gap-4 sticky top-[68px] bg-[#121212] z-30">
+                        <button class="home-tab-link active-home-tab" data-target="post-feed">Event Match</button>
+                        <button class="home-tab-link" data-target="home-guild-feed">Need Guild</button>
+                        <button class="home-tab-link" data-target="home-player-squad-feed">Need Player</button>
+                        <button class="home-tab-link" data-target="home-livestream-feed">Live Stream</button>
+                    </div>
+                    <div id="slider-wrapper" class="p-4">
                         <div class="relative w-full overflow-hidden shadow-lg rounded-xl">
                             <h2 class="absolute top-4 left-0 bg-gradient-to-r from-green-500 to-green-600 text-white text-xs font-bold uppercase tracking-wider px-5 py-2 rounded-r-full shadow-lg z-10">Promotion</h2>
                             <div class="flex transition-transform duration-500 ease-in-out" id="slider-container"></div>
                             <div class="absolute bottom-2 left-1/2 -translate-x-1/2 flex space-x-2" id="slider-dots"></div>
                         </div>
                     </div>
-                    <div id="home-tabs" class="px-4 py-2 flex gap-2 sticky top-[68px] bg-[#121212] z-30">
-                        <button class="tab-button home-tab active-tab text-sm" data-target="post-feed">Event Match</button>
-                        <button class="tab-button home-tab text-sm" data-target="home-guild-feed">Need Guild</button>
-                        <button class="tab-button home-tab text-sm" data-target="home-player-squad-feed">Need Player</button>
+                    
+                    <div id="post-feed" class="home-tab-content active space-y-6 px-4"></div>
+                    <div id="home-guild-feed" class="home-tab-content space-y-6 px-4"></div>
+                    <div id="home-player-squad-feed" class="home-tab-content space-y-6 px-4"></div>
+                    <div id="home-livestream-feed" class="home-tab-content px-4">
+                        <div class="p-6 text-center flex flex-col justify-center items-center h-64"><i class="fa-solid fa-satellite-dish text-6xl text-green-500 mb-6"></i><h1 class="text-4xl font-bold">Coming Soon!</h1><p class="text-gray-400 mt-2">Live streaming feature is under development.</p></div>
                     </div>
-                    <div id="post-feed" class="home-tab-content active space-y-6 px-4 pt-4"></div>
-                    <div id="home-guild-feed" class="home-tab-content space-y-6 px-4 pt-4"></div>
-                    <div id="home-player-squad-feed" class="home-tab-content space-y-6 px-4 pt-4"></div>
                 </div>
 
                 <div id="search-content" class="dashboard-page hidden p-4"><div id="search-results-container" class="space-y-6"></div></div>
@@ -355,7 +372,7 @@
                         </div>
                     </div>
 
-                    <p class="text-center text-gray-600 mt-8 text-sm">App ver 1.0.4</p>
+                    <p class="text-center text-gray-600 mt-8 text-sm">App ver 1.0.5</p>
                 </div>
 
 
@@ -717,9 +734,7 @@
                 currentUserData = userData; 
                 const name = user.displayName || userData.name; 
                 const avatar = userData.avatar || DEFAULT_AVATAR;
-                document.getElementById('header-user-name').textContent = name; 
                 document.getElementById('dashboard-user-name').textContent = name;
-                document.getElementById('header-user-avatar').src = avatar; 
                 document.getElementById('profile-page-avatar').src = avatar;
                 document.getElementById('header-wallet-balance').textContent = (userData.wallet?.live || 0).toFixed(2); 
                 updateMailboxBadge();
@@ -885,7 +900,15 @@
             });
             
             document.getElementById('team-logo-upload').addEventListener('change', e => { const file = e.target.files[0]; if (file) { teamLogoFile = file; const reader = new FileReader(); reader.onload = (event) => { document.getElementById('team-logo-preview').src = event.target.result; }; reader.readAsDataURL(file); } });
-            function handleSearch(searchTerm) { const resultsContainer = document.getElementById('search-results-container'); const posts = Object.values(window.dbData.posts || {}); const filteredPosts = posts.filter(p => p.details.eventName.toLowerCase().includes(searchTerm) || p.author.name.toLowerCase().includes(searchTerm) || (p.details.tags && p.details.tags.some(t => t.toLowerCase().includes(searchTerm)))); resultsContainer.innerHTML = filteredPosts.length > 0 ? filteredPosts.map(createPostCardHTML).join('') : '<p class="text-center text-gray-500 mt-8">No results found.</p>'; initializeCountdowns(); }
+            
+            // Old Search Logic (for bottom nav)
+            function handleGlobalSearch(searchTerm) { 
+                const resultsContainer = document.getElementById('search-results-container'); 
+                const posts = Object.values(window.dbData.posts || {}); 
+                const filteredPosts = posts.filter(p => p.details.eventName.toLowerCase().includes(searchTerm) || p.author.name.toLowerCase().includes(searchTerm) || (p.details.tags && p.details.tags.some(t => t.toLowerCase().includes(searchTerm)))); 
+                resultsContainer.innerHTML = filteredPosts.length > 0 ? filteredPosts.map(createPostCardHTML).join('') : '<p class="text-center text-gray-500 mt-8">No results found.</p>'; 
+                initializeCountdowns(); 
+            }
             document.getElementById('search-input-mobile').addEventListener('input', e => {
                 const searchTerm = e.target.value.toLowerCase().trim();
                 const resultsContainer = document.getElementById('search-results-container');
@@ -893,8 +916,37 @@
                     resultsContainer.innerHTML = '<p class="text-center text-gray-500 mt-8">Type at least 3 characters to search.</p>';
                     return;
                 }
-                handleSearch(searchTerm);
+                handleGlobalSearch(searchTerm);
             });
+
+            // New Home Search Logic
+            function handleHomeSearch() {
+                const searchTerm = document.getElementById('home-search-input').value.toLowerCase().trim();
+                const activeTabEl = document.querySelector('.home-tab-link.active-home-tab');
+                if (!activeTabEl) return;
+                const activeTab = activeTabEl.dataset.target;
+
+                if (searchTerm.length === 0) {
+                    renderEventPosts();
+                    renderHomeGuildPosts();
+                    renderHomePlayerSquadPosts();
+                    return;
+                }
+
+                if (activeTab === 'post-feed') {
+                    const posts = Object.values(window.dbData.posts || {});
+                    const filtered = posts.filter(p => p.details.eventName.toLowerCase().includes(searchTerm) || p.author.name.toLowerCase().includes(searchTerm));
+                    document.getElementById('post-feed').innerHTML = filtered.length > 0 ? filtered.map(createPostCardHTML).join('') : '<p class="text-center text-gray-500 p-4">No event matches found.</p>';
+                } else if (activeTab === 'home-guild-feed') {
+                    const posts = Object.values(window.dbData.guildPosts || {});
+                    const filtered = posts.filter(p => p.guildName.toLowerCase().includes(searchTerm) || p.creatorName.toLowerCase().includes(searchTerm));
+                    document.getElementById('home-guild-feed').innerHTML = filtered.length > 0 ? filtered.map(createGuildPostCardHTML).join('') : '<p class="text-center text-gray-500 p-4">No guilds found.</p>';
+                } else if (activeTab === 'home-player-squad-feed') {
+                    const posts = Object.values(window.dbData.playerSquadPosts || {});
+                    const filtered = posts.filter(p => p.description.toLowerCase().includes(searchTerm) || p.creatorName.toLowerCase().includes(searchTerm));
+                    document.getElementById('home-player-squad-feed').innerHTML = filtered.length > 0 ? filtered.map(createPlayerSquadPostCardHTML).join('') : '<p class="text-center text-gray-500 p-4">No posts found.</p>';
+                }
+            }
 
             function renderEventPosts() {
                 const feed = document.getElementById('post-feed');
@@ -1117,18 +1169,18 @@
 
                     switch(postType) {
                         case 'guild':
-                            tabSelector = '#home-tabs .tab-button[data-target="home-guild-feed"]';
+                            tabSelector = '#home-tabs .home-tab-link[data-target="home-guild-feed"]';
                             feedSelector = '#home-guild-feed';
                             postSelector = `.guild-post-card[data-guild-post-id-wrapper="${postId}"]`;
                             break;
                         case 'playerSquad':
-                            tabSelector = '#home-tabs .tab-button[data-target="home-player-squad-feed"]';
+                            tabSelector = '#home-tabs .home-tab-link[data-target="home-player-squad-feed"]';
                             feedSelector = '#home-player-squad-feed';
                             postSelector = `.player-squad-post-card[data-playersquad-post-id-wrapper="${postId}"]`;
                             break;
                         case 'event':
                         default:
-                            tabSelector = '#home-tabs .tab-button[data-target="post-feed"]';
+                            tabSelector = '#home-tabs .home-tab-link[data-target="post-feed"]';
                             feedSelector = '#post-feed';
                             postSelector = `.post-card[data-post-id-wrapper="${postId}"]`;
                             break;
@@ -1176,9 +1228,15 @@
                  const showNewPage = () => {
                      document.querySelectorAll('.dashboard-page').forEach(p => p.classList.add('hidden')); 
                      const newPage = document.getElementById(pageId); if (newPage) newPage.classList.remove('hidden');
+                     
                      allHeaders.forEach(h => h.classList.add('hidden'));
+                     document.getElementById('home-search-header').classList.add('hidden'); // Ensure home search is hidden by default
+
                      switch(pageId) { 
-                        case 'home-content': case 'profile-content': document.getElementById('main-header').classList.remove('hidden'); break; 
+                        case 'home-content': 
+                            document.getElementById('main-header').classList.remove('hidden'); 
+                            document.getElementById('home-search-input').value = '';
+                            break; 
                         case 'search-content': document.getElementById('search-header').classList.remove('hidden'); break; 
                         case 'my-matches-content': document.getElementById('my-matches-header').classList.remove('hidden'); break; 
                         case 'team-form-content': document.getElementById('team-header').classList.remove('hidden'); hideNavBar(); break; 
@@ -1189,7 +1247,17 @@
                         case 'manage-posts-content': document.getElementById('manage-posts-header').classList.remove('hidden'); break;
                         case 'payment-content': hideNavBar(); break;
                         case 'coming-soon-content': /* No header */ break;
-                        default: document.getElementById('main-header').classList.remove('hidden'); 
+                        case 'profile-content': // Use default header for profile
+                        default: 
+                            const profileHeader = document.querySelector('#profile-content header');
+                            if(profileHeader) profileHeader.classList.remove('hidden');
+                            else {
+                                // Fallback to a generic user header if main-header logic changes
+                                const genericUserHeader = document.createElement('header');
+                                genericUserHeader.innerHTML = `<div class="p-4 flex items-center gap-3"><img src="${currentUserData.avatar || DEFAULT_AVATAR}" class="w-10 h-10 rounded-full"><p>${currentUserData.name}</p></div>`;
+                                document.querySelector('#profile-content').prepend(genericUserHeader);
+                            }
+                            break;
                      }
                      pageId === 'manage-posts-content' ? needFab.classList.add('visible') : needFab.classList.remove('visible');
                      switch(pageId) {
@@ -1680,14 +1748,25 @@
             }
 
             function setupHomeTabs() {
-                const tabs = document.querySelectorAll('.home-tab');
+                const tabs = document.querySelectorAll('.home-tab-link');
                 const contents = document.querySelectorAll('.home-tab-content');
+                const sliderWrapper = document.getElementById('slider-wrapper');
                 tabs.forEach(tab => {
                     tab.addEventListener('click', () => {
-                        tabs.forEach(t => t.classList.remove('active-tab'));
+                        tabs.forEach(t => t.classList.remove('active-home-tab'));
                         contents.forEach(c => c.classList.remove('active'));
-                        tab.classList.add('active-tab');
-                        document.getElementById(tab.dataset.target)?.classList.add('active');
+                        tab.classList.add('active-home-tab');
+                        const targetContent = document.getElementById(tab.dataset.target);
+                        if(targetContent) targetContent.classList.add('active');
+
+                        if (tab.dataset.target === 'post-feed') {
+                            sliderWrapper.style.display = 'block';
+                        } else {
+                            sliderWrapper.style.display = 'none';
+                        }
+                        // Clear search when changing tabs
+                        document.getElementById('home-search-input').value = '';
+                        handleHomeSearch();
                     });
                 });
             }
@@ -2216,7 +2295,7 @@
 
                 container.querySelectorAll('.delete-need-post-btn').forEach(btn => {
                     btn.addEventListener('click', e => {
-                        const { postId, postType } = e.currentTarget.dataset;
+                    const { postId, postType } = e.currentTarget.dataset;
                         showCustomModal({
                             type: 'error',
                             title: 'আপনি কি নিশ্চিত?',
@@ -2581,6 +2660,21 @@
                     });
                 });
             }
+
+            // Home Header Search Listeners
+            document.getElementById('home-search-btn').addEventListener('click', () => {
+                document.getElementById('main-header').classList.add('hidden');
+                document.getElementById('home-search-header').classList.remove('hidden');
+                document.getElementById('home-search-input').focus();
+            });
+            document.getElementById('back-from-home-search-btn').addEventListener('click', () => {
+                document.getElementById('main-header').classList.remove('hidden');
+                document.getElementById('home-search-header').classList.add('hidden');
+                document.getElementById('home-search-input').value = '';
+                handleHomeSearch();
+            });
+            document.getElementById('home-search-input').addEventListener('input', handleHomeSearch);
+
 
             async function deletePostAsAdmin(postType, postId, reason) {
                  const postRef = database.ref(`/${postType}/${postId}`);
