@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@latest/dist/dotlottie-wc.js" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         body { font-family: 'Montserrat', sans-serif; background-color: #121212; color-scheme: dark; }
@@ -15,8 +16,8 @@
         .screen.hidden { opacity: 0; transform: scale(1.05); pointer-events: none; }
         .auth-view { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; position: absolute; top: 0; left: 0; padding: 1rem; transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out; opacity: 0; transform: scale(0.95); pointer-events: none; }
         .auth-view.active { opacity: 1; transform: scale(1); pointer-events: auto; }
-        #modal-screen, #forgot-password-modal, #booking-screen, #participant-list-screen, #results-submission-screen, #sponsor-profile-screen, #payment-screen, #guild-post-form-screen, #guild-application-screen, #user-profile-screen, #player-squad-post-form-screen, #report-modal, #loading-overlay { z-index: 100; background-color: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); }
-        .modal-box { background-color: #1e1e1e; border: 1px solid #2a2a2a; box-shadow: 0 10px 30px rgba(0,0,0,0.4); max-width: 380px; width: 90%; }
+        #modal-screen, #forgot-password-modal, #booking-screen, #participant-list-screen, #results-submission-screen, #sponsor-profile-screen, #payment-screen, #guild-post-form-screen, #guild-application-screen, #user-profile-screen, #player-squad-post-form-screen, #loading-overlay, #gift-card-open-modal, #topup-purchase-modal { z-index: 1000; background-color: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); }
+        .modal-box { background-color: #242428; border: 1px solid #3a3a3a; box-shadow: 0 15px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05) inset; max-width: 380px; width: 90%; border-radius: 1.5rem; }
         .input-field { background-color: #121212; box-shadow: inset 6px 6px 12px #0c0c0c, inset -6px -6px 12px #1a1a1a; transition: box-shadow 0.2s ease; }
         .input-field:focus-within, .form-input:focus { box-shadow: inset 6px 6px 12px #0c0c0c, inset -6px -6px 12px #1a1a1a, 0 0 0 2px #1DB954 !important; outline: none; }
         .action-button, .booking-btn, .manage-btn { background-image: linear-gradient(to right, #1DB954, #1ed760); color: white; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: all 0.2s ease-in-out; border: none; }
@@ -60,7 +61,7 @@
         .tab-content-section.active-section { display: block; }
         .home-tab-content { display: none; }
         .home-tab-content.active { display: block; }
-        .home-tab-link { font-size: 0.85rem; font-weight: 600; color: #a1a1aa; cursor: pointer; transition: color 0.2s ease; padding: 0.5rem 0.25rem; }
+        .home-tab-link { font-size: 0.85rem; font-weight: 600; color: #a1a1aa; cursor: pointer; transition: color 0.2s ease; padding: 0.5rem 0.25rem; white-space: nowrap; }
         .home-tab-link.active-home-tab { color: #1DB954; }
         .swipe-container { position: relative; width: 100%; background-color: #121212; border-radius: 9999px; padding: 6px; overflow: hidden; box-shadow: inset 4px 4px 8px #0c0c0c, inset -4px -4px 8px #1a1a1a; }
         .swipe-text { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); text-align: center; color: #a1a1aa; font-weight: bold; z-index: 1; pointer-events: none; }
@@ -69,7 +70,7 @@
         .swipe-track { position: absolute; left: 0; top: 0; height: 100%; background-color: rgba(29, 185, 84, 0.3); border-radius: 9999px; }
         @keyframes pulse-green-glow { 0% { box-shadow: 0 0 5px rgba(29, 185, 84, 0.4), 0 0 10px rgba(29, 185, 84, 0.3); } 70% { box-shadow: 0 0 15px rgba(29, 185, 84, 0.8), 0 0 25px rgba(29, 185, 84, 0.6); } 100% { box-shadow: 0 0 5px rgba(29, 185, 84, 0.4), 0 0 10px rgba(29, 185, 84, 0.3); } }
         .is-live-match { border-color: #1DB954; animation: pulse-green-glow 2s infinite; }
-        #image-lightbox { z-index: 200; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(8px); transition: opacity 0.3s ease; }
+        #image-lightbox { z-index: 1002; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(8px); transition: opacity 0.3s ease; }
         #lightbox-img { max-width: 90vw; max-height: 80vh; object-fit: contain; }
         .rating-stars .fa-star { cursor: pointer; transition: color 0.2s; }
         #page-transition-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); z-index: 999; opacity: 0; pointer-events: none; transition: opacity 0.2s ease-in-out; backdrop-filter: blur(5px); }
@@ -87,12 +88,7 @@
         .strength-strong { background-color: #10b981; width: 100%; }
         .slider-media { width: 100%; height: 100%; object-fit: cover; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; pointer-events: none; }
         .clickable-post-indicator { position: absolute; bottom: 10px; left: 10px; background-color: rgba(29, 185, 84, 0.8); color: white; border-radius: 12px; padding: 4px 8px; font-size: 10px; font-weight: bold; display: flex; align-items: center; gap: 4px; z-index: 10; pointer-events: none; }
-        .post-card.highlighted-post, .guild-post-card.highlighted-post, .player-squad-post-card.highlighted-post { 
-            box-shadow: 0 0 15px 5px rgba(29, 185, 84, 0.6); 
-            border: 2px solid #1DB954; 
-            transform: scale(1.02); 
-            animation: pulse-green-glow 1.5s infinite;
-        }
+        .post-card.highlighted-post, .guild-post-card.highlighted-post, .player-squad-post-card.highlighted-post { box-shadow: 0 0 15px 5px rgba(29, 185, 84, 0.6); border: 2px solid #1DB954; transform: scale(1.02); animation: pulse-green-glow 1.5s infinite; }
         .verification-badge { width: 1.2em; height: 1.2em; margin-left: 0.4em; vertical-align: middle; cursor: pointer; }
         .premium-header { background: rgba(30, 30, 30, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0 0 24px 24px; }
         .header-back-btn { background-color: rgba(255, 255, 255, 0.1); }
@@ -120,22 +116,118 @@
         .user-profile-stat { background-color: #2a2a2a; border: 1px solid #3a3a3a; border-radius: 0.75rem; padding: 1rem; text-align: center; }
         .user-profile-stat-value { font-size: 1.5rem; font-weight: bold; font-family: 'Oswald', sans-serif; }
         .user-profile-stat-label { font-size: 0.75rem; color: #a1a1aa; text-transform: uppercase; margin-top: 0.25rem; }
-        .report-dropdown-trigger:hover .report-dropdown-menu { display: block; }
-        .card-tag {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: #a1a1aa;
-            font-size: 0.7rem;
-            font-weight: 600;
-            padding: 4px 10px;
-            border-radius: 9999px;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
+        .card-tag { background-color: rgba(255, 255, 255, 0.1); color: #a1a1aa; font-size: 0.7rem; font-weight: 600; padding: 4px 10px; border-radius: 9999px; display: inline-flex; align-items: center; gap: 6px; }
+
+        /* Sidebar Styles */
+        #sidebar { position: fixed; top: 0; left: 0; width: 280px; height: 100%; background-color: #1e1e24; z-index: 300; transform: translateX(-100%); transition: transform 0.3s ease-in-out; }
+        #sidebar.open { transform: translateX(0); }
+        #sidebar-overlay { position: fixed; inset: 0; background-color: rgba(0,0,0,0.6); z-index: 299; transition: opacity 0.3s ease-in-out; }
+        .sidebar-menu-item { display: flex; align-items: center; gap: 16px; padding: 12px 16px; color: #e5e7eb; font-weight: 500; border-radius: 8px; transition: background-color 0.2s, color 0.2s; cursor: pointer; font-size: 0.95rem;}
+        .sidebar-menu-item:hover { background-color: rgba(255, 255, 255, 0.05); }
+        .sidebar-menu-item .icon-bg { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+        .sidebar-menu-item .icon-bg i { font-size: 1.1rem; }
+        
+        /* UPDATED GIFT CARD STYLES */
+        .gift-card-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        .gift-card-preview { aspect-ratio: 1 / 1.2; border-radius: 1rem; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; position: relative; overflow: hidden; background-size: cover; background-position: center; }
+        .gift-card-preview:active { transform: scale(0.95); }
+        .gift-card-preview .card-footer { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.5); padding: 0.5rem; text-align: center; color: white; font-size: 0.7rem; font-weight: 600; font-family: 'Montserrat', sans-serif; }
+        .gift-card-preview > div:first-child { position: absolute; inset: 0; z-index: 2; }
+        .gift-card-claimed::before { content: 'CLAIMED'; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; color: #9ca3af; font-family: 'Oswald', sans-serif; font-size: 1.5rem; letter-spacing: 2px; }
+        .gift-card-preview .opacity-50.cursor-default { pointer-events: none; }
+        #gift-card-open-modal .modal-box { max-width: 320px; background: transparent; border: none; box-shadow: none; position: relative; }
+        .gift-card-open-modal-content { perspective: 1000px; }
+        .gift-card-flipper { position: relative; width: 100%; aspect-ratio: 3 / 4.2; transition: transform 0.8s; transform-style: preserve-3d; }
+        .gift-card-flipper.is-flipped { transform: rotateY(180deg); }
+        .gift-card-face { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 1.5rem; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
+        .card-front { background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; }
+        .card-back { background-color: #1e1e1e; transform: rotateY(180deg); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background-size: contain; background-position: center; background-repeat: no-repeat;}
+        .open-card-btn { background-image: linear-gradient(to right, #eab308, #f59e0b); color: #121212; font-weight: bold; padding: 0.75rem 2.5rem; border-radius: 9999px; transition: all 0.2s; border: none; box-shadow: 0 4px 15px rgba(234, 179, 8, 0.3); font-family: 'Oswald', sans-serif; letter-spacing: 1px; }
+        .open-card-btn:hover:not(:disabled) { transform: scale(1.05); box-shadow: 0 6px 20px rgba(234, 179, 8, 0.4); }
+        .bad-luck-icon { font-size: 5rem; color: #4b5563; }
+        .bad-luck-text { font-family: 'Oswald', sans-serif; font-size: 2rem; color: #9ca3af; margin-top: 1rem; }
+        .close-card-modal-btn { position: absolute; top: -15px; right: -15px; width: 40px; height: 40px; background-color: #1a1a1a; color: white; border-radius: 50%; font-size: 1.5rem; border: 2px solid white; display: flex; align-items: center; justify-content: center; z-index: 10; cursor: pointer; }
+        @keyframes fadeInReveal { from { opacity: 0; transform: translateY(20px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        .card-back > * { animation: fadeInReveal 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; opacity: 0; }
+
+        /* NEW Horizontal Store Styles */
+        .horizontal-scroll-container { display: flex; overflow-x: auto; gap: 1rem; padding: 0.5rem 0 1rem 0; scroll-snap-type: x mandatory; }
+        .horizontal-scroll-container > div { scroll-snap-align: start; }
+        .store-item-h { flex: 0 0 160px; width: 160px; background: #2a2a2e; border: 1px solid #3a3a3a; border-radius: 1rem; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s ease, box-shadow 0.2s ease; position: relative; }
+        .store-item-h:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        .store-item-h-image { width: 100%; aspect-ratio: 1 / 1.2; object-fit: cover; }
+        .store-item-h-content { padding: 0.75rem; text-align: center; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .store-item-h-title { font-size: 0.9rem; font-weight: 600; color: white; display: flex; align-items: center; justify-content: center; gap: 0.5rem; flex-grow: 1; }
+        .store-item-h-button { width: 100%; padding: 0.6rem 0; border-radius: 0.5rem; font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-top: auto; }
+
+        /* NEW Topup Purchase / Redeem Code Styles */
+        #topup-purchase-modal .modal-box { max-width: 340px; background: transparent; border: none; box-shadow: none; }
+        .topup-card-flipper { position: relative; width: 100%; aspect-ratio: 3 / 4.2; transition: transform 2s cubic-bezier(0.19, 1, 0.22, 1); transform-style: preserve-3d; }
+        .topup-card-flipper.is-flipped { transform: rotateY(180deg); }
+        .topup-card-face { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 1.5rem; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
+        .topup-card-back { background-image: linear-gradient(to bottom right, #2a2a2e, #1e1e1e); transform: rotateY(180deg); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1rem; }
+        .redeem-code-wrapper { background: #121212; padding: 0.75rem 1rem; border-radius: 0.5rem; border: 2px dashed #3a3a3a; margin-top: 1rem; width: 100%; }
+        .redeem-code-text { font-family: 'Courier New', Courier, monospace; font-size: 1rem; font-weight: bold; color: #6ee7b7; letter-spacing: 1px; }
+        @keyframes scan-light { 0% { top: -10%; } 100% { top: 110%; } }
+        .scan-overlay::after { content: ''; position: absolute; top: -10%; left: 0; width: 100%; height: 10%; background: linear-gradient(to bottom, rgba(110, 231, 183, 0), rgba(110, 231, 183, 0.5), rgba(110, 231, 183, 0)); animation: scan-light 2s ease-in-out infinite; }
     </style>
 </head>
 <body class="overflow-hidden">
     
+    <!-- New Sidebar -->
+    <div id="sidebar-overlay" class="hidden"></div>
+    <aside id="sidebar" class="flex flex-col no-scrollbar overflow-y-auto">
+        <div class="p-4 border-b border-gray-700/50">
+            <div id="sidebar-profile-header" class="flex items-center gap-4 cursor-pointer">
+                <img id="sidebar-avatar" src="https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/dfdc00fc6bb93771364bbf5000dad222.jpg?alt=media&token=ff33f08b-1b2e-424e-b636-f664d8044bed" class="w-16 h-16 rounded-full object-cover border-2 border-gray-600">
+                <div>
+                    <h2 id="sidebar-username" class="text-xl font-bold text-white">USER NAME</h2>
+                    <div class="flex items-center">
+                       <p id="sidebar-teamname" class="text-sm text-gray-400">TEAM NAME</p>
+                       <img id="sidebar-team-badge" src="" class="h-4 ml-2 hidden" alt="Team Badge">
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4 grid grid-cols-2 gap-2 text-white">
+                 <div class="bg-[#2a2a2e] p-2 rounded-lg flex items-center justify-between font-semibold h-full text-sm">
+                    <img src="https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Levelup%2F1762763055321.png?alt=media&token=58051d4b-446d-4a30-b588-bed5a5f49c8d" class="w-6 h-6">
+                    <span id="sidebar-coin-balance">0</span>
+                    <div class="bg-orange-500 rounded-md w-4 h-4 flex items-center justify-center text-white font-bold cursor-pointer">+</div>
+                </div>
+                 <div class="bg-[#2a2a2e] p-2 rounded-lg flex items-center justify-between font-semibold h-full text-sm">
+                    <img src="https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Levelup%2F1762763297995.png?alt=media&token=db9ebed1-ff51-49ed-a311-0327313dae56" class="w-6 h-6">
+                    <span id="sidebar-diamond-balance">0</span>
+                    <div class="bg-orange-500 rounded-md w-4 h-4 flex items-center justify-center text-white font-bold cursor-pointer">+</div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="flex-grow p-2 space-y-1">
+            <a id="sidebar-stream-stats" class="sidebar-menu-item"><div class="icon-bg bg-red-500/20"><i class="fa-solid fa-chart-line text-red-300"></i></div><span>Stream Statistics</span></a>
+            <a id="sidebar-store" class="sidebar-menu-item"><div class="icon-bg bg-purple-500/20"><i class="fa-solid fa-store text-purple-300"></i></div><span>Store</span></a>
+            <a id="sidebar-history" class="sidebar-menu-item"><div class="icon-bg bg-blue-500/20"><i class="fa-solid fa-receipt text-blue-300"></i></div><span>History</span></a>
+            <a id="sidebar-redeem" class="sidebar-menu-item"><div class="icon-bg bg-green-500/20"><i class="fa-solid fa-gift text-green-300"></i></div><span>Redeem Code</span></a>
+            <a id="sidebar-leaderboard" class="sidebar-menu-item"><div class="icon-bg bg-yellow-500/20"><i class="fa-solid fa-trophy text-yellow-300"></i></div><span>Leaderboard</span></a>
+            <a id="sidebar-coupons" class="sidebar-menu-item relative">
+                <div class="icon-bg bg-teal-500/20"><i class="fa-solid fa-ticket text-teal-300"></i></div>
+                <span>Gift Cards</span>
+                <span id="sidebar-coupons-badge" class="absolute top-2 right-2 w-5 h-5 bg-red-600 text-white text-xs font-bold rounded-full flex items-center justify-center hidden">0</span>
+            </a>
+            <a id="sidebar-partner" href="https://levelupevent.netlify.app/" target="_blank" class="sidebar-menu-item"><div class="icon-bg bg-green-500/20"><i class="fa-solid fa-handshake-simple text-green-300"></i></div><span class="text-green-400 font-bold">Join a Partner</span></a>
+            <a id="sidebar-my-channel" class="sidebar-menu-item"><div class="icon-bg bg-indigo-500/20"><i class="fa-solid fa-tv text-indigo-300"></i></div><span>My channel</span></a>
+            <a id="sidebar-monetize" class="sidebar-menu-item"><div class="icon-bg bg-yellow-600/20"><i class="fa-solid fa-sack-dollar text-yellow-500"></i></div><span>Monetize Earning</span></a>
+        </nav>
+        <div class="p-4 border-t border-gray-700/50 relative">
+            <a href="https://t.me/Blackmoney54" target="_blank" class="w-14 h-14 rounded-full bg-green-500 flex items-center justify-center text-white text-3xl absolute -top-7 right-4 shadow-lg hover:scale-110 transition-transform">
+                <i class="fa-solid fa-phone"></i>
+            </a>
+            <div class="bg-gray-800/50 p-2 rounded-full flex justify-around items-center">
+                <a href="https://t.me/levelupbd" target="_blank" class="text-gray-400 hover:text-white text-2xl"><i class="fab fa-facebook"></i></a>
+                <a href="https://t.me/levelupbd" target="_blank" class="text-gray-400 hover:text-white text-2xl"><i class="fab fa-telegram"></i></a>
+            </div>
+        </div>
+    </aside>
+
     <div id="page-transition-overlay"></div>
 
     <!-- Screen 1: Splash -->
@@ -159,6 +251,7 @@
             <div id="strength-bar-container"><div id="strength-bar"></div></div>
             <div class="relative flex items-center w-full input-field rounded-xl"><i class="fa-solid fa-lock absolute left-5 text-gray-400"></i><input id="signup-confirm-password" type="password" placeholder="Confirm Password" required class="w-full bg-transparent pl-12 pr-12 py-3 text-sm text-white placeholder-gray-400 border-none rounded-xl focus:outline-none"><i id="toggle-confirm-password" class="fa-solid fa-eye password-toggle"></i></div>
             <p id="password-match-msg" class="text-xs -mt-2 ml-2 h-4"></p>
+            <div class="relative flex items-center w-full input-field rounded-xl"><i class="fa-solid fa-gift absolute left-5 text-gray-400"></i><input id="signup-referral" type="text" placeholder="Referral Code (Optional)" class="w-full bg-transparent pl-12 pr-5 py-3 text-sm text-white placeholder-gray-400 border-none rounded-xl focus:outline-none"></div>
             <div class="flex justify-center space-x-2 my-2"><div><input type="radio" id="male" name="gender" class="hidden gender-radio" value="male" checked><label for="male" class="cursor-pointer flex items-center justify-center w-24 h-11 text-xs text-gray-400 rounded-full input-field">Male</label></div><div><input type="radio" id="female" name="gender" class="hidden gender-radio" value="female"><label for="female" class="cursor-pointer flex items-center justify-center w-24 h-11 text-xs text-gray-400 rounded-full input-field">Female</label></div><div><input type="radio" id="other" name="gender" class="hidden gender-radio" value="other"><label for="other" class="cursor-pointer flex items-center justify-center w-24 h-11 text-xs text-gray-400 rounded-full input-field">Other</label></div></div>
             <button type="submit" class="w-full py-4 mt-4 rounded-xl action-button text-lg flex items-center justify-center h-[52px]">Sign Up</button>
         </form><div class="text-center mt-4"><p class="text-sm text-gray-400">Already have an account? <a href="#" id="show-login" class="font-bold text-[#1DB954] hover:underline">Sign In</a></p></div></div></div>
@@ -169,7 +262,9 @@
         <main class="w-full h-full text-white overflow-y-auto no-scrollbar">
             <!-- Headers -->
             <header id="main-header" class="sticky top-0 z-40 bg-[#1e1e1e]/80 backdrop-blur-md border-b border-gray-800 p-3 flex justify-between items-center gap-2 rounded-b-2xl">
-                <h1 class="text-2xl font-bold font-oswald">LEVEL UP</h1>
+                <button id="sidebar-toggle" class="text-xl text-gray-300 w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
                 <div class="flex items-center gap-2">
                     <button id="home-search-btn" class="text-xl text-gray-300 w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10">
                         <i class="fa-solid fa-search"></i>
@@ -198,7 +293,7 @@
                 </div>
             </header>
             <header id="my-matches-header" class="hidden sticky top-0 z-40 premium-header py-4 px-4 text-center">
-                <h2 class="text-xl font-bold">My Booked Matches</h2>
+                <h2 class="text-xl font-bold">My Match History</h2>
             </header>
             <header id="team-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
                 <button id="back-from-team-btn" class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full">
@@ -219,6 +314,20 @@
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
                 <h2 class="text-xl font-bold">Mailbox</h2>
+                <div class="w-10"></div>
+            </header>
+            <header id="history-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
+                <button id="back-from-history-btn" class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <h2 class="text-xl font-bold">Transaction History</h2>
+                <div class="w-10"></div>
+            </header>
+             <header id="redeem-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
+                <button id="back-from-redeem-btn" class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <h2 class="text-xl font-bold">Redeem Code</h2>
                 <div class="w-10"></div>
             </header>
             <header id="edit-profile-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
@@ -242,15 +351,25 @@
                 <h2 class="text-xl font-bold">Manage Posts</h2>
                 <div class="w-10"></div>
             </header>
+             <header id="my-coupons-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
+                <button id="back-from-coupons-btn" class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <h2 class="text-xl font-bold">Gift Cards</h2>
+                <div class="w-10"></div>
+            </header>
 
             <!-- Page Content Area -->
             <div class="pb-24">
                 <div id="home-content" class="dashboard-page">
-                    <div id="home-tabs" class="px-4 py-2 flex items-center gap-4 sticky top-[68px] bg-[#121212] z-30">
-                        <button class="home-tab-link active-home-tab" data-target="post-feed">Event Match</button>
-                        <button class="home-tab-link" data-target="home-guild-feed">Need Guild</button>
-                        <button class="home-tab-link" data-target="home-player-squad-feed">Need Player</button>
-                        <button class="home-tab-link" data-target="home-livestream-feed">Live Stream</button>
+                    <div id="home-tabs" class="px-4 py-2 flex items-center gap-4 overflow-x-auto no-scrollbar sticky top-[68px] bg-[#121212] z-30">
+                        <button class="home-tab-link active-home-tab" data-target="post-feed">All</button>
+                        <button class="home-tab-link" data-target="home-tournaments-feed">Tournament</button>
+                        <button class="home-tab-link" data-target="home-guild-feed">Guild</button>
+                        <button class="home-tab-link" data-target="home-player-squad-feed">Squad</button>
+                        <button class="home-tab-link" data-target="home-livestream-feed">Live</button>
+                        <button class="home-tab-link" data-target="home-missions-feed">Missions</button>
+                        <button class="home-tab-link" data-target="home-store-feed">Store</button>
                     </div>
                     <div id="slider-wrapper" class="p-4">
                         <div class="relative w-full overflow-hidden shadow-lg rounded-xl">
@@ -261,11 +380,12 @@
                     </div>
                     
                     <div id="post-feed" class="home-tab-content active space-y-6 px-4"></div>
+                    <div id="home-tournaments-feed" class="home-tab-content space-y-6 px-4"></div>
                     <div id="home-guild-feed" class="home-tab-content space-y-6 px-4"></div>
                     <div id="home-player-squad-feed" class="home-tab-content space-y-6 px-4"></div>
-                    <div id="home-livestream-feed" class="home-tab-content px-4">
-                        <div class="p-6 text-center flex flex-col justify-center items-center h-64"><i class="fa-solid fa-satellite-dish text-6xl text-green-500 mb-6"></i><h1 class="text-4xl font-bold">Coming Soon!</h1><p class="text-gray-400 mt-2">Live streaming feature is under development.</p></div>
-                    </div>
+                    <div id="home-livestream-feed" class="home-tab-content px-4"></div>
+                    <div id="home-missions-feed" class="home-tab-content space-y-6 px-4"></div>
+                    <div id="home-store-feed" class="home-tab-content px-4"></div>
                 </div>
 
                 <div id="search-content" class="dashboard-page hidden p-4"><div id="search-results-container" class="space-y-6"></div></div>
@@ -372,7 +492,7 @@
                         </div>
                     </div>
 
-                    <p class="text-center text-gray-600 mt-8 text-sm">App ver 1.0.5</p>
+                    <p class="text-center text-gray-600 mt-8 text-sm">App ver 1.0.8</p>
                 </div>
 
 
@@ -415,6 +535,9 @@
                 
                 <div id="wallet-content" class="dashboard-page hidden"></div>
                 <div id="mailbox-content" class="dashboard-page hidden"></div>
+                <div id="history-content" class="dashboard-page hidden p-4"></div>
+                <div id="redeem-content" class="dashboard-page hidden p-4"></div>
+                <div id="my-coupons-content" class="dashboard-page hidden p-4"></div>
                 <div id="edit-profile-content" class="dashboard-page hidden p-4">
                     <form id="edit-profile-form" class="space-y-6">
                         <div class="relative w-32 h-32 mx-auto">
@@ -429,6 +552,13 @@
                         <div>
                             <label for="edit-profile-name" class="form-label">Full Name</label>
                             <input type="text" id="edit-profile-name" class="form-input" required>
+                        </div>
+                         <div>
+                            <label class="form-label">Your Referral Code</label>
+                            <div class="bg-gray-800 p-3 rounded-lg flex justify-between items-center">
+                                <code id="my-referral-code" class="text-lg font-bold tracking-wider text-green-400"></code>
+                                <button type="button" id="copy-my-ref-code-btn" class="bg-gray-600 hover:bg-gray-700 w-10 h-10 rounded-md flex items-center justify-center transition-colors"><i class="fa-solid fa-copy"></i></button>
+                            </div>
                         </div>
                         <button type="submit" class="w-full py-3 mt-4 rounded-xl action-button text-lg flex items-center justify-center h-[48px]">Save Changes</button>
                     </form>
@@ -458,9 +588,8 @@
                         <button id="delete-account-btn" class="w-full py-3 rounded-xl bg-red-800 hover:bg-red-700 text-white font-bold transition-colors">Delete My Account</button>
                     </div>
                 </div>
-
-
-                <div id="coming-soon-content" class="dashboard-page hidden p-6 text-center flex flex-col justify-center items-center h-[calc(100vh-100px)]"><i class="fa-solid fa-clapperboard text-6xl text-green-500 mb-6"></i><h1 class="text-4xl font-bold">Reels Coming Soon!</h1><p class="text-gray-400 mt-2">This feature is under active development.</p><button id="back-home-btn" class="mt-8 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg">Back to Home</button></div>
+                
+                <div id="coming-soon-content" class="dashboard-page hidden p-6 text-center flex flex-col justify-center items-center h-[calc(100vh-100px)]"><i class="fa-solid fa-tools text-6xl text-green-500 mb-6"></i><h1 class="text-4xl font-bold">Coming Soon!</h1><p class="text-gray-400 mt-2">This feature is under active development.</p><button id="back-home-btn" class="mt-8 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg">Back to Home</button></div>
             </div>
         </main>
         
@@ -488,19 +617,27 @@
         </header>
         <div id="payment-content-area" class="w-full h-full bg-[#121212] text-white overflow-y-auto no-scrollbar relative p-4 md:p-6"></div>
     </div>
-    
 
     <!-- Modals -->
     <div id="modal-screen" class="screen hidden !justify-center"></div>
-    <div id="forgot-password-modal" class="screen hidden !justify-center"><div class="modal-box rounded-3xl p-6 text-white text-center flex flex-col items-center relative"><button id="close-forgot-modal" class="absolute top-3 right-4 text-gray-400 hover:text-white text-2xl">&times;</button><h3 class="text-2xl font-bold mb-2">Reset Password</h3><p class="text-gray-300 text-sm mb-6">Enter your email and we'll send you a reset link.</p><form id="forgot-password-form" class="w-full"><div class="relative flex items-center w-full input-field rounded-xl mb-4"><i class="fa-solid fa-envelope absolute left-5 text-gray-400"></i><input id="forgot-email-input" type="email" placeholder="Your Email Address" required class="w-full bg-transparent pl-12 pr-5 py-3 text-white placeholder-gray-400 border-none rounded-xl focus:outline-none"></div><button type="submit" class="w-full py-3 rounded-xl action-button text-base flex items-center justify-center h-[44px]">Send Reset Link</button></form></div></div>
-    <div id="report-modal" class="screen hidden !justify-center"><div class="modal-box rounded-3xl p-6 text-white flex flex-col items-center relative"><button id="close-report-modal" class="absolute top-3 right-4 text-gray-400 hover:text-white text-2xl">&times;</button><h3 class="text-2xl font-bold mb-2">Report Content</h3><p id="report-modal-subtitle" class="text-gray-300 text-sm mb-6">Help us understand the problem.</p><form id="report-form" class="w-full space-y-4"><input type="hidden" id="report-type"><input type="hidden" id="report-id"><div><label class="form-label">Reason</label><select id="report-reason" class="form-select" required><option value="">Select a reason...</option><option value="scammer">Scammer</option><option value="harassment">Harassment</option><option value="toxic_behaviour">Toxic Behaviour</option><option value="copyright">Copyright Violation</option><option value="other">Other</option></select></div><div><label class="form-label">Details</label><textarea id="report-details" class="form-textarea" rows="4" placeholder="Please provide as much detail as possible."></textarea></div><div><label class="form-label">Video Link (Optional)</label><input type="url" id="report-video-link" class="form-input" placeholder="https://youtube.com/watch?v=..."></div><div><label class="form-label">Evidence (Images, 2-5)</label><input type="file" id="report-images" class="text-sm w-full file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-600 file:text-white hover:file:bg-gray-700" accept="image/*" multiple></div><button type="submit" class="w-full py-3 mt-2 rounded-xl action-button text-base flex items-center justify-center h-[44px]">Submit Report</button></form></div></div>
-
+    <div id="forgot-password-modal" class="screen hidden !justify-center"><div class="modal-box p-6 text-white text-center flex flex-col items-center relative"><button id="close-forgot-modal" class="absolute top-3 right-4 text-gray-400 hover:text-white text-2xl">&times;</button><h3 class="text-2xl font-bold mb-2">Reset Password</h3><p class="text-gray-300 text-sm mb-6">Enter your email and we'll send you a reset link.</p><form id="forgot-password-form" class="w-full"><div class="relative flex items-center w-full input-field rounded-xl mb-4"><i class="fa-solid fa-envelope absolute left-5 text-gray-400"></i><input id="forgot-email-input" type="email" placeholder="Your Email Address" required class="w-full bg-transparent pl-12 pr-5 py-3 text-white placeholder-gray-400 border-none rounded-xl focus:outline-none"></div><button type="submit" class="w-full py-3 rounded-xl action-button text-base flex items-center justify-center h-[44px]">Send Reset Link</button></form></div></div>
+    
     <!-- NEW Loading Overlay -->
     <div id="loading-overlay" class="screen hidden !justify-center" style="z-index: 1001; background-color: rgba(18, 18, 18, 0.8); backdrop-filter: blur(8px);">
         <div class="text-center">
             <dotlottie-wc src="https://lottie.host/e21415f9-b849-4323-8646-a2e3f1699933/i57m53VT2e.lottie" style="width: 200px; height: 200px;" autoplay loop></dotlottie-wc>
             <p id="loading-text" class="text-white font-semibold mt-4 text-lg">Processing...</p>
         </div>
+    </div>
+    
+    <!-- NEW Gift Card Opening Modal -->
+    <div id="gift-card-open-modal" class="screen hidden !justify-center">
+        <!-- Gift card will be rendered here by JS -->
+    </div>
+    
+    <!-- NEW Top-up Purchase/Reveal Modal -->
+    <div id="topup-purchase-modal" class="screen hidden !justify-center">
+        <!-- Top-up card flip animation will be rendered here by JS -->
     </div>
 
     <!-- Image Lightbox -->
@@ -517,7 +654,7 @@
             <a href="#" id="nav-home" class="nav-item active"><i class="fa-solid fa-house nav-icon"></i><span class="nav-label">Home</span></a>
             <a href="#" id="nav-search" class="nav-item"><i class="fa-solid fa-magnifying-glass nav-icon"></i><span class="nav-label">Search</span></a>
             <a href="#" id="nav-my-matches" class="nav-item"><i class="fa-solid fa-trophy nav-icon"></i><span class="nav-label">My Matches</span></a>
-            <a href="#" id="nav-reels" class="nav-item"><i class="fa-solid fa-clapperboard nav-icon"></i><span class="nav-label">Reels</span></a>
+            <a href="#" id="nav-reels" class="nav-item"><i class="fab fa-youtube nav-icon"></i><span class="nav-label">Reels</span></a>
             <a href="#" id="nav-profile" class="nav-item"><i class="fa-solid fa-user nav-icon"></i><span class="nav-label">Profile</span></a>
         </nav>
     </div>
@@ -560,20 +697,35 @@
             if (secondaryButton) {
                 buttonsHTML += `<button id="custom-modal-secondary-btn" class="w-full py-3 rounded-xl bg-gray-600 hover:bg-gray-700 text-base">${secondaryButton.text}</button>`;
             }
+            
+            const isCustomHtmlMessage = typeof message === 'string' && message.trim().startsWith('<');
 
             const iconElement = iconHtml 
                 ? `<div class="w-24 h-24 -mt-16 z-10 flex items-center justify-center">${iconHtml}</div>`
-                : `<div class="w-24 h-24 -mt-16 z-10"><dotlottie-wc src="${lottieSources[type]}" autoplay loop style="width: 100%; height: 100%;"></dotlottie-wc></div>`;
+                : (lottieSources[type] 
+                    ? `<div class="w-24 h-24 -mt-16 z-10"><dotlottie-wc src="${lottieSources[type]}" autoplay loop style="width: 100%; height: 100%;"></dotlottie-wc></div>`
+                    : '');
+            
+            const contentHTML = isCustomHtmlMessage 
+                ? message 
+                : `
+                    ${iconElement}
+                    <h3 class="text-2xl font-bold ${iconElement ? 'mt-2' : ''} mb-2 z-10">${title}</h3>
+                    <div class="text-gray-300 text-sm mb-6 z-10">${message}</div>
+                `;
+
+            const paddingClass = isCustomHtmlMessage ? '' : 'p-6';
             
             modalScreen.innerHTML = `
-                <div class="modal-box rounded-3xl p-6 text-white text-center flex flex-col items-center relative overflow-hidden">
+                <div class="modal-box text-white text-center flex flex-col items-center relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-full h-full pointer-events-none">
                        ${type === 'success' ? '<dotlottie-wc src="https://lottie.host/933f0761-a979-4009-ac22-692723146d2f/J43a2j75sU.lottie" autoplay loop style="width: 100%; height: 100%; position: absolute; top: 0; left: 0;"></dotlottie-wc>' : ''}
                     </div>
-                    ${iconElement}
-                    <h3 class="text-2xl font-bold mt-2 mb-2 z-10">${title}</h3>
-                    <div class="text-gray-300 text-sm mb-6 z-10">${message}</div>
-                    <div class="w-full z-10">
+                    <div class="w-full ${paddingClass}">
+                        ${isCustomHtmlMessage ? `<h3 class="text-2xl font-bold mb-4 z-10">${title}</h3>` : ''}
+                        ${contentHTML}
+                    </div>
+                    <div class="w-full z-10 ${paddingClass} pt-0">
                         ${buttonsHTML}
                     </div>
                 </div>`;
@@ -611,6 +763,7 @@
                  if(singleButton && !autoClose) singleButton.addEventListener('click', closeModal, { once: true });
             }
         }
+
 
         const showModal = (type, title, message, buttonText = 'Continue', onContinue = null) => {
             showCustomModal({
@@ -663,7 +816,7 @@
         const database = firebase.database();
         const storage = firebase.storage();
         
-        window.dbData = { users: {}, posts: {}, sliderImages: [], admin: {}, guildPosts: {}, playerSquadPosts: {}, reports: {} };
+        window.dbData = { users: {}, posts: {}, sliderImages: [], admin: {}, guildPosts: {}, playerSquadPosts: {}, redeemCodes: {} };
         const DEFAULT_AVATAR = "https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/dfdc00fc6bb93771364bbf5000dad222.jpg?alt=media&token=ff33f08b-1b2e-424e-b636-f664d8044bed";
         const DEFAULT_TEAM_LOGO = "https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/dfdc00fc6bb93771364bbf5000dad222.jpg?alt=media&token=ff33f08b-1b2e-424e-b636-f664d8044bed";
         const APP_LOGO_URL = "https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/dfdc00fc6bb93771364bbf5000dad222.jpg?alt=media&token=ff33f08b-1b2e-424e-b636-f664d8044bed";
@@ -674,18 +827,54 @@
             rocket: { name: 'Rocket', logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnNnydSE3RbmYHBeYiFeuxbin5CoY1G_uGC6n9gG3CPw&s=10', number: '016477122060', type: 'Send Money' }
         };
         let currentPaymentData = {}; let guildPostImageFile = null; let playerSquadPostImageFile = null;
+        let giftCardTimers = [];
 
         function timeAgo(isoDateString) { const date = new Date(isoDateString); const seconds = Math.floor((new Date() - date) / 1000); if (seconds < 2) return `just now`; if (seconds < 60) return `${seconds}s ago`; const minutes = Math.floor(seconds / 60); if (minutes < 60) return `${minutes}m ago`; const hours = Math.floor(minutes / 60); if (hours < 24) return `${hours}h ago`; const days = Math.floor(hours / 24); return `${days}d ago`; }
         function truncateName(name, maxLength = 15) { if (!name || typeof name !== 'string') return ''; if (name.length <= maxLength) return name; return name.substring(0, maxLength) + '..'; }
-        function formatNumberCompact(num) { if (num < 1000) return num; const suffixes = ["", "k", "m", "b", "t"]; const tier = Math.floor(Math.log10(Math.abs(num)) / 3); if (tier === 0) return num; const suffix = suffixes[tier]; const scale = Math.pow(10, tier * 3); const scaled = num / scale; const formatted = scaled.toFixed(1); return (formatted.endsWith('.0')) ? formatted.slice(0, -2) + suffix : formatted + suffix; }
+        
+        function formatNumberCompact(num) {
+            num = Number(num);
+            if (isNaN(num)) return '0';
+            if (num < 1000) {
+                return String(num % 1 === 0 ? num : num.toFixed(1)).replace(/\.0$/, '');
+            }
+            const si = [
+                { v: 1E3, s: "k" },
+                { v: 1E6, s: "M" },
+                { v: 1E9, s: "B" },
+                { v: 1E12, s: "T" },
+            ];
+            let i;
+            for (i = si.length - 1; i > 0; i--) {
+                if (num >= si[i].v) {
+                    break;
+                }
+            }
+            return (num / si[i].v).toFixed(1).replace(/\.0$/, "") + si[i].s;
+        }
+
+        function preloadImages(urls) {
+            urls.forEach(url => {
+                const img = new Image();
+                img.src = url;
+            });
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
-            const screens = { splash: document.getElementById('splash-screen'), auth: document.getElementById('auth-container'), dashboard: document.getElementById('dashboard-screen'), modal: document.getElementById('modal-screen'), forgot: document.getElementById('forgot-password-modal'), booking: document.getElementById('booking-screen'), participants: document.getElementById('participant-list-screen'), results: document.getElementById('results-submission-screen'), sponsorProfile: document.getElementById('sponsor-profile-screen'), userProfile: document.getElementById('user-profile-screen'), payment: document.getElementById('payment-screen'), guildPostForm: document.getElementById('guild-post-form-screen'), guildApplication: document.getElementById('guild-application-screen'), playerSquadPostForm: document.getElementById('player-squad-post-form-screen'), reportModal: document.getElementById('report-modal') };
+            // Preload common images for faster UI rendering
+            preloadImages([
+                'https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Levelup%2F1762763055321.png?alt=media&token=58051d4b-446d-4a30-b588-bed5a5f49c8d', // Coin Icon
+                'https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Levelup%2F1762763297995.png?alt=media&token=db9ebed1-ff51-49ed-a311-0327313dae56', // Diamond Icon
+                'https://i.imgur.com/8x8eFqg.jpg' // Default reward background
+            ]);
+
+            const screens = { splash: document.getElementById('splash-screen'), auth: document.getElementById('auth-container'), dashboard: document.getElementById('dashboard-screen'), modal: document.getElementById('modal-screen'), forgot: document.getElementById('forgot-password-modal'), booking: document.getElementById('booking-screen'), participants: document.getElementById('participant-list-screen'), results: document.getElementById('results-submission-screen'), sponsorProfile: document.getElementById('sponsor-profile-screen'), userProfile: document.getElementById('user-profile-screen'), payment: document.getElementById('payment-screen'), guildPostForm: document.getElementById('guild-post-form-screen'), guildApplication: document.getElementById('guild-application-screen'), playerSquadPostForm: document.getElementById('player-squad-post-form-screen'), giftCardOpen: document.getElementById('gift-card-open-modal'), topupPurchase: document.getElementById('topup-purchase-modal') };
             const authViews = { login: document.getElementById('login-view'), signup: document.getElementById('signup-view') };
             const navContainer = document.querySelector('.nav-container');
             let isInitialAuthCheck = true, currentUserData = null;
             let teamLogoFile = null;
             let newAvatarFile = null;
+            let dailyRewardInterval = null;
             
             const loadingOverlay = document.getElementById('loading-overlay');
             const loadingTextEl = document.getElementById('loading-text');
@@ -734,10 +923,29 @@
                 currentUserData = userData; 
                 const name = user.displayName || userData.name; 
                 const avatar = userData.avatar || DEFAULT_AVATAR;
+                // Main Profile Page
                 document.getElementById('dashboard-user-name').textContent = name;
                 document.getElementById('profile-page-avatar').src = avatar;
+                // Sidebar
+                document.getElementById('sidebar-username').textContent = name;
+                document.getElementById('sidebar-avatar').src = avatar;
+                document.getElementById('sidebar-teamname').textContent = userData.team?.name || 'No Team';
+                document.getElementById('sidebar-coin-balance').textContent = formatNumberCompact(userData.wallet?.coins || 0);
+                document.getElementById('sidebar-diamond-balance').textContent = formatNumberCompact(userData.wallet?.diamonds || 0);
+                document.getElementById('my-referral-code').textContent = userData.referralCode || 'N/A';
+
+                const teamBadgeEl = document.getElementById('sidebar-team-badge');
+                if (userData.team?.badgeUrl) {
+                    teamBadgeEl.src = userData.team.badgeUrl;
+                    teamBadgeEl.classList.remove('hidden');
+                } else {
+                    teamBadgeEl.classList.add('hidden');
+                }
+
                 document.getElementById('header-wallet-balance').textContent = (userData.wallet?.live || 0).toFixed(2); 
                 updateMailboxBadge();
+                updateSidebarBadges(userData);
+                
                 const initialUploadIcon = document.getElementById('initial-avatar-upload-icon');
                 if (initialUploadIcon) { if (avatar === DEFAULT_AVATAR) { initialUploadIcon.classList.remove('hidden'); initialUploadIcon.classList.add('flex'); } else { initialUploadIcon.classList.add('hidden'); initialUploadIcon.classList.remove('flex'); } }
             };
@@ -751,7 +959,7 @@
                     }
                  
                     database.ref().on('value', (snapshot) => {
-                        window.dbData = snapshot.val() || { users: {}, posts: {}, sliderImages: [], admin: {}, guildPosts: {}, playerSquadPosts: {} };
+                        window.dbData = snapshot.val() || { users: {}, posts: {}, sliderImages: [], admin: {}, guildPosts: {}, playerSquadPosts: {}, redeemCodes: {} };
                         const currentUserDataFromDb = window.dbData.users?.[user.uid];
 
                         if (!currentUserDataFromDb) { auth.signOut(); return; }
@@ -779,9 +987,19 @@
                             }
                         } else if (currentPage) {
                             switch(currentPage.id) {
-                                case 'home-content': renderEventPosts(); renderHomeGuildPosts(); renderHomePlayerSquadPosts(); break;
+                                case 'home-content': 
+                                    renderAllPosts(); 
+                                    renderTournamentsFeed();
+                                    renderHomeGuildPosts(); 
+                                    renderHomePlayerSquadPosts();
+                                    renderMissionsPage();
+                                    renderStorePage();
+                                    break;
                                 case 'my-matches-content': renderMyMatchesPage(); break;
                                 case 'manage-posts-content': renderManageNeedPage(); break;
+                                case 'my-coupons-content': renderMyCouponsPage(); break;
+                                case 'history-content': renderHistoryPage(); break;
+                                case 'redeem-content': renderRedeemPage(); break;
                                 case 'profile-content': updateProfileStats(currentUserDataFromDb, window.dbData.posts); break;
                                 case 'wallet-content': renderWalletPage(); break;
                                 case 'mailbox-content': renderMailbox(); break;
@@ -834,8 +1052,8 @@
                     initMyMatchesPage();
                     setupHomePageScrolling();
                     setupProfilePageListeners();
-                    setupReportModalListeners();
                     setupHomeTabs();
+                    setupSidebar();
                 }, 50);
             }
 
@@ -857,35 +1075,149 @@
                     });
             };
 
+            const generateReferralCode = (length = 6) => {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                let result = '';
+                for (let i = 0; i < length; i++) {
+                    result += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return result;
+            };
+
+            const generateReward = (coupon) => {
+                let pool = [];
+                // **UPDATED**: Specific pool for Daily/Signup/Referral rewards (Coins only)
+                const dailyPrizePool = [
+                    { value: 0.05, type: 'coin', image: 'https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Scratchcard%2FAddText_11-11-03.11.02.png?alt=media&token=46797d54-d62e-4620-a767-e94783eb58d4', weight: 40 },
+                    { value: 0.1, type: 'coin', image: 'https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Scratchcard%2FAddText_11-11-03.10.38.png?alt=media&token=a96bbdf3-9995-4f36-b586-834093dbdcaf', weight: 25 },
+                    { value: 0.5, type: 'coin', image: 'https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Scratchcard%2FAddText_11-11-03.10.45.png?alt=media&token=d0780c4f-bd68-4aba-9125-1b04e405792f', weight: 15 },
+                    { value: 1, type: 'coin', image: 'https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Scratchcard%2FAddText_11-11-03.08.15.png?alt=media&token=cd07efc9-0f86-4b9e-8869-bff9f6d79d9d', weight: 5 },
+                    { type: 'bad_luck', weight: 15 }
+                ];
+                
+                // Fallback pool for match rewards (can contain diamonds)
+                const matchPrizePool = [
+                    ...dailyPrizePool,
+                    { value: 0.1, type: 'diamond', image: 'https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Scratchcard%2FAddText_11-11-03.07.17.png?alt=media&token=31fcdd73-e2c6-4a69-8de5-ff48b0cc3d93', weight: 8 },
+                    { value: 0.2, type: 'diamond', image: 'https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Scratchcard%2FAddText_11-11-03.07.27.png?alt=media&token=121d44b7-f7f4-4039-9170-de47854fea4', weight: 5 },
+                ];
+
+                if (coupon.storeCardId) {
+                    const storeCardData = window.dbData.admin?.store?.giftCards?.[coupon.storeCardId];
+                    if (storeCardData) {
+                        const purchaseCount = currentUserData.storePurchaseCounters?.[coupon.storeCardId] || 0;
+                        if (storeCardData.bigRewards && storeCardData.bigRewards.length > 0 && purchaseCount > 0 && purchaseCount % 10 === 0) {
+                             return storeCardData.bigRewards[Math.floor(Math.random() * storeCardData.bigRewards.length)];
+                        }
+                        pool = storeCardData.rewards || dailyPrizePool;
+                    } else {
+                        pool = dailyPrizePool;
+                    }
+                } else if (coupon.reason === 'Daily Reward' || coupon.reason === 'Sign-up Bonus' || coupon.reason === 'Referral Bonus') {
+                    pool = dailyPrizePool;
+                } else {
+                    pool = matchPrizePool; // Default for other types like match rewards
+                }
+
+                const totalWeight = pool.reduce((sum, prize) => sum + (prize.weight || 0), 0);
+                let random = Math.random() * totalWeight;
+                for (const prize of pool) {
+                    if (random < prize.weight) { return prize; }
+                    random -= prize.weight;
+                }
+                return pool.find(p => p.type === 'bad_luck') || pool[pool.length-1];
+            };
+
+            async function giveScratchCard(userId, options) {
+                if (!userId || !options) return;
+                const { reason = 'Daily Reward', storeCardId = null } = options;
+                const newCouponRef = database.ref(`users/${userId}/myCoupons`).push();
+                const validityHours = reason.startsWith('Store Purchase') ? 12 : 24;
+                const couponData = {
+                    id: newCouponRef.key,
+                    type: 'gift_card',
+                    reason: reason,
+                    storeCardId: storeCardId,
+                    createdAt: new Date().toISOString(),
+                    expiresAt: new Date(Date.now() + validityHours * 60 * 60 * 1000).toISOString(),
+                    scratched: false,
+                    reward: null // Reward is determined on first open
+                };
+                await newCouponRef.set(couponData);
+            }
+            
             document.getElementById('signup-form-element').addEventListener('submit', (e) => {
                 e.preventDefault();
                 const form = e.target;
+                
+                if (localStorage.getItem('accountCreated')) {
+                    showModal('error', 'Device Limit Reached', 'You can only create one account per device.');
+                    return;
+                }
+
                 handleFormSubmit(form, 'Signing Up...', async () => {
                     const email = form.querySelector('#signup-email').value.trim();
-                    if (!email.toLowerCase().endsWith('@gmail.com')) {
-                        throw { message: 'Registration is only allowed with a @gmail.com address.' };
-                    }
+                    if (!email.toLowerCase().endsWith('@gmail.com')) { throw { message: 'Registration is only allowed with a @gmail.com address.' }; }
                     const password = form.querySelector('#signup-password').value;
-                    const confirmPassword = form.querySelector('#signup-confirm-password').value;
-                    if (password !== confirmPassword) {
-                        throw { message: 'Passwords do not match.' };
-                    }
+                    if (password !== form.querySelector('#signup-confirm-password').value) { throw { message: 'Passwords do not match.' }; }
+                    
                     const emailExistsSnapshot = await database.ref('users').orderByChild('email').equalTo(email).once('value');
-                    if (emailExistsSnapshot.exists()) {
-                        throw { message: 'This email is already registered. Please use a different email or try logging in.' };
-                    }
+                    if (emailExistsSnapshot.exists()) { throw { message: 'This email is already registered. Please use a different email or try logging in.' }; }
+
                     const userCredential = await auth.createUserWithEmailAndPassword(email, password);
                     const user = userCredential.user;
                     const fullName = form.querySelector('#signup-fullname').value;
                     await user.updateProfile({ displayName: fullName });
-                    const newUserDbData = { name: fullName, email: email, whatsapp: '+880' + form.querySelector('#signup-whatsapp').value, gender: form.querySelector('input[name="gender"]:checked').value, avatar: DEFAULT_AVATAR, role: 'user', wallet: { live: 0, event: 0 }, team: null, bookings: {}, mailbox: {} };
+                    
+                    const referralCode = form.querySelector('#signup-referral').value.trim().toUpperCase();
+                    let referredBy = null;
+
+                    if (referralCode) {
+                        const referrerSnapshot = await database.ref('users').orderByChild('referralCode').equalTo(referralCode).once('value');
+                        if (referrerSnapshot.exists()) {
+                            const referrerData = referrerSnapshot.val();
+                            const referrerId = Object.keys(referrerData)[0];
+                            referredBy = referrerId;
+                            const referrer = referrerData[referrerId];
+                            
+                            await giveScratchCard(referrerId, { reason: 'Referral Bonus' });
+                            if (referrer.referredBy) {
+                                await giveScratchCard(referrer.referredBy, { reason: 'Referral Bonus' });
+                            }
+                        } else {
+                            throw { message: 'Invalid referral code. Please check the code or leave it blank.' };
+                        }
+                    }
+
+                    const newUserDbData = { 
+                        name: fullName, 
+                        email: email, 
+                        whatsapp: '+880' + form.querySelector('#signup-whatsapp').value, 
+                        gender: form.querySelector('input[name="gender"]:checked').value, 
+                        avatar: DEFAULT_AVATAR, 
+                        role: 'user', 
+                        wallet: { live: 0, event: 0, coins: 0, diamonds: 0 }, 
+                        team: null, 
+                        bookings: {}, 
+                        mailbox: {},
+                        myCoupons: {},
+                        transactions: {},
+                        storePurchaseCounters: {},
+                        referralCode: generateReferralCode(),
+                        referredBy: referredBy,
+                        lastScratchClaim: 0
+                    };
                     await database.ref('users/' + user.uid).set(newUserDbData);
+                    
+                    await giveScratchCard(user.uid, { reason: 'Sign-up Bonus' });
+
+                    localStorage.setItem('accountCreated', 'true');
                     
                     showCustomModal({ type: 'success', title: 'Registration Successful!', message: 'Welcome to LEVEL UP! Taking you to the home page...', autoClose: 2500 });
                     setTimeout(() => window.location.reload(), 2500);
                 });
             });
-            
+
             document.getElementById('login-form-element').addEventListener('submit', (e) => {
                 e.preventDefault();
                 const form = e.target;
@@ -906,7 +1238,7 @@
                 const resultsContainer = document.getElementById('search-results-container'); 
                 const posts = Object.values(window.dbData.posts || {}); 
                 const filteredPosts = posts.filter(p => p.details.eventName.toLowerCase().includes(searchTerm) || p.author.name.toLowerCase().includes(searchTerm) || (p.details.tags && p.details.tags.some(t => t.toLowerCase().includes(searchTerm)))); 
-                resultsContainer.innerHTML = filteredPosts.length > 0 ? filteredPosts.map(createPostCardHTML).join('') : '<p class="text-center text-gray-500 mt-8">No results found.</p>'; 
+                resultsContainer.innerHTML = filteredPosts.length > 0 ? filteredPosts.map(createPostCardHTML).join('') : `<p class="text-center text-gray-500 mt-8">No results found.</p>`; 
                 initializeCountdowns(); 
             }
             document.getElementById('search-input-mobile').addEventListener('input', e => {
@@ -927,16 +1259,18 @@
                 const activeTab = activeTabEl.dataset.target;
 
                 if (searchTerm.length === 0) {
-                    renderEventPosts();
+                    renderAllPosts();
+                    renderTournamentsFeed();
                     renderHomeGuildPosts();
                     renderHomePlayerSquadPosts();
                     return;
                 }
 
-                if (activeTab === 'post-feed') {
+                if (activeTab === 'post-feed' || activeTab === 'home-tournaments-feed') {
                     const posts = Object.values(window.dbData.posts || {});
                     const filtered = posts.filter(p => p.details.eventName.toLowerCase().includes(searchTerm) || p.author.name.toLowerCase().includes(searchTerm));
-                    document.getElementById('post-feed').innerHTML = filtered.length > 0 ? filtered.map(createPostCardHTML).join('') : '<p class="text-center text-gray-500 p-4">No event matches found.</p>';
+                    const container = document.getElementById(activeTab);
+                    container.innerHTML = filtered.length > 0 ? filtered.map(createPostCardHTML).join('') : '<p class="text-center text-gray-500 p-4">No event matches found.</p>';
                 } else if (activeTab === 'home-guild-feed') {
                     const posts = Object.values(window.dbData.guildPosts || {});
                     const filtered = posts.filter(p => p.guildName.toLowerCase().includes(searchTerm) || p.creatorName.toLowerCase().includes(searchTerm));
@@ -948,23 +1282,57 @@
                 }
             }
 
-            function renderEventPosts() {
+            function renderAllPosts() {
                 const feed = document.getElementById('post-feed');
-                const allPosts = Object.values(window.dbData.posts || {});
-                if (allPosts.length === 0) { feed.innerHTML = `<div class="text-center text-gray-500 p-10 bg-gray-800/50 rounded-lg"><i class="fa-solid fa-ghost text-4xl mb-4"></i><p>No posts available at the moment.</p></div>`; return; }
-                const activePosts = allPosts.filter(p => p.status === 'upcoming').sort((a,b) => b.timestamp - a.timestamp);
+                const now = Date.now();
                 
-                const postsHTML = activePosts.map(createPostCardHTML).join('');
+                const eventPosts = Object.values(window.dbData.posts || {});
+                const guildPosts = Object.values(window.dbData.guildPosts || {});
+                const playerSquadPosts = Object.values(window.dbData.playerSquadPosts || {});
+                
+                const allPosts = [...eventPosts, ...guildPosts, ...playerSquadPosts];
+
+                const boostedPosts = allPosts.filter(p => p.boostedUntil && p.boostedUntil > now);
+                const regularPosts = allPosts.filter(p => !p.boostedUntil || p.boostedUntil <= now);
+                
+                const shuffleArray = arr => arr.sort(() => Math.random() - 0.5);
+                
+                const shuffledBoosted = shuffleArray(boostedPosts);
+                const shuffledRegular = shuffleArray(regularPosts);
+                
+                const finalPosts = [...shuffledBoosted, ...shuffledRegular];
+
+                const postsHTML = finalPosts.map(post => {
+                    if (post.details && post.details.eventName) return createPostCardHTML(post);
+                    if (post.guildName) return createGuildPostCardHTML(post);
+                    if (post.description) return createPlayerSquadPostCardHTML(post);
+                    return '';
+                }).join('');
 
                 if (!postsHTML.trim()) { 
-                    feed.innerHTML = `<div class="text-center text-gray-500 p-10 bg-gray-800/50 rounded-lg"><i class="fa-solid fa-clock text-4xl mb-4"></i><p>No new events right now. Check your booked matches!</p></div>`;
+                    feed.innerHTML = `<div class="text-center text-gray-500 p-10 bg-gray-800/50 rounded-lg"><i class="fa-solid fa-ghost text-4xl mb-4"></i><p>No posts available at the moment.</p></div>`;
                 } else {
                     feed.innerHTML = postsHTML;
                 }
                 initializeCountdowns();
             }
+
+            function renderTournamentsFeed() {
+                const feed = document.getElementById('home-tournaments-feed');
+                const posts = Object.values(window.dbData.posts || {}).sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+                if (posts.length === 0) {
+                    feed.innerHTML = `<div class="text-center text-gray-500 p-10 bg-gray-800/50 rounded-lg"><i class="fa-solid fa-trophy text-4xl mb-4"></i><p>No tournaments available right now.</p></div>`;
+                    return;
+                }
+                feed.innerHTML = posts.map(createPostCardHTML).join('');
+                initializeCountdowns();
+            }
             
             const createPostCardHTML = (post) => {
+                const matchEndTime = new Date(post.matchDate).getTime();
+                if (matchEndTime < Date.now()) {
+                    return ''; // Hide post if event time has passed
+                }
                 const isBooked = currentUserData?.bookings && !!currentUserData.bookings[post.id];
                 if (isBooked) return '';
 
@@ -1004,9 +1372,9 @@
                         <div class="flex justify-between items-start">
                             <div class="flex items-center gap-3 cursor-pointer sponsor-profile-trigger" data-sponsor-id="${post.authorId}">
                                 <img src="${post.author.avatar || DEFAULT_AVATAR}" class="w-10 h-10 rounded-full object-cover border-2 border-gray-600">
-                                <div>
+                                <div class="overflow-hidden">
                                     <div class="flex items-center">
-                                        <p class="font-semibold text-white">${truncateName(post.author.name, 15)}</p>
+                                        <p class="font-semibold text-white truncate">${post.author.name}</p>
                                         ${verifiedBadgeHTML}
                                     </div>
                                     <p class="text-xs text-gray-400">${timeAgo(post.timestamp)}</p>
@@ -1014,12 +1382,6 @@
                             </div>
                             <div class="flex items-center gap-2">
                                 <div class="countdown-container text-right" data-countdown="${post.matchDate}"></div>
-                                <div class="relative group report-dropdown-trigger">
-                                    <button class="text-gray-400 hover:text-white w-8 h-8 flex items-center justify-center rounded-full"><i class="fa-solid fa-ellipsis-vertical"></i></button>
-                                    <div class="absolute right-0 mt-2 w-48 bg-[#2a2a2a] border border-gray-700 rounded-md shadow-lg z-20 hidden group-hover:block report-dropdown-menu">
-                                        <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 report-btn" data-type="eventPost" data-id="${post.id}">Report Post</a>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -1241,7 +1603,10 @@
                         case 'my-matches-content': document.getElementById('my-matches-header').classList.remove('hidden'); break; 
                         case 'team-form-content': document.getElementById('team-header').classList.remove('hidden'); hideNavBar(); break; 
                         case 'wallet-content': document.getElementById('wallet-header').classList.remove('hidden'); break; 
-                        case 'mailbox-content': document.getElementById('mailbox-header').classList.remove('hidden'); break; 
+                        case 'mailbox-content': document.getElementById('mailbox-header').classList.remove('hidden'); break;
+                        case 'history-content': document.getElementById('history-header').classList.remove('hidden'); break;
+                        case 'redeem-content': document.getElementById('redeem-header').classList.remove('hidden'); break;
+                        case 'my-coupons-content': document.getElementById('my-coupons-header').classList.remove('hidden'); break;
                         case 'edit-profile-content': document.getElementById('edit-profile-header').classList.remove('hidden'); break; 
                         case 'change-password-content': document.getElementById('change-password-header').classList.remove('hidden'); break; 
                         case 'manage-posts-content': document.getElementById('manage-posts-header').classList.remove('hidden'); break;
@@ -1249,21 +1614,24 @@
                         case 'coming-soon-content': /* No header */ break;
                         case 'profile-content': // Use default header for profile
                         default: 
-                            const profileHeader = document.querySelector('#profile-content header');
-                            if(profileHeader) profileHeader.classList.remove('hidden');
-                            else {
-                                // Fallback to a generic user header if main-header logic changes
-                                const genericUserHeader = document.createElement('header');
-                                genericUserHeader.innerHTML = `<div class="p-4 flex items-center gap-3"><img src="${currentUserData.avatar || DEFAULT_AVATAR}" class="w-10 h-10 rounded-full"><p>${currentUserData.name}</p></div>`;
-                                document.querySelector('#profile-content').prepend(genericUserHeader);
-                            }
+                            document.getElementById('main-header').classList.remove('hidden'); // Fallback to main header for profile
                             break;
                      }
                      pageId === 'manage-posts-content' ? needFab.classList.add('visible') : needFab.classList.remove('visible');
                      switch(pageId) {
-                        case 'home-content': renderEventPosts(); renderHomeGuildPosts(); renderHomePlayerSquadPosts(); break;
+                        case 'home-content': 
+                            renderAllPosts(); 
+                            renderTournamentsFeed();
+                            renderHomeGuildPosts(); 
+                            renderHomePlayerSquadPosts(); 
+                            renderMissionsPage();
+                            renderStorePage();
+                            break;
                         case 'my-matches-content': renderMyMatchesPage(); break;
                         case 'manage-posts-content': renderManageNeedPage(); break;
+                        case 'my-coupons-content': renderMyCouponsPage(); break;
+                        case 'history-content': renderHistoryPage(); break;
+                        case 'redeem-content': renderRedeemPage(); break;
                         case 'search-content': document.getElementById('search-results-container').innerHTML = '<p class="text-center text-gray-500 mt-8">Type at least 3 characters to search.</p>'; break;
                         case 'wallet-content': renderWalletPage(); break;
                         case 'mailbox-content': renderMailbox(); break;
@@ -1300,7 +1668,7 @@
                 showCustomModal({
                     title: 'কি পোস্ট করতে চান?',
                     iconHtml: `<img src="${APP_LOGO_URL}" alt="Logo" class="w-24 h-24 rounded-full object-cover">`,
-                    message: `<div class="space-y-3"><button id="fab-need-guild" class="w-full py-3 rounded-lg action-button font-bold text-sm">Need Guild</button><button id="fab-need-player-squad" class="w-full py-3 rounded-lg action-button font-bold text-sm">Need Player/Squad</button></div>`,
+                    message: `<div class="space-y-3"><button id="fab-need-guild" class="w-full py-3 rounded-lg action-button font-bold text-sm">Guild</button><button id="fab-need-player-squad" class="w-full py-3 rounded-lg action-button font-bold text-sm">Player/Squad</button></div>`,
                     primaryButton: null,
                     onRender: (modal) => {
                         modal.querySelector('#fab-need-guild').addEventListener('click', () => { document.getElementById('modal-screen').classList.add('hidden'); screens.guildPostForm.classList.remove('hidden'); renderGuildPostForm(); });
@@ -1310,13 +1678,17 @@
             }); 
             
             function goBackToProfile() { navigateToPage('profile-content'); setActiveNavItem(document.getElementById('nav-profile')); }
+            function goHome() { navigateToPage('home-content'); setActiveNavItem(document.getElementById('nav-home')); }
             
             document.getElementById('back-from-team-btn').addEventListener('click', goBackToProfile);
             document.getElementById('back-from-wallet-btn').addEventListener('click', goBackToProfile);
             document.getElementById('back-from-mailbox-btn').addEventListener('click', goBackToProfile);
+            document.getElementById('back-from-history-btn').addEventListener('click', goHome);
+            document.getElementById('back-from-redeem-btn').addEventListener('click', goHome);
             document.getElementById('back-from-edit-profile-btn').addEventListener('click', goBackToProfile);
             document.getElementById('back-from-change-password-btn').addEventListener('click', goBackToProfile);
             document.getElementById('back-from-manage-posts-btn').addEventListener('click', goBackToProfile);
+            document.getElementById('back-from-coupons-btn').addEventListener('click', goHome);
             
             function renderMyTeamPage() { const team = currentUserData.team; const saveBtn = document.getElementById('save-team-btn'); const form = document.getElementById('team-form'); if (team) { document.getElementById('team-name').value = team.name; document.getElementById('team-logo-preview').src = team.logo || DEFAULT_TEAM_LOGO; for(let i=0; i < 5; i++) { const member = team.members[i]; const nameInput = document.querySelector(`#member-${i}-name`); const uidInput = document.querySelector(`#member-${i}-uid`); if(member && nameInput && uidInput) { nameInput.value = member.name; uidInput.value = member.uid; } else if (nameInput && uidInput) { nameInput.value = ''; uidInput.value = ''; } } saveBtn.textContent = "Update Team"; } else { if (form) form.reset(); teamLogoFile = null; document.getElementById('team-logo-preview').src = DEFAULT_TEAM_LOGO; saveBtn.textContent = "Create Team"; } }
             
@@ -1361,9 +1733,7 @@
                 const sponsorTrigger = e.target.closest('.sponsor-profile-trigger');
                 const userTrigger = e.target.closest('.user-profile-trigger');
                 const verifiedBadge = e.target.closest('.verification-badge');
-                const reportBtn = e.target.closest('.report-btn');
 
-                if(reportBtn) { e.preventDefault(); const { type, id } = reportBtn.dataset; showReportModal(type, id); return; }
                 if (verifiedBadge) { e.preventDefault(); e.stopPropagation(); const badgeIndex = parseInt(verifiedBadge.dataset.badgeIndex); let badgeTitle = 'ভেরিফাইড স্পনসর'; let badgeDescription = 'এটি এডমিন দ্বারা নির্ধারিত একটি বিশেষ ব্যাজ।'; if (badgeIndex === 0) { badgeDescription = 'সে তার পার্সোনাল ডকুমেন্টস, NID ছবি দিয়ে ভেরিফাইড। তাই কোনো দ্বিধা ছাড়া ম্যাচ নিতে পারেন।'; } else if (badgeIndex === 1) { badgeDescription = 'সে NID ইত্যাদি দিয়ে ভেরিফাইড এবং বিশ্বস্ততার সাথে ৫০০ টির বেশি ইভেন্ট বা ম্যাচ সম্পন্ন করেছে।'; } showModal('success', badgeTitle, badgeDescription, 'ঠিক আছে'); return; }
 
                 if (bookBtn && !bookBtn.disabled) { 
@@ -1460,7 +1830,70 @@
                 contentArea.querySelector('#booking-close-btn').addEventListener('click', () => { screens.booking.classList.add('hidden'); showNavBar(); }); initSwipeToConfirm();
             }
 
-            function initSwipeToConfirm() { const swipeContainer = document.getElementById('swipe-confirm'), handle = swipeContainer.querySelector('.swipe-handle'), track = swipeContainer.querySelector('.swipe-track'), text = swipeContainer.querySelector('.swipe-text'); let isDragging = false, startX, currentX; const onDragStart = (e) => { isDragging = true; startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX; handle.style.transition = 'none'; track.style.transition = 'none'; handle.style.cursor = 'grabbing'; }; const onDragMove = (e) => { if (!isDragging) return; e.preventDefault(); currentX = (e.type === 'touchmove' ? e.touches[0].clientX : e.clientX) - startX; const maxTranslate = swipeContainer.offsetWidth - handle.offsetWidth - 12; let newTranslate = Math.max(0, Math.min(currentX, maxTranslate)); handle.style.transform = `translateX(${newTranslate}px)`; track.style.width = `${newTranslate + handle.offsetWidth / 2}px`; text.style.opacity = 1 - (newTranslate / maxTranslate); }; const onDragEnd = () => { if (!isDragging) return; isDragging = false; handle.style.cursor = 'grab'; handle.style.transition = 'transform 0.3s ease'; track.style.transition = 'width 0.3s ease'; const maxTranslate = swipeContainer.offsetWidth - handle.offsetWidth - 12; if (currentX > maxTranslate * 0.8) { handle.style.transform = `translateX(${maxTranslate}px)`; track.style.width = '100%'; text.style.opacity = 0; handleBookingConfirmation(); } else { handle.style.transform = 'translateX(0px)'; track.style.width = '0px'; text.style.opacity = 1; } }; handle.addEventListener('mousedown', onDragStart); handle.addEventListener('touchstart', onDragStart, { passive: true }); document.addEventListener('mousemove', onDragMove); document.addEventListener('touchmove', onDragMove, { passive: false }); document.addEventListener('mouseup', onDragEnd); document.addEventListener('touchend', onDragEnd); }
+            function initSwipeToConfirm(onConfirm) {
+                const swipeContainer = document.querySelector('#swipe-confirm, #payment-swipe-confirm');
+                if (!swipeContainer) return;
+                const handle = swipeContainer.querySelector('.swipe-handle');
+                const track = swipeContainer.querySelector('.swipe-track');
+                const text = swipeContainer.querySelector('.swipe-text');
+                
+                let isDragging = false, startX, currentX;
+
+                const resetSwipe = () => {
+                    handle.style.transition = 'transform 0.3s ease';
+                    track.style.transition = 'width 0.3s ease';
+                    handle.style.transform = 'translateX(0px)';
+                    track.style.width = '0px';
+                    if (text) text.style.opacity = 1;
+                };
+
+                const onDragStart = (e) => {
+                    isDragging = true;
+                    startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+                    handle.style.transition = 'none';
+                    track.style.transition = 'none';
+                    handle.style.cursor = 'grabbing';
+                };
+
+                const onDragMove = (e) => {
+                    if (!isDragging) return;
+                    e.preventDefault();
+                    currentX = (e.type === 'touchmove' ? e.touches[0].clientX : e.clientX) - startX;
+                    const maxTranslate = swipeContainer.offsetWidth - handle.offsetWidth - 12; // 12 for padding
+                    let newTranslate = Math.max(0, Math.min(currentX, maxTranslate));
+                    handle.style.transform = `translateX(${newTranslate}px)`;
+                    track.style.width = `${newTranslate + handle.offsetWidth / 2}px`;
+                    if (text) text.style.opacity = 1 - (newTranslate / maxTranslate);
+                };
+
+                const onDragEnd = () => {
+                    if (!isDragging) return;
+                    isDragging = false;
+                    handle.style.cursor = 'grab';
+                    const maxTranslate = swipeContainer.offsetWidth - handle.offsetWidth - 12;
+
+                    if (currentX > maxTranslate * 0.8) {
+                        handle.style.transform = `translateX(${maxTranslate}px)`;
+                        track.style.width = '100%';
+                        if (text) text.style.opacity = 0;
+                        
+                        if (onConfirm) {
+                            onConfirm(resetSwipe); // Pass reset function so it can be called on failure
+                        } else {
+                            handleBookingConfirmation(); // Default action
+                        }
+                    } else {
+                        resetSwipe();
+                    }
+                };
+                
+                handle.addEventListener('mousedown', onDragStart);
+                handle.addEventListener('touchstart', onDragStart, { passive: true });
+                document.addEventListener('mousemove', onDragMove);
+                document.addEventListener('touchmove', onDragMove, { passive: false });
+                document.addEventListener('mouseup', onDragEnd, { once: true }); // Use once to auto-remove
+                document.addEventListener('touchend', onDragEnd, { once: true });
+            }
             
             function initMyMatchesPage() { const container = document.getElementById('my-matches-content'); if (!container) return; const tabs = container.querySelectorAll('.my-matches-tab'); const sections = container.querySelectorAll('.tab-content-section'); tabs.forEach(tab => { tab.addEventListener('click', () => { if (tab.classList.contains('active-tab')) return; tabs.forEach(t => t.classList.remove('active-tab')); sections.forEach(s => s.classList.remove('active-section')); tab.classList.add('active-tab'); document.getElementById(tab.dataset.target)?.classList.add('active-section'); }); }); if (!container.querySelector('.active-tab')) { tabs[0]?.classList.add('active-tab'); sections[0]?.classList.add('active-section'); } }
             function renderMyMatchesPage() { const bookings = Object.values(currentUserData.bookings || {}); const posts = window.dbData.posts || {}; const upcomingContainer = document.getElementById('upcoming-matches-container'); const historyContainer = document.getElementById('history-matches-container'); upcomingContainer.innerHTML = ''; historyContainer.innerHTML = ''; let upcomingCount = 0, historyCount = 0; bookings.sort((a,b) => new Date(b.bookingDate) - new Date(a.bookingDate)).forEach(booking => { const post = posts[booking.postId]; if (post) { const isBanned = (post.bannedUsers || []).includes(auth.currentUser.uid); if (isBanned || post.status === 'completed' || post.status === 'cancelled') { historyContainer.innerHTML += createMyMatchPostCardHTML(post, isBanned); historyCount++; } else { upcomingContainer.innerHTML += createMyMatchPostCardHTML(post, isBanned); upcomingCount++; } } }); if (upcomingCount === 0) upcomingContainer.innerHTML = '<p class="text-gray-500 p-4 text-center">You have no upcoming matches.</p>'; if (historyCount === 0) historyContainer.innerHTML = '<p class="text-gray-500 p-4 text-center">No recent match history found.</p>'; initializeCountdowns(); }
@@ -1723,7 +2156,7 @@
                 if (allFeedbacks.length > 0) { feedbacksHTML += `<div class="space-y-4 text-left">${allFeedbacks.map(fb => { const user = window.dbData.users[fb.userId]; const stars = Array(5).fill(0).map((_, i) => `<i class="fa-solid fa-star ${i < fb.rating ? 'text-yellow-400' : 'text-gray-600'}"></i>`).join(''); return `<div class="bg-[#1e1e1e] p-3 rounded-lg border border-gray-700"> <div class="flex justify-between items-center"> <p class="font-semibold text-sm">${user ? maskName(user.name) : 'Ano***'}</p> <div class="flex gap-1 text-xs">${stars}</div> </div> ${fb.comment ? `<p class="text-gray-300 text-sm mt-2 italic">"${fb.comment}"</p>` : ''} </div>`; }).join('')}</div>`; } else { feedbacksHTML += '<p class="text-gray-500 text-center">No feedback yet.</p>'; } 
                 
                 const rawLikes = sponsor.reputation?.likes || 0;
-                content.innerHTML = `<div class="sticky top-0 bg-[#121212] py-4 flex justify-between items-center"><h2 class="text-2xl font-bold">Sponsor Profile</h2><button id="close-sponsor-profile-btn" class="text-gray-400 text-3xl">&times;</button></div><div class="p-6 text-center"><img src="${sponsor.avatar || DEFAULT_AVATAR}" class="w-32 h-32 rounded-full mx-auto border-4 border-green-500"><h2 class="text-3xl font-bold mt-4 flex items-center justify-center">${sponsor.name}${verifiedBadgeHTML}</h2><p class="text-gray-500 text-sm">UID: ${sponsorId}</p><div class="w-full max-w-md mx-auto mt-6 p-4 bg-[#1e1e1e] border border-gray-800 rounded-xl grid grid-cols-3 text-center divide-x divide-gray-700"><div><p class="text-2xl font-bold" data-raw-likes="${rawLikes}">${formatNumberCompact(rawLikes)}</p><p class="text-xs text-gray-400">Likes</p></div><div><p class="text-2xl font-bold">${avgRating}</p><p class="text-xs text-gray-400">Rating</p></div><div><p class="text-2xl font-bold">${successfulEvents}/${sponsorPosts.length}</p><p class="text-xs text-gray-400">Success</p></div></div><button id="like-sponsor-profile-btn" class="w-full max-w-md mx-auto mt-6 py-3 rounded-lg text-white font-bold transition-colors ${hasLiked ? 'bg-red-600 hover:bg-red-700' : 'action-button'}" data-sponsor-id="${sponsorId}"><i class="fa-solid fa-heart mr-2"></i> ${hasLiked ? 'Unlike' : 'Like'}</button><button class="report-btn w-full max-w-md mx-auto mt-4 py-3 rounded-lg bg-gray-700 hover:bg-gray-600 text-white font-bold transition-colors" data-type="user" data-id="${sponsorId}"><i class="fa-solid fa-flag mr-2"></i> Report Sponsor</button></div><div class="px-2 w-full max-w-md mx-auto">${feedbacksHTML}</div>`; 
+                content.innerHTML = `<div class="sticky top-0 bg-[#121212] py-4 flex justify-between items-center"><h2 class="text-2xl font-bold">Sponsor Profile</h2><button id="close-sponsor-profile-btn" class="text-gray-400 text-3xl">&times;</button></div><div class="p-6 text-center"><img src="${sponsor.avatar || DEFAULT_AVATAR}" class="w-32 h-32 rounded-full mx-auto border-4 border-green-500"><h2 class="text-3xl font-bold mt-4 flex items-center justify-center">${sponsor.name}${verifiedBadgeHTML}</h2><p class="text-gray-500 text-sm">UID: ${sponsorId}</p><div class="w-full max-w-md mx-auto mt-6 p-4 bg-[#1e1e1e] border border-gray-800 rounded-xl grid grid-cols-3 text-center divide-x divide-gray-700"><div><p class="text-2xl font-bold" data-raw-likes="${rawLikes}">${formatNumberCompact(rawLikes)}</p><p class="text-xs text-gray-400">Likes</p></div><div><p class="text-2xl font-bold">${avgRating}</p><p class="text-xs text-gray-400">Rating</p></div><div><p class="text-2xl font-bold">${successfulEvents}/${sponsorPosts.length}</p><p class="text-xs text-gray-400">Success</p></div></div><button id="like-sponsor-profile-btn" class="w-full max-w-md mx-auto mt-6 py-3 rounded-lg text-white font-bold transition-colors ${hasLiked ? 'bg-red-600 hover:bg-red-700' : 'action-button'}" data-sponsor-id="${sponsorId}"><i class="fa-solid fa-heart mr-2"></i> ${hasLiked ? 'Unlike' : 'Like'}</button></div><div class="px-2 w-full max-w-md mx-auto">${feedbacksHTML}</div>`; 
                 
                 content.querySelector('#close-sponsor-profile-btn').addEventListener('click', () => { screens.sponsorProfile.classList.add('hidden'); showNavBar(); }); 
                 content.querySelector('#like-sponsor-profile-btn').addEventListener('click', (e) => { handleLikeSponsor(e.target.dataset.sponsorId); }); 
@@ -1759,16 +2192,27 @@
                         const targetContent = document.getElementById(tab.dataset.target);
                         if(targetContent) targetContent.classList.add('active');
 
-                        if (tab.dataset.target === 'post-feed') {
+                        // MODIFICATION: Slider only shows on the "All" tab (`post-feed`)
+                        if (tab.dataset.target === 'post-feed') { 
                             sliderWrapper.style.display = 'block';
                         } else {
                             sliderWrapper.style.display = 'none';
                         }
-                        // Clear search when changing tabs
                         document.getElementById('home-search-input').value = '';
                         handleHomeSearch();
                     });
                 });
+            }
+
+            async function addTransaction(userId, transactionData) {
+                if (!userId || !transactionData) return;
+                const newTransactionRef = database.ref(`users/${userId}/transactions`).push();
+                const fullTransactionData = {
+                    ...transactionData,
+                    id: newTransactionRef.key,
+                    timestamp: transactionData.timestamp || new Date().toISOString()
+                };
+                await newTransactionRef.set(fullTransactionData);
             }
 
             async function renderWalletPage() {
@@ -1790,6 +2234,25 @@
                 const withdrawals = withdrawalsSnapshot.val() || {};
                 Object.values(withdrawals).forEach(wd => {
                     transactions.push({ date: wd.timestamp, type: `Withdrawal to ${wd.method}`, description: `Acc: ${wd.accountNumber}`, amount: -wd.amount, status: wd.status });
+                });
+                
+                const userTransactionsSnapshot = await database.ref(`users/${auth.currentUser.uid}/transactions`).orderByChild('timestamp').once('value');
+                const userTransactions = userTransactionsSnapshot.val() || {};
+                Object.values(userTransactions).forEach(ut => {
+                     let amount = ut.amount;
+                    let isReward = false;
+                    if (ut.type === 'Gift Card Reward') {
+                         isReward = true;
+                         amount = `+${ut.amount} ${ut.currency}`;
+                    }
+                    transactions.push({ 
+                        date: ut.timestamp, 
+                        type: ut.type, 
+                        description: ut.description, 
+                        amount: amount, 
+                        isReward: isReward,
+                        status: ut.status || 'completed' 
+                    });
                 });
                 
                 bookings.forEach(booking => {
@@ -1816,9 +2279,18 @@
 
                 transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
                 const transactionsHTML = transactions.length > 0 ? transactions.map(t => {
-                    const isCredit = t.amount > 0;
+                    const isCredit = !t.isReward && t.amount > 0;
+
+                    let amountHTML;
+                    if (t.isReward) {
+                        const icon = t.amount.includes('coin') ? 'fa-coins text-yellow-400' : 'fa-gem text-cyan-400';
+                        amountHTML = `<p class="font-bold text-lg"><i class="fa-solid ${icon} mr-1"></i>${t.amount}</p>`;
+                    } else {
+                        amountHTML = `<p class="font-bold text-lg ${isCredit ? 'text-green-400' : 'text-red-400'}">${isCredit ? '+' : ''}${t.amount.toFixed(2)}</p>`;
+                    }
+
                     let statusBadge = '';
-                    if (t.status) {
+                    if (t.status && t.status !== 'completed') {
                         const statusColors = { pending: 'bg-yellow-500', approved: 'bg-green-500', rejected: 'bg-red-500' };
                         const statusText = t.status.charAt(0).toUpperCase() + t.status.slice(1);
                         statusBadge = `<span class="text-xs font-semibold px-2 py-1 ${statusColors[t.status]} text-white rounded-full ml-2">${statusText}</span>`;
@@ -1829,7 +2301,7 @@
                                     <p class="text-xs text-gray-400">${t.description}</p>
                                     <p class="text-xs text-gray-500 mt-1">${new Date(t.date).toLocaleString()}</p>
                                 </div>
-                                <p class="font-bold text-lg ${isCredit ? 'text-green-400' : 'text-red-400'}">${isCredit ? '+' : ''}${t.amount.toFixed(2)}</p>
+                                ${amountHTML}
                             </div>`
                 }).join('') : '<p class="text-center text-gray-500 p-4">No transactions found.</p>';
 
@@ -1905,16 +2377,15 @@
                             break;
                     }
                     
-                    const reportButtonHTML = mail.type === 'ban' ? `<div class="mt-4 flex gap-2"><button class="report-btn flex-1 py-2 bg-red-600/80 hover:bg-red-600 rounded-lg text-xs font-bold" data-mail-id="${mail.id}" data-sponsor-id="${mail.sponsorId}">Report this Decision</button><button class="accept-ban-btn flex-1 py-2 bg-gray-600/80 hover:bg-gray-700 rounded-lg text-xs font-bold" data-mail-id="${mail.id}" data-sponsor-id="${mail.sponsorId}">হ্যাঁ, আমি স্বীকার করছি</button></div>` : ''; 
+                    const acceptButtonHTML = mail.type === 'ban' ? `<div class="mt-4 flex gap-2"><button class="accept-ban-btn w-full py-2 bg-gray-600/80 hover:bg-gray-700 rounded-lg text-xs font-bold" data-mail-id="${mail.id}" data-sponsor-id="${mail.sponsorId}">হ্যাঁ, আমি স্বীকার করছি</button></div>` : ''; 
                     const refundInfo = mail.body.refunded ? `<p class="mt-2 text-green-400 font-semibold">Your entry fee for this match has been refunded.</p>` : (mail.type === 'ban' ? `<p class="mt-2 text-red-400 font-semibold">No refund was issued as the match was already live.</p>` : ''); 
                     
-                    return `<div class="mail-item p-4 border-l-4 ${mail.read ? 'border-gray-700' : 'border-green-500 bg-[#1e1e1e]'} rounded-r-lg mb-3" data-mail-id="${mail.id}"><div class="flex justify-between items-start gap-2"><div class="flex-grow"><p class="font-bold">${mail.subject}</p>${post ? `<p class="text-sm text-gray-400">Regarding: ${post.details.eventName}</p>` : ''}</div><button class="delete-mail-btn text-gray-500 hover:text-red-500 text-lg flex-shrink-0" data-mail-id="${mail.id}"><i class="fa-solid fa-trash-can"></i></button><span class="text-xs text-gray-500 flex-shrink-0">${timeAgo(mail.timestamp)}</span></div><div class="mail-body mt-2 pt-2 border-t border-gray-700/50 text-gray-300 text-sm hidden">${bodyContent}${refundInfo}${reportButtonHTML}</div></div>`; 
+                    return `<div class="mail-item p-4 border-l-4 ${mail.read ? 'border-gray-700' : 'border-green-500 bg-[#1e1e1e]'} rounded-r-lg mb-3" data-mail-id="${mail.id}"><div class="flex justify-between items-start gap-2"><div class="flex-grow"><p class="font-bold">${mail.subject}</p>${post ? `<p class="text-sm text-gray-400">Regarding: ${post.details.eventName}</p>` : ''}</div><button class="delete-mail-btn text-gray-500 hover:text-red-500 text-lg flex-shrink-0" data-mail-id="${mail.id}"><i class="fa-solid fa-trash-can"></i></button><span class="text-xs text-gray-500 flex-shrink-0">${timeAgo(mail.timestamp)}</span></div><div class="mail-body mt-2 pt-2 border-t border-gray-700/50 text-gray-300 text-sm hidden">${bodyContent}${refundInfo}${acceptButtonHTML}</div></div>`; 
                 
                 }).join('');
                 content.innerHTML = `<div class="p-4"><div class="space-y-2">${sortedMail.length > 0 ? mailHTML : '<p class="text-center text-gray-500 mt-8">Your mailbox is empty.</p>'}</div></div>`;
-                content.querySelectorAll('.mail-item').forEach(item => item.addEventListener('click', e => { if (e.target.closest('.report-btn') || e.target.closest('.delete-mail-btn') || e.target.closest('.accept-ban-btn')) return; const mailId = item.dataset.mailId; item.querySelector('.mail-body').classList.toggle('hidden'); if (!currentUserData.mailbox[mailId]?.read) { database.ref(`users/${auth.currentUser.uid}/mailbox/${mailId}/read`).set(true); } }));
+                content.querySelectorAll('.mail-item').forEach(item => item.addEventListener('click', e => { if (e.target.closest('.delete-mail-btn') || e.target.closest('.accept-ban-btn')) return; const mailId = item.dataset.mailId; item.querySelector('.mail-body').classList.toggle('hidden'); if (!currentUserData.mailbox[mailId]?.read) { database.ref(`users/${auth.currentUser.uid}/mailbox/${mailId}/read`).set(true); } }));
                 content.querySelectorAll('.delete-mail-btn').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); if (confirm("Are you sure you want to delete this mail?")) { database.ref(`users/${auth.currentUser.uid}/mailbox/${e.currentTarget.dataset.mailId}`).remove(); } }));
-                content.querySelectorAll('.report-btn').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); if (confirm("আপনি কি নিশ্চিত যে এই সিদ্ধান্তটি অ্যাডমিনের কাছে রিপোর্ট করতে চান?")) { const sponsorId = e.target.dataset.sponsorId; const mailId = Date.now(); const newMail = { id: mailId, type: 'ban_reported', subject: 'A User Has Reported Your Ban', body: { reason: `A user has disputed a ban you issued. Please contact an admin to resolve this.`}, timestamp: new Date().toISOString(), read: false }; database.ref(`users/${sponsorId}/mailbox/${mailId}`).set(newMail).then(() => { window.open('https://t.me/Op_tonmoy', '_blank'); showModal('success', 'Report Sent', 'Your report has been noted. An admin will review it.'); }); } }));
                 content.querySelectorAll('.accept-ban-btn').forEach(btn => btn.addEventListener('click', e => { e.stopPropagation(); if (confirm('আপনি কি নিশ্চিত যে আপনি এই সিদ্ধান্তটি মেনে নিচ্ছেন?')) { const sponsorId = e.target.dataset.sponsorId; const mailId = Date.now(); const newMail = { id: mailId, type: 'ban_accepted', subject: 'User Accepted Ban', body: { reason: 'The user has accepted the ban issued for this match.'}, timestamp: new Date().toISOString(), read: false }; database.ref(`users/${sponsorId}/mailbox/${mailId}`).set(newMail); btn.closest('.mail-body').innerHTML += '<p class="text-center text-green-400 font-bold mt-4">Thank you for your cooperation.</p>'; } }));
             }
 
@@ -1924,8 +2395,6 @@
                 document.getElementById('create-team-button').addEventListener('click', () => { renderMyTeamPage(); navigateToPage('team-form-content'); });
                 document.getElementById('manage-posts-button').addEventListener('click', () => { navigateToPage('manage-posts-content'); });
                 document.getElementById('mailbox-button').addEventListener('click', () => { navigateToPage('mailbox-content'); });
-                document.getElementById('edit-profile-btn').addEventListener('click', () => { const user = auth.currentUser; document.getElementById('edit-profile-avatar-preview').src = currentUserData.avatar || DEFAULT_AVATAR; document.getElementById('edit-profile-name').value = currentUserData.name || ''; newAvatarFile = null; navigateToPage('edit-profile-content'); });
-                document.getElementById('change-password-button').addEventListener('click', () => { navigateToPage('change-password-content'); });
                 document.getElementById('logout-button-settings').addEventListener('click', () => { auth.signOut().then(() => window.location.reload()); });
 
                 document.getElementById('new-profile-image-upload').addEventListener('change', e => {
@@ -1937,6 +2406,13 @@
                         reader.readAsDataURL(file);
                     }
                 });
+
+                document.getElementById('copy-my-ref-code-btn').addEventListener('click', () => {
+                    navigator.clipboard.writeText(currentUserData.referralCode).then(() => {
+                        showModal('success', 'Referral Code Copied!', `Your code "${currentUserData.referralCode}" has been copied.`);
+                    });
+                });
+
                 document.getElementById('edit-profile-form').addEventListener('submit', e => {
                     e.preventDefault();
                     const form = e.target;
@@ -2020,6 +2496,7 @@
                     await database.ref('users/' + user.uid).remove();
                     await user.delete();
                     hideLoader();
+                    localStorage.removeItem('accountCreated'); // Clear device lock
                     showModal('success', 'Account Deleted', 'Your account has been permanently deleted.', 'OK', () => {
                         window.location.reload();
                     });
@@ -2035,7 +2512,8 @@
 
 
             const backFromPaymentBtn = document.getElementById('back-from-payment-btn');
-            function startDepositFlow() { screens.payment.classList.remove('hidden'); hideNavBar(); document.getElementById('payment-header').classList.remove('hidden'); document.querySelector('#payment-header h2').textContent = 'টাকা জমা দিন'; backFromPaymentBtn.onclick = () => { screens.payment.classList.add('hidden'); navigateToPage('wallet-content'); showNavBar(); }; renderPaymentMethodSelection('deposit'); }
+            function startDepositFlow() { screens.payment.classList.remove('hidden'); hideNavBar(); document.getElementById('payment-header').classList.remove('hidden'); document.querySelector('#payment-header h2').textContent = 
+'টাকা জমা দিন'; backFromPaymentBtn.onclick = () => { screens.payment.classList.add('hidden'); navigateToPage('wallet-content'); showNavBar(); }; renderPaymentMethodSelection('deposit'); }
             function startWithdrawFlow() { screens.payment.classList.remove('hidden'); hideNavBar(); document.getElementById('payment-header').classList.remove('hidden'); document.querySelector('#payment-header h2').textContent = 'টাকা উত্তোলন করুন'; backFromPaymentBtn.onclick = () => { screens.payment.classList.add('hidden'); navigateToPage('wallet-content'); showNavBar(); }; renderPaymentMethodSelection('withdraw'); }
             function renderPaymentMethodSelection(type) {
                 const contentArea = document.getElementById('payment-content-area'); contentArea.scrollTop = 0; backFromPaymentBtn.onclick = () => { screens.payment.classList.add('hidden'); navigateToPage('wallet-content'); showNavBar(); };
@@ -2048,26 +2526,25 @@
                 contentArea.innerHTML = `<div class="max-w-md mx-auto pb-24"><div class="text-center mb-6"><img src="${method.logo}" class="w-20 h-20 mx-auto mb-2 object-contain"><h2 class="text-2xl font-bold">Deposit via ${method.name}</h2></div><div class="bg-[#1e1e1e] border border-gray-700 rounded-xl p-4 space-y-3 mb-4"><h3 class="font-semibold text-green-400">নির্দেশনা</h3><p class="text-sm text-gray-300">আপনার ${method.name} অ্যাপ থেকে নিচের নম্বরে <strong class="text-white">${method.type}</strong> করুন।</p><div class="bg-black/30 p-3 rounded-lg flex justify-between items-center"><code id="payment-number" class="text-xl font-bold tracking-wider">${method.number}</code><button id="copy-payment-number-btn" class="bg-gray-600 hover:bg-gray-700 w-10 h-10 rounded-md flex items-center justify-center transition-colors"><i class="fa-solid fa-copy"></i></button></div></div><div class="bg-[#1e1e1e] border border-gray-700 rounded-xl p-4 space-y-4"><div><label for="payment-amount" class="form-label">টাকার পরিমাণ (Min: ${MIN_DEPOSIT} - Max: ${MAX_DEPOSIT})</label><input type="number" id="payment-amount" class="form-input" placeholder="e.g., 500" required></div><div><label for="payment-trxid" class="form-label">ট্রানজেকশন আইডি (TrxID)</label><input type="text" id="payment-trxid" class="form-input" placeholder="e.g., 9C4B8A71D3" required></div><div><label class="form-label">প্রুফ হিসেবে স্ক্রিনশট দিন (Optional)</label><div class="relative"><img id="screenshot-preview" class="hidden w-full h-auto object-cover rounded-lg mb-2 border-2 border-gray-600"><label for="payment-screenshot" class="w-full"><input type="file" id="payment-screenshot" class="hidden" accept="image/*"><div id="file-label" class="form-input text-gray-400 cursor-pointer flex justify-center items-center gap-2"><i class="fa-solid fa-cloud-arrow-up"></i> <span>Select Screenshot</span></div></label></div></div></div><div class="bg-red-900/50 border border-red-700 rounded-xl p-3 text-center text-xs text-red-300 mt-4"><i class="fa-solid fa-triangle-exclamation mr-1"></i><strong>সতর্কতা:</strong> কোনো ভুল বা মিথ্যা তথ্য দিলে আপনার একাউন্ট ব্যান করা হতে পারে।</div><div class="fixed bottom-0 left-0 w-full p-4 bg-[#121212]/80 backdrop-blur-sm border-t border-gray-800"><div id="payment-swipe-confirm" class="swipe-container"><div class="swipe-track"></div><div class="swipe-handle"><i class="fa-solid fa-chevron-right text-white"></i><i class="fa-solid fa-chevron-right text-white -ml-2"></i></div><div class="swipe-text">জমা দেওয়ার জন্য সোয়াইপ করুন</div></div></div></div>`;
                 document.getElementById('copy-payment-number-btn').addEventListener('click', () => { navigator.clipboard.writeText(method.number).then(() => showModal('success', 'নম্বর কপি হয়েছে!', `${method.number} নম্বরটি আপনার ক্লিপবোর্ডে কপি করা হয়েছে।`)); });
                 document.getElementById('payment-screenshot').addEventListener('change', e => { const file = e.target.files[0]; const preview = document.getElementById('screenshot-preview'); if (file) { currentPaymentData.proofFile = file; document.getElementById('file-label').innerHTML = `<i class="fa-solid fa-check text-green-400"></i> <span class="text-white">${file.name}</span>`; const reader = new FileReader(); reader.onload = (event) => { preview.src = event.target.result; preview.classList.remove('hidden'); }; reader.readAsDataURL(file); } else { preview.classList.add('hidden'); } });
-                const swipeContainer = document.getElementById('payment-swipe-confirm'), handle = swipeContainer.querySelector('.swipe-handle'), track = swipeContainer.querySelector('.swipe-track'), text = swipeContainer.querySelector('.swipe-text');
-                let isDragging = false, startX, currentX;
-                const onDragStart = (e) => { isDragging = true; startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX; handle.style.transition = 'none'; track.style.transition = 'none'; };
-                const onDragMove = (e) => { if (!isDragging) return; e.preventDefault(); currentX = (e.type === 'touchmove' ? e.touches[0].clientX : e.clientX) - startX; const max = swipeContainer.offsetWidth - handle.offsetWidth - 12; let newPos = Math.max(0, Math.min(currentX, max)); handle.style.transform = `translateX(${newPos}px)`; track.style.width = `${newPos + handle.offsetWidth / 2}px`; text.style.opacity = 1 - (newPos / max); };
-                const onDragEnd = async () => {
-                    if (!isDragging) return; isDragging = false; const max = swipeContainer.offsetWidth - handle.offsetWidth - 12; let shouldReset = true;
-                    if (currentX > max * 0.8) {
-                        const amount = parseFloat(document.getElementById('payment-amount').value);
-                        const trxId = document.getElementById('payment-trxid').value.trim().toUpperCase();
-                        const snapshot = await database.ref('deposits').orderByChild('trxId').equalTo(trxId).once('value');
-                        if (isNaN(amount) || !trxId) { showModal('error', 'তথ্য প্রয়োজন', 'অনুগ্রহ করে টাকার পরিমাণ এবং ট্রানজেকশন আইডি সঠিকভাবে দিন।');
-                        } else if (amount < MIN_DEPOSIT || amount > MAX_DEPOSIT) { showModal('error', 'সীমা অতিক্রম করেছে', `আপনি সর্বনিম্ন ${MIN_DEPOSIT} টাকা এবং সর্বোচ্চ ${MAX_DEPOSIT} টাকা জমা দিতে পারবেন।`);
-                        } else if (snapshot.exists()) { showModal('error', 'ডুপ্লিকেট ট্রানজেকশন', 'এই ট্রানজেকশন আইডি আগে ব্যবহার করা হয়েছে। অনুগ্রহ করে সঠিক তথ্য দিন।');
-                        } else { currentPaymentData.amount = amount; currentPaymentData.trxId = trxId; renderPaymentConfirmation(); shouldReset = false; }
+                initSwipeToConfirm(async (resetSwipe) => {
+                    const amount = parseFloat(document.getElementById('payment-amount').value);
+                    const trxId = document.getElementById('payment-trxid').value.trim().toUpperCase();
+                    const snapshot = await database.ref('deposits').orderByChild('trxId').equalTo(trxId).once('value');
+                    if (isNaN(amount) || !trxId) {
+                        showModal('error', 'তথ্য প্রয়োজন', 'অনুগ্রহ করে টাকার পরিমাণ এবং ট্রানজেকশন আইডি সঠিকভাবে দিন।');
+                        resetSwipe();
+                    } else if (amount < MIN_DEPOSIT || amount > MAX_DEPOSIT) {
+                        showModal('error', 'সীমা অতিক্রম করেছে', `আপনি সর্বনিম্ন ${MIN_DEPOSIT} টাকা এবং সর্বোচ্চ ${MAX_DEPOSIT} টাকা জমা দিতে পারবেন।`);
+                        resetSwipe();
+                    } else if (snapshot.exists()) {
+                        showModal('error', 'ডুপ্লিকেট ট্রানজেকশন', 'এই ট্রানজেকশন আইডি আগে ব্যবহার করা হয়েছে। অনুগ্রহ করে সঠিক তথ্য দিন।');
+                        resetSwipe();
+                    } else {
+                        currentPaymentData.amount = amount;
+                        currentPaymentData.trxId = trxId;
+                        renderPaymentConfirmation();
                     }
-                    if(shouldReset){ handle.style.transition = 'transform 0.3s ease'; track.style.transition = 'width 0.3s ease'; handle.style.transform = 'translateX(0px)'; track.style.width = '0px'; text.style.opacity = 1; }
-                };
-                handle.addEventListener('mousedown', onDragStart); handle.addEventListener('touchstart', onDragStart, { passive: true });
-                document.addEventListener('mousemove', onDragMove); document.addEventListener('touchmove', onDragMove, { passive: false });
-                document.addEventListener('mouseup', onDragEnd); document.addEventListener('touchend', onDragEnd);
+                });
             }
 
             async function renderWithdrawForm(methodKey) {
@@ -2078,26 +2555,25 @@
                 if (todayWithdrawals.length >= WITHDRAW_LIMIT_PER_DAY) { showModal('error', 'দৈনিক সীমা পূর্ণ', `আপনি আজ ইতিমধ্যে ${WITHDRAW_LIMIT_PER_DAY} বার টাকা উত্তোলন করেছেন। অনুগ্রহ করে আগামীকাল আবার চেষ্টা করুন।`, 'ঠিক আছে', () => startWithdrawFlow()); return; }
                 currentPaymentData = { type: 'withdraw', method: method.name, methodKey: methodKey }; const contentArea = document.getElementById('payment-content-area'); contentArea.scrollTop = 0; backFromPaymentBtn.onclick = () => renderPaymentMethodSelection('withdraw');
                 contentArea.innerHTML = `<div class="max-w-md mx-auto pb-24"><div class="text-center mb-6"><img src="${method.logo}" class="w-20 h-20 mx-auto mb-2 object-contain"><h2 class="text-2xl font-bold">Withdraw to ${method.name}</h2></div><div class="bg-[#1e1e1e] border border-gray-700 rounded-xl p-4 space-y-4"><div><label for="payment-amount" class="form-label">টাকার পরিমাণ (Min: ${MIN_WITHDRAW} - Max: ${MAX_WITHDRAW})</label><input type="number" id="payment-amount" class="form-input" placeholder="e.g., 300" required></div><div><label for="account-number" class="form-label">আপনার ${method.name} একাউন্ট নম্বর</label><input type="tel" id="account-number" class="form-input" placeholder="e.g., 01xxxxxxxxx" required></div></div><div class="bg-blue-900/50 border border-blue-700 rounded-xl p-3 text-center text-xs text-blue-300 mt-4"><i class="fa-solid fa-info-circle mr-1"></i>আপনার অনুরোধটি ২৪ ঘণ্টার মধ্যে প্রসেস করা হবে।</div><div class="fixed bottom-0 left-0 w-full p-4 bg-[#121212]/80 backdrop-blur-sm border-t border-gray-800"><div id="payment-swipe-confirm" class="swipe-container"><div class="swipe-track"></div><div class="swipe-handle"><i class="fa-solid fa-chevron-right text-white"></i><i class="fa-solid fa-chevron-right text-white -ml-2"></i></div><div class="swipe-text">উত্তোলনের জন্য সোয়াইপ করুন</div></div></div></div>`;
-                const swipeContainer = document.getElementById('payment-swipe-confirm'), handle = swipeContainer.querySelector('.swipe-handle'), track = swipeContainer.querySelector('.swipe-track'), text = swipeContainer.querySelector('.swipe-text');
-                let isDragging = false, startX, currentX;
-                const onDragStart = (e) => { isDragging = true; startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX; handle.style.transition = 'none'; track.style.transition = 'none'; };
-                const onDragMove = (e) => { if (!isDragging) return; e.preventDefault(); currentX = (e.type === 'touchmove' ? e.touches[0].clientX : e.clientX) - startX; const max = swipeContainer.offsetWidth - handle.offsetWidth - 12; let newPos = Math.max(0, Math.min(currentX, max)); handle.style.transform = `translateX(${newPos}px)`; track.style.width = `${newPos + handle.offsetWidth / 2}px`; text.style.opacity = 1 - (newPos / max); };
-                const onDragEnd = () => {
-                    if (!isDragging) return; isDragging = false; const max = swipeContainer.offsetWidth - handle.offsetWidth - 12; let shouldReset = true;
-                    if (currentX > max * 0.8) {
-                        const amount = parseFloat(document.getElementById('payment-amount').value);
-                        const accountNumber = document.getElementById('account-number').value.trim();
-                        const currentBalance = currentUserData.wallet?.live || 0;
-                        if (isNaN(amount) || !accountNumber) { showModal('error', 'তথ্য প্রয়োজন', 'অনুগ্রহ করে টাকার পরিমাণ এবং আপনার একাউন্ট নম্বর সঠিকভাবে দিন।');
-                        } else if (amount > currentBalance) { showModal('error', 'অপর্যাপ্ত ব্যালেন্স', `আপনার একাউন্টে পর্যাপ্ত ব্যালেন্স নেই। আপনার বর্তমান ব্যালেন্স ${currentBalance.toFixed(2)} টাকা।`);
-                        } else if (amount < MIN_WITHDRAW || amount > MAX_WITHDRAW) { showModal('error', 'সীমা অতিক্রম করেছে', `আপনি সর্বনিম্ন ${MIN_WITHDRAW} টাকা এবং সর্বোচ্চ ${MAX_WITHDRAW} টাকা উত্তোলন করতে পারবেন।`);
-                        } else { currentPaymentData.amount = amount; currentPaymentData.accountNumber = accountNumber; renderPaymentConfirmation(); shouldReset = false; }
+                initSwipeToConfirm((resetSwipe) => {
+                    const amount = parseFloat(document.getElementById('payment-amount').value);
+                    const accountNumber = document.getElementById('account-number').value.trim();
+                    const currentBalance = currentUserData.wallet?.live || 0;
+                    if (isNaN(amount) || !accountNumber) {
+                        showModal('error', 'তথ্য প্রয়োজন', 'অনুগ্রহ করে টাকার পরিমাণ এবং আপনার একাউন্ট নম্বর সঠিকভাবে দিন।');
+                        resetSwipe();
+                    } else if (amount > currentBalance) {
+                        showModal('error', 'অপর্যাপ্ত ব্যালেন্স', `আপনার একাউন্টে পর্যাপ্ত ব্যালেন্স নেই। আপনার বর্তমান ব্যালেন্স ${currentBalance.toFixed(2)} টাকা।`);
+                        resetSwipe();
+                    } else if (amount < MIN_WITHDRAW || amount > MAX_WITHDRAW) {
+                        showModal('error', 'সীমা অতিক্রম করেছে', `আপনি সর্বনিম্ন ${MIN_WITHDRAW} টাকা এবং সর্বোচ্চ ${MAX_WITHDRAW} টাকা উত্তোলন করতে পারবেন।`);
+                        resetSwipe();
+                    } else {
+                        currentPaymentData.amount = amount;
+                        currentPaymentData.accountNumber = accountNumber;
+                        renderPaymentConfirmation();
                     }
-                    if(shouldReset){ handle.style.transition = 'transform 0.3s ease'; track.style.transition = 'width 0.3s ease'; handle.style.transform = 'translateX(0px)'; track.style.width = '0px'; text.style.opacity = 1; }
-                };
-                handle.addEventListener('mousedown', onDragStart); handle.addEventListener('touchstart', onDragStart, { passive: true });
-                document.addEventListener('mousemove', onDragMove); document.addEventListener('touchmove', onDragMove, { passive: false });
-                document.addEventListener('mouseup', onDragEnd); document.addEventListener('touchend', onDragEnd);
+                });
             }
 
             function renderPaymentConfirmation() {
@@ -2141,7 +2617,7 @@
                     const withdrawId = database.ref('withdrawals').push().key;
                     await database.ref('withdrawals/' + withdrawId).set({ id: withdrawId, userId: auth.currentUser.uid, userName: currentUserData.name, method, amount, accountNumber, timestamp: new Date().toISOString(), status: 'pending' });
                     hideLoader(); screens.payment.classList.add('hidden'); navigateToPage('wallet-content'); showNavBar();
-                    showCustomModal({ type: 'success', title: 'অনুরোধ সফল হয়েছে', message: 'আপনার টাকা উত্তোলনের অনুরোধটি পাঠানো হয়েছে। এটি ২৪ ঘণ্টার মধ্যে প্রসেস করা হবে।', primaryButton: { text: 'ঠিক আছে' } });
+                    showCustomModal({ type: 'success', title: 'অনুরোধ সফল হয়েছে', message: 'আপনার টাকা উত্তোলনের অনুরোধটি ২৪ ঘণ্টার মধ্যে প্রসেস করা হবে।', primaryButton: { text: 'ঠিক আছে' } });
                 } catch (error) { await database.ref(`users/${auth.currentUser.uid}/wallet/live`).set(currentUserData.wallet?.live || 0); hideLoader(); handleFirebaseError(error); renderPaymentConfirmation(); }
             }
 
@@ -2170,12 +2646,6 @@
                                     <div>
                                         <p class="font-semibold text-white text-sm">${post.creatorName}</p>
                                         <p class="text-xs text-gray-400">${timeAgo(post.timestamp)}</p>
-                                    </div>
-                                </div>
-                                <div class="relative group report-dropdown-trigger">
-                                    <button class="text-gray-300 w-8 h-8 flex items-center justify-center rounded-full"><i class="fa-solid fa-ellipsis-vertical"></i></button>
-                                    <div class="absolute right-0 bottom-full mb-2 w-48 bg-[#2a2a2a] border border-gray-700 rounded-md shadow-lg z-20 hidden group-hover:block report-dropdown-menu">
-                                        <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 report-btn" data-type="guildPost" data-id="${post.id}">Report Post</a>
                                     </div>
                                 </div>
                             </div>
@@ -2544,12 +3014,6 @@
                                     <p class="text-xs text-gray-400">${timeAgo(post.timestamp)}</p>
                                 </div>
                             </div>
-                            <div class="relative group report-dropdown-trigger">
-                                <button class="text-gray-400 w-8 h-8 flex items-center justify-center rounded-full"><i class="fa-solid fa-ellipsis-vertical"></i></button>
-                                <div class="absolute right-0 mt-2 w-48 bg-[#2a2a2a] border border-gray-700 rounded-md shadow-lg z-20 hidden group-hover:block report-dropdown-menu">
-                                    <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 report-btn" data-type="playerSquadPost" data-id="${post.id}">Report Post</a>
-                                </div>
-                            </div>
                          </div>
                         <p class="text-gray-300 text-sm whitespace-pre-wrap leading-relaxed">${post.description}</p>
                         <button class="w-full mt-4 py-2.5 rounded-lg bg-green-600/20 text-green-300 border border-green-600/50 font-bold text-sm hover:bg-green-600/40 transition-colors">Contact User</button>
@@ -2624,39 +3088,163 @@
                 });
             }
             
-            function showReportModal(type, id) {
-                const reportModal = screens.reportModal;
-                reportModal.classList.remove('hidden');
-                document.getElementById('dashboard-screen').classList.add('blur-it');
+            function setupSidebar() {
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('sidebar-overlay');
+                const toggleBtn = document.getElementById('sidebar-toggle');
+                const closeSidebar = () => {
+                    sidebar.classList.remove('open');
+                    overlay.classList.add('hidden');
+                };
+                toggleBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    sidebar.classList.add('open');
+                    overlay.classList.remove('hidden');
+                });
+                overlay.addEventListener('click', closeSidebar);
                 
-                const form = document.getElementById('report-form'); form.reset();
-                form.querySelector('#report-type').value = type; form.querySelector('#report-id').value = id;
-                let subtitle = '';
-                if(type === 'user') subtitle = `You are reporting user ID: ${id}`;
-                else if (type === 'eventPost') subtitle = `You are reporting event post ID: ${id}`;
-                else if (type === 'guildPost') subtitle = `You are reporting guild post ID: ${id}`;
-                else if (type === 'playerSquadPost') subtitle = `You are reporting a player/squad post.`;
-                document.getElementById('report-modal-subtitle').textContent = subtitle;
+                document.getElementById('sidebar-profile-header').addEventListener('click', () => {
+                    closeSidebar();
+                    navigateToPage('profile-content');
+                    setActiveNavItem(document.getElementById('nav-profile'));
+                });
+
+                const comingSoonItems = ['sidebar-stream-stats', 'sidebar-leaderboard', 'sidebar-my-channel', 'sidebar-monetize'];
+                comingSoonItems.forEach(id => {
+                    document.getElementById(id)?.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        closeSidebar();
+                        navigateToPage('coming-soon-content');
+                        setActiveNavItem(null);
+                    });
+                });
+                
+                document.getElementById('sidebar-store').addEventListener('click', () => {
+                     closeSidebar();
+                     navigateToPage('home-content');
+                     setTimeout(() => {
+                        document.querySelector('.home-tab-link[data-target="home-store-feed"]').click();
+                     }, 100);
+                });
+                
+                document.getElementById('sidebar-history').addEventListener('click', () => {
+                    closeSidebar();
+                    navigateToPage('history-content');
+                    setActiveNavItem(null);
+                });
+
+                document.getElementById('sidebar-redeem').addEventListener('click', () => {
+                    closeSidebar();
+                    navigateToPage('redeem-content');
+                    setActiveNavItem(null);
+                });
+
+                document.getElementById('sidebar-coupons').addEventListener('click', () => {
+                    closeSidebar();
+                    navigateToPage('my-coupons-content');
+                    setActiveNavItem(null);
+                });
             }
 
-            function setupReportModalListeners() {
-                document.getElementById('close-report-modal').addEventListener('click', () => { screens.reportModal.classList.add('hidden'); document.getElementById('dashboard-screen').classList.remove('blur-it'); });
-                document.getElementById('report-form').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    const form = e.target;
-                    handleFormSubmit(form, 'Submitting...', async () => {
-                        const images = form.querySelector('#report-images').files;
-                        if(images.length < 2 || images.length > 5) throw new Error('Please upload between 2 and 5 images as evidence.');
-                        let imageUrls = [];
-                        for(const file of images) {
-                            const uploadResult = await uploadImage(file, 'reports');
-                            if(!uploadResult) throw new Error('Failed to upload one or more images.');
-                            imageUrls.push(uploadResult.url);
+            function renderMyCouponsPage() {
+                const container = document.getElementById('my-coupons-content');
+                const coupons = Object.values(currentUserData.myCoupons || {});
+                const now = Date.now();
+                const threeDaysAgo = now - (3 * 24 * 60 * 60 * 1000);
+
+                giftCardTimers.forEach(clearInterval);
+                giftCardTimers = [];
+
+                const visibleCoupons = coupons.filter(c => {
+                    if (c.scratched) { return new Date(c.scratchedAt).getTime() > threeDaysAgo; }
+                    return true;
+                });
+                
+                if (visibleCoupons.length === 0) {
+                    container.innerHTML = `<p class="text-center text-gray-400 mt-8">You have no gift cards yet. Claim your daily reward or invite friends to earn them!</p>`;
+                    return;
+                }
+                
+                const cardImages = {
+                    'Daily Reward': 'https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Levelup%2F9c96c050d71780c9117555ebdc2c5471.jpg?alt=media&token=0dc9f743-826d-449e-a13f-060086a4f84f',
+                    'Sign-up Bonus': 'https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Levelup%2F9c96c050d71780c9117555ebdc2c5471.jpg?alt=media&token=0dc9f743-826d-449e-a13f-060086a4f84f',
+                    'Referral Bonus': 'https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Levelup%2F9c96c050d71780c9117555ebdc2c5471.jpg?alt=media&token=0dc9f743-826d-449e-a13f-060086a4f84f',
+                    'Match Reward': 'https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Levelup%2FAddText_11-10-09.22.31.png?alt=media&token=f9ae0a65-1ef3-49cb-8b95-bf30854a4554'
+                };
+                
+                const couponsHTML = visibleCoupons.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt)).map((coupon, index) => {
+                    let cardImage;
+                    const expiresAt = new Date(coupon.expiresAt).getTime();
+                    const isExpired = expiresAt < now;
+                    let cardClass = '';
+                    let footerHTML = '';
+
+                    // MODIFICATION: Logic for showing claimed card image
+                    if (coupon.scratched) {
+                        cardClass = 'gift-card-claimed';
+                        footerHTML = ``; // No footer for claimed cards
+                        // If it's claimed and not a "bad luck" card, use the reward image
+                        if (coupon.reward && coupon.reward.type !== 'bad_luck' && coupon.reward.image) {
+                            cardImage = coupon.reward.image;
+                        } else {
+                             // Fallback for bad luck or if image is missing
+                            cardImage = coupon.storeCardId 
+                                ? window.dbData.admin?.store?.giftCards?.[coupon.storeCardId]?.image || cardImages['Daily Reward']
+                                : cardImages[coupon.reason] || cardImages['Daily Reward'];
                         }
-                        const reportData = { reporterId: auth.currentUser.uid, reportType: form.querySelector('#report-type').value, reportedId: form.querySelector('#report-id').value, reason: form.querySelector('#report-reason').value, details: form.querySelector('#report-details').value.trim(), videoLink: form.querySelector('#report-video-link').value.trim(), imageUrls, timestamp: new Date().toISOString(), status: 'pending' };
-                        await database.ref('reports').push().set(reportData);
-                        screens.reportModal.classList.add('hidden'); document.getElementById('dashboard-screen').classList.remove('blur-it');
-                        showModal('success', 'Report Submitted', 'Thank you for your report. Our team will review it shortly.');
+                    } else { // Unclaimed card logic
+                        cardImage = coupon.storeCardId 
+                            ? window.dbData.admin?.store?.giftCards?.[coupon.storeCardId]?.image || cardImages['Daily Reward']
+                            : cardImages[coupon.reason] || cardImages['Daily Reward'];
+                        
+                        if (isExpired) {
+                            cardClass = 'opacity-50 cursor-default';
+                            footerHTML = `<div class="card-footer" style="background: #ef4444; color: white;">Expired</div>`;
+                        } else {
+                            footerHTML = `<div class="card-footer" data-countdown-id="${coupon.id}" data-expires-at="${coupon.expiresAt}">Calculating...</div>`;
+                        }
+                    }
+                    
+                    return `<div class="gift-card-preview" style="background-image: url('${cardImage}');" data-coupon-id="${coupon.id}">
+                                <div class="${cardClass}"></div>
+                                ${footerHTML}
+                            </div>`;
+                }).join('');
+                
+                container.innerHTML = `<div class="gift-card-grid">${couponsHTML}</div>`;
+
+                container.querySelectorAll('[data-countdown-id]').forEach(footer => {
+                    const expiresAt = new Date(footer.dataset.expiresAt).getTime();
+                    
+                    const updateTimer = () => {
+                        const timeLeft = expiresAt - Date.now();
+                        if (timeLeft <= 0) {
+                            footer.textContent = 'Expired';
+                            footer.style.backgroundColor = '#ef4444';
+                            footer.closest('.gift-card-preview').querySelector('div:first-child').classList.add('opacity-50', 'cursor-default');
+                            clearInterval(timer);
+                            return;
+                        }
+                        const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+                        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+                        footer.textContent = `Expires in: ${String(hours).padStart(2,'0')}:${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
+                    };
+                    
+                    updateTimer();
+                    const timer = setInterval(updateTimer, 1000);
+                    giftCardTimers.push(timer);
+                });
+
+
+                container.querySelectorAll('.gift-card-preview').forEach(card => {
+                    card.addEventListener('click', (e) => {
+                        if (card.querySelector('.gift-card-claimed') || card.querySelector('.opacity-50')) return;
+                        const couponId = card.dataset.couponId;
+                        const coupon = currentUserData.myCoupons[couponId];
+                        if (coupon) {
+                            showGiftCardOpenModal(coupon);
+                        }
                     });
                 });
             }
@@ -2675,17 +3263,531 @@
             });
             document.getElementById('home-search-input').addEventListener('input', handleHomeSearch);
 
+            function updateSidebarBadges(userData) {
+                const unreadCoupons = Object.values(userData.myCoupons || {}).filter(c => !c.scratched && new Date(c.expiresAt).getTime() > Date.now()).length;
+                const couponBadge = document.getElementById('sidebar-coupons-badge');
+                if (unreadCoupons > 0) {
+                    couponBadge.textContent = unreadCoupons;
+                    couponBadge.classList.remove('hidden');
+                } else {
+                    couponBadge.classList.add('hidden');
+                }
+            }
+            
+            async function handleDailyRewardClaim() {
+                const btn = document.getElementById('claim-scratch-card-btn');
+                if(btn.disabled) return;
+                btn.disabled = true;
+                btn.innerHTML = `<span class="spinner"></span> Claiming...`;
+                try {
+                    await giveScratchCard(auth.currentUser.uid, { reason: 'Daily Reward' });
+                    await database.ref(`users/${auth.currentUser.uid}/lastScratchClaim`).set(Date.now());
+                    showModal('success', 'Reward Claimed!', 'A new Gift Card has been added to your collection.', 'OK', () => {
+                        navigateToPage('my-coupons-content');
+                    });
+                } catch(err) {
+                    handleFirebaseError(err);
+                    btn.disabled = false;
+                    btn.innerHTML = 'Claim Daily Reward';
+                }
+            }
 
-            async function deletePostAsAdmin(postType, postId, reason) {
-                 const postRef = database.ref(`/${postType}/${postId}`);
+            function updateDailyRewardUI(userData) {
+                const lastClaim = userData.lastScratchClaim || 0;
+                const now = Date.now();
+                const twentyFourHours = 24 * 60 * 60 * 1000;
+                const timeSinceLastClaim = now - lastClaim;
+
+                const btn = document.getElementById('claim-scratch-card-btn');
+                const timerEl = document.getElementById('claim-cooldown-timer');
+                if(!btn || !timerEl) return;
+
+                clearInterval(dailyRewardInterval);
+
+                if (timeSinceLastClaim >= twentyFourHours) {
+                    btn.disabled = false;
+                    btn.innerHTML = 'Claim Daily Reward';
+                    timerEl.classList.add('hidden');
+                } else {
+                    btn.disabled = true;
+                    btn.innerHTML = 'Claimed Today';
+                    timerEl.classList.remove('hidden');
+                    
+                    const updateTimer = () => {
+                        const timeLeft = twentyFourHours - (Date.now() - lastClaim);
+                        if (timeLeft <= 0) {
+                            clearInterval(dailyRewardInterval);
+                            updateDailyRewardUI(currentUserData); // Re-run to update UI state
+                            return;
+                        }
+                        const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+                        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+                        timerEl.textContent = `Next claim in: ${String(hours).padStart(2,'0')}:${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
+                    };
+                    
+                    updateTimer();
+                    dailyRewardInterval = setInterval(updateTimer, 1000);
+                }
+            }
+
+            function renderMissionsPage() {
+                const container = document.getElementById('home-missions-feed');
+                container.innerHTML = `<div id="daily-reward-section" class="mt-4 bg-gradient-to-br from-gray-800 to-gray-900 p-6 rounded-2xl text-center border-2 border-yellow-500/50 shadow-lg max-w-sm mx-auto">
+                    <img src="https://i.imgur.com/lAjg29D.png" class="w-24 h-24 mx-auto mb-3">
+                    <h3 class="text-2xl font-bold text-yellow-300 mb-2">Daily Reward</h3>
+                    <p class="text-gray-400 mb-4 text-sm">Claim a free gift card every 24 hours!</p>
+                    <button id="claim-scratch-card-btn" class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 px-4 rounded-lg text-base transition-all duration-200 shadow-lg disabled:bg-gray-600 disabled:text-gray-300 disabled:cursor-not-allowed flex items-center justify-center h-[48px]">
+                        Claim Daily Reward
+                    </button>
+                    <div id="claim-cooldown-timer" class="hidden mt-3 text-base text-gray-300 font-mono"></div>
+                </div>`;
+                updateDailyRewardUI(currentUserData);
+                document.getElementById('claim-scratch-card-btn').addEventListener('click', handleDailyRewardClaim);
+            }
+            async function renderStorePage(){
+                const container = document.getElementById('home-store-feed');
+                const giftCardItems = window.dbData.admin?.store?.giftCards || {};
+                const topupItems = window.dbData.admin?.store?.topups || {};
+
+                const topupDiamondsHTML = Object.entries(topupItems).filter(([id, item]) => item.type === 'diamond').map(([id, item]) => createTopupCardHTML(id, item)).join('');
+                const giftCardsHTML = Object.entries(giftCardItems).map(([id, card]) => createGiftCardStoreHTML(id, card)).join('');
+
+                container.innerHTML = `<div class="space-y-6">
+                    <div><h3 class="section-header">TOP-UP DIAMONDS</h3><div class="horizontal-scroll-container no-scrollbar">${topupDiamondsHTML || '<p class="text-gray-500 w-full text-center">No diamond top-ups available.</p>'}</div></div>
+                    <div><h3 class="section-header">GIFT CARDS</h3><div class="horizontal-scroll-container no-scrollbar">${giftCardsHTML || '<p class="text-gray-500 w-full text-center">No gift cards available.</p>'}</div></div>
+                </div>`;
+
+                container.querySelectorAll('.buy-store-card-btn').forEach(btn => btn.addEventListener('click', () => handleGiftCardPurchase(btn.dataset.cardId, btn)));
+                container.querySelectorAll('.buy-topup-btn').forEach(btn => btn.addEventListener('click', () => handleTopupPurchase(btn.dataset.topupId, btn)));
+            }
+
+            function createGiftCardStoreHTML(id, card) {
+                 const userCoins = currentUserData.wallet?.coins || 0;
+                 const isStockOut = card.stock <= 0;
+                 const canAfford = userCoins >= card.price;
+                 return `
+                    <div class="store-item-h">
+                        <img src="${card.image}" class="store-item-h-image" alt="${card.name}">
+                        ${isStockOut ? `<div class="absolute inset-0 bg-black/70 flex items-center justify-center"><span class="font-bold text-red-500">Stock Out</span></div>` : ''}
+                        <div class="store-item-h-content">
+                            <button class="store-item-h-button action-button buy-store-card-btn" data-card-id="${id}" ${isStockOut || !canAfford ? 'disabled' : ''}>
+                                <i class="fa-solid fa-coins"></i><span>${formatNumberCompact(card.price)}</span>
+                            </button>
+                        </div>
+                    </div>`;
+            }
+
+            function createTopupCardHTML(id, item) {
+                const userCoins = currentUserData.wallet?.coins || 0;
+                const isStockOut = item.stockOut === true;
+                const canAfford = userCoins >= item.price;
+                const icon = item.type === 'diamond' ? 'fa-gem text-cyan-400' : 'fa-coins text-yellow-400';
+
+                return `
+                <div class="store-item-h">
+                    <img src="${item.image}" class="store-item-h-image" alt="${item.amount} ${item.type}">
+                    ${isStockOut ? `<div class="absolute inset-0 bg-black/70 flex items-center justify-center"><span class="font-bold text-red-500">Stock Out</span></div>` : ''}
+                    <div class="store-item-h-content">
+                        <h4 class="store-item-h-title"><i class="fa-solid ${icon} mr-1"></i>${item.amount} ${item.type === 'diamond' ? 'Diamonds' : 'Coins'}</h4>
+                        <button class="store-item-h-button action-button buy-topup-btn" data-topup-id="${id}" ${isStockOut || !canAfford ? 'disabled' : ''}>
+                           <i class="fa-solid fa-coins"></i><span>${formatNumberCompact(item.price)}</span>
+                        </button>
+                    </div>
+                </div>`;
+            }
+
+            function handleGiftCardPurchase(cardId, btn) {
+                const card = window.dbData.admin?.store?.giftCards?.[cardId];
+                if (!card || btn.disabled) return;
+                
+                showCustomModal({
+                    title: 'Confirm Purchase',
+                    message: `
+                        <div class="text-center p-4">
+                            <img src="${card.image}" class="w-48 h-auto object-cover rounded-xl mx-auto mb-4 border-2 border-gray-600">
+                            <p class="text-gray-300 text-base">Are you sure you want to buy this gift card for <span class="font-bold text-yellow-400">${card.price} Coins</span>?</p>
+                        </div>`,
+                    primaryButton: {
+                        text: 'Confirm & Buy',
+                        onClick: async () => {
+                            btn.disabled = true;
+                            showLoader('Purchasing...');
+                            try {
+                                const result = await database.ref().transaction(data => {
+                                    if (data && data.users[auth.currentUser.uid] && data.admin.store.giftCards[cardId].stock > 0 && data.users[auth.currentUser.uid].wallet.coins >= card.price) {
+                                        data.admin.store.giftCards[cardId].stock--;
+                                        data.users[auth.currentUser.uid].wallet.coins -= card.price;
+                                        if (!data.users[auth.currentUser.uid].storePurchaseCounters) {
+                                            data.users[auth.currentUser.uid].storePurchaseCounters = {};
+                                        }
+                                        data.users[auth.currentUser.uid].storePurchaseCounters[cardId] = (data.users[auth.currentUser.uid].storePurchaseCounters[cardId] || 0) + 1;
+                                        return data;
+                                    }
+                                    return; // Abort
+                                });
+
+                                if (result.committed) {
+                                    await giveScratchCard(auth.currentUser.uid, { reason: 'Store Purchase', storeCardId: cardId });
+                                    hideLoader();
+                                    showModal('success', 'Purchase Successful!', `A new gift card has been added to your collection.`, 'OK', () => { navigateToPage('my-coupons-content'); });
+                                } else {
+                                    throw new Error('Transaction aborted. Item might be out of stock or you may not have enough coins.');
+                                }
+                            } catch (error) {
+                                hideLoader();
+                                handleFirebaseError(error);
+                                btn.disabled = false;
+                            }
+                        }
+                    },
+                    secondaryButton: { text: 'Cancel' }
+                });
+            }
+
+            async function deletePostAsAdmin(postTypeRef, postId, reason) {
+                 const postRef = database.ref(`/${postTypeRef}/${postId}`);
                  const postSnapshot = await postRef.once('value');
                  const post = postSnapshot.val();
                  if (post) {
                      await postRef.remove();
-                     const mail = { id: Date.now(), type: 'post_deleted', subject: 'Your Post Was Removed', body: { postTitle: post.guildName || 'Player/Squad Post', reason: reason || 'Violation of community guidelines.' }, timestamp: new Date().toISOString(), read: false };
-                     await database.ref(`users/${post.creatorId}/mailbox/${mail.id}`).set(mail);
+                     const postTitle = post.details?.eventName || post.guildName || 'Player/Squad Post';
+                     await sendMailToUser(post.creatorId, 'Your Post Was Removed', { reason: reason || 'Violation of community guidelines.', postTitle: postTitle });
                  }
             }
+
+            async function showGiftCardOpenModal(coupon) {
+                const modal = screens.giftCardOpen;
+                let cardImage;
+                if(coupon.storeCardId) {
+                    cardImage = window.dbData.admin?.store?.giftCards?.[coupon.storeCardId]?.image || 'https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Levelup%2F9c96c050d71780c9117555ebdc2c5471.jpg?alt=media&token=0dc9f743-826d-449e-a13f-060086a4f84f';
+                } else {
+                    cardImage = 'https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Levelup%2F9c96c050d71780c9117555ebdc2c5471.jpg?alt=media&token=0dc9f743-826d-449e-a13f-060086a4f84f';
+                }
+                
+                modal.innerHTML = `
+                    <div class="modal-box">
+                        <button class="close-card-modal-btn">&times;</button>
+                        <div class="gift-card-open-modal-content">
+                            <div class="gift-card-flipper">
+                                <div class="gift-card-face card-front" style="background-image: url('${cardImage}');"></div>
+                                <div class="gift-card-face card-back"></div>
+                            </div>
+                        </div>
+                        <div class="text-center mt-6">
+                            <button class="open-card-btn">OPEN</button>
+                        </div>
+                    </div>`;
+                modal.classList.remove('hidden');
+
+                const closeModal = () => {
+                    modal.classList.add('hidden');
+                    modal.innerHTML = '';
+                };
+
+                modal.querySelector('.close-card-modal-btn').addEventListener('click', closeModal);
+                
+                const openBtn = modal.querySelector('.open-card-btn');
+                openBtn.addEventListener('click', async () => {
+                    if(openBtn.disabled) return;
+                    openBtn.disabled = true;
+                    openBtn.style.opacity = '0';
+                    openBtn.style.pointerEvents = 'none';
+
+                    // Ensure reward is generated and saved if it doesn't exist
+                    let reward = coupon.reward;
+                    if (!reward) {
+                        reward = generateReward(coupon);
+                        await database.ref(`users/${auth.currentUser.uid}/myCoupons/${coupon.id}/reward`).set(reward);
+                        currentUserData.myCoupons[coupon.id].reward = reward;
+                    }
+
+                    // Preload the reward image for a smoother reveal
+                    if (reward.image) {
+                        preloadImages([reward.image]);
+                    }
+
+                    const flipper = modal.querySelector('.gift-card-flipper');
+                    flipper.classList.add('is-flipped');
+
+                    // After flip animation
+                    setTimeout(async () => {
+                        const cardBack = modal.querySelector('.card-back');
+                        
+                        // MODIFICATION: Logic to show full prize card image or bad luck message
+                        if (reward.type === 'bad_luck') {
+                            cardBack.style.backgroundImage = 'radial-gradient(circle, #374151, #1f2937)';
+                            cardBack.innerHTML = `<i class="bad-luck-icon fa-solid fa-face-frown"></i>
+                                                  <p class="bad-luck-text">Better Luck Next Time!</p>`;
+                        } else {
+                            cardBack.style.backgroundImage = `url('${reward.image || "https://i.imgur.com/8x8eFqg.jpg"}')`;
+                            // The card-back already has background-size: contain, so it will show the full image.
+                            // No innerHTML is needed as the image is the background itself.
+                            cardBack.innerHTML = ''; 
+                        }
+                        
+                        const rect = cardBack.getBoundingClientRect();
+                        const origin = { x: (rect.left + rect.width / 2) / window.innerWidth, y: (rect.top + rect.height / 2) / window.innerHeight };
+                        if (reward.type !== 'bad_luck') {
+                            confetti({ particleCount: 150, spread: 100, origin: origin, zIndex: 1003 });
+                        }
+
+                        if (!coupon.scratched) {
+                            if (reward.type !== 'bad_luck') {
+                                 await addTransaction(auth.currentUser.uid, { type: 'Gift Card Reward', description: `From ${coupon.reason || 'Gift Card'}`, amount: reward.value, currency: reward.type });
+                                 if (reward.type === 'coin') { await database.ref(`users/${auth.currentUser.uid}/wallet/coins`).transaction(current => (current || 0) + reward.value); } 
+                                 else if (reward.type === 'diamond') { await database.ref(`users/${auth.currentUser.uid}/wallet/diamonds`).transaction(current => (current || 0) + reward.value); }
+                            }
+                            await database.ref(`users/${auth.currentUser.uid}/myCoupons/${coupon.id}`).update({ scratched: true, scratchedAt: new Date().toISOString() });
+                        }
+
+                        setTimeout(closeModal, reward.type === 'bad_luck' ? 2000 : 3000);
+                        
+                    }, 400); // Halfway through the flip
+                }, { once: true });
+            }
+
+            function handleTopupPurchase(topupId, btn) {
+                 const item = window.dbData.admin?.store?.topups?.[topupId];
+                 if (!item || btn.disabled) return;
+                
+                 showCustomModal({
+                    title: 'Confirm Purchase',
+                    message: `
+                        <div class="text-center p-4">
+                            <img src="${item.image}" class="w-48 h-auto object-cover rounded-xl mx-auto mb-4 border-2 border-gray-600">
+                            <p class="text-gray-300 text-base">Are you sure you want to buy <span class="font-bold text-white">${item.amount} Diamonds</span> for <span class="font-bold text-yellow-400">${item.price} Coins</span>?</p>
+                        </div>`,
+                    primaryButton: { 
+                        text: 'Confirm & Buy', 
+                        onClick: () => {
+                           showTopupPurchaseModal(item, topupId, btn);
+                        }
+                    },
+                    secondaryButton: { text: 'Cancel' }
+                 });
+            }
+
+            function generateRedeemCode(amount) {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                let result = '';
+                for (let i = 0; i < 7; i++) {
+                    result += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return `LEVELUP-DIAMOND${amount}-${result}`;
+            }
+
+            async function submitTopupPurchase(item, topupId, btn) {
+                const redeemCode = generateRedeemCode(item.amount);
+                
+                const updates = {};
+                updates[`/users/${auth.currentUser.uid}/wallet/coins`] = firebase.database.ServerValue.increment(-item.price);
+                updates[`/redeemCodes/${redeemCode}`] = {
+                    itemId: topupId,
+                    amount: item.amount,
+                    type: item.type,
+                    createdAt: firebase.database.ServerValue.TIMESTAMP,
+                    ownerId: auth.currentUser.uid,
+                    used: false
+                };
+
+                const userTransactionRef = database.ref(`users/${auth.currentUser.uid}/transactions`).push();
+                updates[`/users/${auth.currentUser.uid}/transactions/${userTransactionRef.key}`] = {
+                    id: userTransactionRef.key,
+                    type: 'Top-up Purchase',
+                    description: `Bought ${item.amount} Diamonds`,
+                    amount: -item.price,
+                    currency: 'coin',
+                    redeemCode: redeemCode,
+                    status: 'completed',
+                    timestamp: new Date().toISOString()
+                };
+
+                try {
+                    await database.ref().update(updates);
+                    return redeemCode;
+                } catch (error) {
+                    // Rollback coin deduction if update fails
+                    await database.ref(`users/${auth.currentUser.uid}/wallet/coins`).transaction(current => (current || 0) + item.price);
+                    handleFirebaseError(error);
+                    btn.disabled = false;
+                    return null;
+                }
+            }
+            
+            async function showTopupPurchaseModal(item, topupId, btn) {
+                const modal = screens.topupPurchase;
+                btn.disabled = true;
+
+                modal.innerHTML = `
+                <div class="modal-box p-6 flex flex-col items-center">
+                    <div class="w-24 h-24 mb-4">
+                        <dotlottie-wc src="https://lottie.host/808b26f5-072f-4c59-b17b-232d665a3962/qYI7k2RGvS.lottie" autoplay loop></dotlottie-wc>
+                    </div>
+                    <h3 class="font-bold text-2xl text-green-400">Purchase Successful!</h3>
+                    <p class="text-sm text-gray-400 mt-2 mb-4">Your Redeem Code is ready.</p>
+                    <div class="redeem-code-wrapper">
+                        <p id="redeem-code-display" class="redeem-code-text text-center"></p>
+                    </div>
+                    <button id="copy-redeem-code-btn" class="w-full mt-6 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg text-sm flex items-center justify-center gap-2 transition-all duration-200">
+                        <i class="fa-solid fa-copy"></i> Copy Code
+                    </button>
+                    <button id="close-topup-modal-btn" class="mt-3 text-gray-400 hover:text-white text-sm">Close</button>
+                </div>`;
+                modal.classList.remove('hidden');
+
+                const redeemCode = await submitTopupPurchase(item, topupId, btn);
+                if (!redeemCode) {
+                    modal.classList.add('hidden');
+                    return;
+                }
+                
+                document.getElementById('redeem-code-display').textContent = redeemCode;
+                
+                const copyBtn = document.getElementById('copy-redeem-code-btn');
+                copyBtn.addEventListener('click', () => {
+                    navigator.clipboard.writeText(redeemCode).then(() => {
+                        copyBtn.innerHTML = `<i class="fa-solid fa-check"></i> Code Copied!`;
+                        copyBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
+                        copyBtn.classList.add('bg-blue-600');
+                        setTimeout(() => {
+                            copyBtn.innerHTML = `<i class="fa-solid fa-copy"></i> Copy Code`;
+                            copyBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+                            copyBtn.classList.remove('bg-blue-600');
+                        }, 2000);
+                    });
+                });
+                
+                document.getElementById('close-topup-modal-btn').addEventListener('click', () => {
+                     modal.classList.add('hidden');
+                });
+            }
+            
+            function renderRedeemPage() {
+                const container = document.getElementById('redeem-content');
+                container.innerHTML = `
+                    <div class="bg-gradient-to-br from-[#2a2a2a] to-[#1e1e1e] border border-gray-700 rounded-2xl p-6 text-center max-w-sm mx-auto shadow-2xl">
+                        <i class="fa-solid fa-gift text-6xl text-green-400 mb-4"></i>
+                        <h3 class="text-2xl font-bold font-oswald text-green-300 mb-2">REDEEM CODE</h3>
+                        <p class="text-gray-400 mb-6 text-sm">Enter the code from your top-up purchase to claim your diamonds.</p>
+                        <form id="redeem-form" class="space-y-4">
+                            <input type="text" id="redeem-code-input" class="form-input text-center tracking-widest font-mono uppercase bg-black/30 border-gray-600 focus:border-green-500" placeholder="LEVELUP-DIAMOND..." required>
+                            <button type="submit" class="w-full py-3 action-button rounded-lg font-bold">REDEEM NOW</button>
+                        </form>
+                    </div>
+                `;
+                document.getElementById('redeem-form').addEventListener('submit', handleRedeemCode);
+            }
+
+            async function handleRedeemCode(e) {
+                e.preventDefault();
+                const form = e.target;
+                const code = document.getElementById('redeem-code-input').value.trim().toUpperCase();
+
+                handleFormSubmit(form, 'Redeeming...', async () => {
+                    const codeRef = database.ref(`redeemCodes/${code}`);
+                    const result = await codeRef.transaction(codeData => {
+                        if (codeData && codeData.ownerId === auth.currentUser.uid && !codeData.used) {
+                            codeData.used = true;
+                            codeData.usedAt = firebase.database.ServerValue.TIMESTAMP;
+                            return codeData;
+                        }
+                        return; // Abort
+                    });
+
+                    if (result.committed) {
+                        const redeemedData = result.snapshot.val();
+                        await database.ref(`users/${auth.currentUser.uid}/wallet/diamonds`).transaction(current => (current || 0) + redeemedData.amount);
+                        
+                        await addTransaction(auth.currentUser.uid, {
+                            type: 'Redeem Code',
+                            description: `Redeemed ${redeemedData.amount} Diamonds`,
+                            amount: redeemedData.amount,
+                            currency: 'diamond'
+                        });
+                        
+                        showCustomModal({
+                            type: 'success',
+                            title: 'Success!',
+                            message: `You have successfully redeemed ${redeemedData.amount} Diamonds!`,
+                            iconHtml: `<dotlottie-wc src="https://lottie.host/808b26f5-072f-4c59-b17b-232d665a3962/qYI7k2RGvS.lottie" autoplay style="width: 150px; height: 150px;"></dotlottie-wc>`,
+                            primaryButton: {text: 'Awesome!'},
+                            autoClose: 3000
+                        });
+                        form.reset();
+
+                    } else {
+                        const snapshot = await codeRef.once('value');
+                        const data = snapshot.val();
+                        if (!data) throw new Error('Invalid code. Please check and try again.');
+                        if (data.ownerId !== auth.currentUser.uid) throw new Error('This code does not belong to you.');
+                        if (data.used) throw new Error('This code has already been used.');
+                        throw new Error('An unknown error occurred. Please try again.');
+                    }
+                });
+            }
+
+            async function renderHistoryPage() {
+                 const contentArea = document.getElementById('history-content');
+                 let transactions = [];
+
+                 const depositsSnapshot = await database.ref('deposits').orderByChild('userId').equalTo(auth.currentUser.uid).once('value');
+                 Object.values(depositsSnapshot.val() || {}).forEach(t => transactions.push({ ...t, txType: 'Deposit', sortTimestamp: t.timestamp }));
+
+                 const withdrawalsSnapshot = await database.ref('withdrawals').orderByChild('userId').equalTo(auth.currentUser.uid).once('value');
+                 Object.values(withdrawalsSnapshot.val() || {}).forEach(t => transactions.push({ ...t, txType: 'Withdrawal', sortTimestamp: t.timestamp }));
+
+                 const userTransactionsSnapshot = await database.ref(`users/${auth.currentUser.uid}/transactions`).once('value');
+                 Object.values(userTransactionsSnapshot.val() || {}).forEach(t => transactions.push({ ...t, txType: 'General', sortTimestamp: t.timestamp }));
+                
+                 transactions.sort((a, b) => new Date(b.sortTimestamp) - new Date(a.sortTimestamp));
+
+                 const transactionsHTML = transactions.map(t => {
+                     let amountHTML, description, title, status;
+                     status = t.status || 'completed';
+
+                     switch(t.txType) {
+                         case 'Deposit':
+                             title = `Deposit via ${t.method}`;
+                             description = `TrxID: ${t.trxId || 'N/A'}`;
+                             amountHTML = `<p class="font-bold text-lg text-green-400">+${t.amount.toFixed(2)} TK</p>`;
+                             break;
+                         case 'Withdrawal':
+                             title = `Withdrawal to ${t.method}`;
+                             description = `Acc: ${t.accountNumber}`;
+                             amountHTML = `<p class="font-bold text-lg text-red-400">${-t.amount.toFixed(2)} TK</p>`;
+                             break;
+                         case 'General':
+                             title = t.type;
+                             description = t.redeemCode ? `Code: ${t.redeemCode}` : t.description;
+                             if (t.currency) {
+                                 const icon = t.currency === 'coin' ? 'fa-coins text-yellow-400' : 'fa-gem text-cyan-400';
+                                 const isCredit = !String(t.amount).startsWith('-');
+                                 amountHTML = `<p class="font-bold text-lg ${isCredit ? '' : 'text-red-400'}"><i class="fa-solid ${icon} mr-1"></i>${t.amount}</p>`;
+                             } else {
+                                const isCredit = t.amount > 0;
+                                amountHTML = `<p class="font-bold text-lg ${isCredit ? 'text-green-400' : 'text-red-400'}">${isCredit ? '+' : ''}${t.amount.toFixed(2)} TK</p>`;
+                             }
+                             break;
+                     }
+                     
+                     const statusColors = { pending: 'bg-yellow-500', approved: 'bg-green-500', completed: 'bg-green-500', rejected: 'bg-red-500' };
+                     const statusText = status.charAt(0).toUpperCase() + status.slice(1);
+                     const statusBadge = `<span class="text-xs font-semibold px-2 py-1 ${statusColors[status]} text-white rounded-full ml-2">${statusText}</span>`;
+
+                     return `<div class="flex justify-between items-center p-3 bg-[#2a2a2a] rounded-lg">
+                                <div>
+                                    <p class="font-semibold text-sm flex items-center">${title}${statusBadge}</p>
+                                    <p class="text-xs text-gray-400">${description}</p>
+                                    <p class="text-xs text-gray-500 mt-1">${new Date(t.timestamp).toLocaleString()}</p>
+                                </div>
+                                ${amountHTML}
+                            </div>`;
+                 }).join('');
+
+                 contentArea.innerHTML = `<div class="space-y-2">${transactions.length > 0 ? transactionsHTML : '<p class="text-center text-gray-500 p-4">No transactions found.</p>'}</div>`;
+            }
+
         });
     </script>
 </body>
