@@ -16,7 +16,7 @@
         .screen.hidden { opacity: 0; transform: scale(1.05); pointer-events: none; }
         .auth-view { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; position: absolute; top: 0; left: 0; padding: 1rem; transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out; opacity: 0; transform: scale(0.95); pointer-events: none; }
         .auth-view.active { opacity: 1; transform: scale(1); pointer-events: auto; }
-        #modal-screen, #forgot-password-modal, #booking-screen, #participant-list-screen, #results-submission-screen, #sponsor-profile-screen, #payment-screen, #guild-post-form-screen, #guild-application-screen, #user-profile-screen, #player-squad-post-form-screen, #loading-overlay, #gift-card-open-modal, #topup-purchase-modal, #redeem-task-screen { z-index: 1000; background-color: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); }
+        #modal-screen, #forgot-password-modal, #booking-screen, #participant-list-screen, #results-submission-screen, #sponsor-profile-screen, #payment-screen, #guild-post-form-screen, #guild-application-screen, #user-profile-screen, #player-squad-post-form-screen, #loading-overlay, #gift-card-open-modal, #topup-purchase-modal, #redeem-task-screen, #partner-screen { z-index: 1000; background-color: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); }
         #ad-view-screen { z-index: 1001; background-color: #121212; padding: 0;}
         .modal-box { background-color: #242428; border: 1px solid #3a3a3a; box-shadow: 0 15px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05) inset; max-width: 380px; width: 90%; border-radius: 1.5rem; }
         .input-field { background-color: #121212; box-shadow: inset 6px 6px 12px #0c0c0c, inset -6px -6px 12px #1a1a1a; transition: box-shadow 0.2s ease; }
@@ -110,10 +110,6 @@
         .payment-method-btn { background-color: #2a2a2a; border: 1px solid #3a3a3a; transition: all 0.2s ease; }
         .payment-method-btn:hover { background-color: #3a3a3a; transform: translateY(-2px); border-color: #1DB954; }
         .payment-method-img { width: 48px; height: 48px; object-fit: contain; border-radius: 0.75rem; margin-right: 1rem; }
-        .hold-confirm-btn { width: 120px; height: 120px; border-radius: 50%; background-color: #2a2a2a; border: 4px solid #3a3a3a; display: flex; align-items: center; justify-content: center; flex-direction: column; cursor: pointer; position: relative; overflow: hidden; user-select: none; -webkit-user-select: none; touch-action: none; transition: all 0.2s ease; }
-        .hold-confirm-btn:hover { border-color: #1DB954; transform: scale(1.05); }
-        .hold-progress-ring { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
-        .hold-progress-circle { stroke-dasharray: 352; stroke-dashoffset: 352; transition: stroke-dashoffset: 0.1s linear; stroke: #1DB954; stroke-width: 8px; fill: transparent; }
         .user-profile-stat { background-color: #2a2a2a; border: 1px solid #3a3a3a; border-radius: 0.75rem; padding: 1rem; text-align: center; }
         .user-profile-stat-value { font-size: 1.5rem; font-weight: bold; font-family: 'Oswald', sans-serif; }
         .user-profile-stat-label { font-size: 0.75rem; color: #a1a1aa; text-transform: uppercase; margin-top: 0.25rem; }
@@ -237,6 +233,8 @@
         .task-action-btn:disabled {
             background-color: #4b5563;
             cursor: not-allowed;
+            font-size: 0.75rem;
+            padding: 0.5rem 1rem;
         }
 
     </style>
@@ -282,7 +280,7 @@
                 <span>Gift Cards</span>
                 <span id="sidebar-coupons-badge" class="absolute top-2 right-2 w-5 h-5 bg-red-600 text-white text-xs font-bold rounded-full flex items-center justify-center hidden">0</span>
             </a>
-            <a id="sidebar-partner" href="https://levelupevent.netlify.app/" target="_blank" class="sidebar-menu-item"><div class="icon-bg bg-green-500/20"><i class="fa-solid fa-handshake-simple text-green-300"></i></div><span class="text-green-400 font-bold">Join a Partner</span></a>
+            <a id="sidebar-partner" class="sidebar-menu-item"><div class="icon-bg bg-green-500/20"><i class="fa-solid fa-handshake-simple text-green-300"></i></div><span class="text-green-400 font-bold">Join a Partner</span></a>
             <a id="sidebar-my-channel" class="sidebar-menu-item"><div class="icon-bg bg-indigo-500/20"><i class="fa-solid fa-tv text-indigo-300"></i></div><span>My channel</span></a>
             <a id="sidebar-monetize" class="sidebar-menu-item"><div class="icon-bg bg-yellow-600/20"><i class="fa-solid fa-sack-dollar text-yellow-500"></i></div><span>Monetize Earning</span></a>
         </nav>
@@ -691,6 +689,53 @@
         <div id="redeem-task-content" class="w-full h-full bg-[#121212] text-white overflow-y-auto no-scrollbar relative p-4 md:p-6 pb-28"></div>
     </div>
 
+    <!-- NEW Partner Screen -->
+    <div id="partner-screen" class="screen hidden !p-0 justify-start">
+        <div class="w-full h-full bg-[#121212] text-white overflow-y-auto no-scrollbar relative">
+            <header class="sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
+                <button id="back-from-partner-screen" class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <h2 class="text-xl font-bold">একজন পার্টনার হন</h2>
+                <div class="w-10"></div>
+            </header>
+            <div class="p-6 space-y-6">
+                <div class="text-center">
+                    <img src="https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/dfdc00fc6bb93771364bbf5000dad222.jpg?alt=media&token=ff33f08b-1b2e-424e-b636-f664d8044bed" alt="LEVEL UP Logo" class="w-24 h-24 rounded-full mx-auto border-4 border-green-500 mb-4">
+                    <h1 class="text-3xl font-bold font-oswald text-green-400">LEVEL UP পার্টনার প্রোগ্রামে স্বাগতম!</h1>
+                    <p class="text-gray-400 mt-2">আপনার গেমিং ইভেন্টগুলো আয়োজন করুন এবং আয় করুন আমাদের সাথে।</p>
+                </div>
+
+                <div class="bg-[#1e1e1e] p-4 rounded-xl border border-gray-700">
+                    <h3 class="font-bold text-lg text-white mb-3">আমাদের পার্টনার হলে কী কী সুবিধা পাবেন?</h3>
+                    <ul class="space-y-3 text-gray-300 text-sm">
+                        <li class="flex items-start"><i class="fa-solid fa-check-circle text-green-400 mt-1 mr-3"></i><span>সহজেই টুর্নামেন্ট বা ম্যাচ পোস্ট করতে পারবেন।</span></li>
+                        <li class="flex items-start"><i class="fa-solid fa-check-circle text-green-400 mt-1 mr-3"></i><span>অংশগ্রহণকারীদের তালিকা এবং ফলাফল স্বয়ংক্রিয়ভাবে ম্যানেজ করতে পারবেন।</span></li>
+                        <li class="flex items-start"><i class="fa-solid fa-check-circle text-green-400 mt-1 mr-3"></i><span>আপনার ইভেন্টের জন্য পেমেন্ট গ্রহণ এবং বিজয়ীদের পুরস্কার প্রদান সহজ হবে।</span></li>
+                        <li class="flex items-start"><i class="fa-solid fa-check-circle text-green-400 mt-1 mr-3"></i><span>আপনার আয়ের সম্পূর্ণ হিসাব এবং স্টেটমেন্ট দেখতে পারবেন।</span></li>
+                        <li class="flex items-start"><i class="fa-solid fa-check-circle text-green-400 mt-1 mr-3"></i><span>বিশেষ ভেরিফাইড ব্যাজ পেয়ে বিশ্বস্ততা অর্জন করতে পারবেন।</span></li>
+                    </ul>
+                </div>
+
+                <div class="bg-[#1e1e1e] p-4 rounded-xl border border-gray-700">
+                    <h3 class="font-bold text-lg text-white mb-3">কিভাবে শুরু করবেন?</h3>
+                    <p class="text-sm text-gray-300 mb-4">আমাদের স্পনসর প্যানেলে রেজিস্টার করতে নিচের ধাপগুলো অনুসরণ করুন:</p>
+                    <ol class="space-y-3 text-gray-300 text-sm">
+                        <li><span class="font-bold text-green-400">১. লিঙ্ক কপি করুন:</span> নিচের লিঙ্কটি কপি করুন।</li>
+                         <div class="bg-black/30 p-3 my-2 rounded-lg flex justify-between items-center">
+                            <code id="partner-link-text" class="text-sm text-gray-300 truncate">https://levelupbd.gamer.gd/</code>
+                            <button id="copy-partner-link-btn" class="bg-gray-600 hover:bg-gray-700 w-10 h-10 rounded-md flex items-center justify-center transition-colors flex-shrink-0 ml-2"><i class="fa-solid fa-copy"></i></button>
+                        </div>
+                        <li><span class="font-bold text-green-400">২. ব্রাউজারে খুলুন:</span> কপি করা লিঙ্কটি আপনার ফোনের যেকোনো ব্রাউজারে (যেমন Chrome) ওপেন করুন।</li>
+                        <li><span class="font-bold text-green-400">৩. অ্যাপ ডাউনলোড করুন:</span> ওয়েবসাইটে দেওয়া নির্দেশনা অনুযায়ী "আয়োজক হতে চাই " অ্যাপটি ডাউনলোড ও ইন্সটল করুন।</li>
+                        <li><span class="font-bold text-green-400">৪. রেজিস্টার করুন:</span> Sponsor অ্যাপটি খুলে একজন আয়োজক হিসেবে রেজিস্টার করুন।</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <!-- Modals -->
     <div id="modal-screen" class="screen hidden !justify-center"></div>
     <div id="forgot-password-modal" class="screen hidden !justify-center"><div class="modal-box p-6 text-white text-center flex flex-col items-center relative"><button id="close-forgot-modal" class="absolute top-3 right-4 text-gray-400 hover:text-white text-2xl">&times;</button><h3 class="text-2xl font-bold mb-2">Reset Password</h3><p class="text-gray-300 text-sm mb-6">Enter your email and we'll send you a reset link.</p><form id="forgot-password-form" class="w-full"><div class="relative flex items-center w-full input-field rounded-xl mb-4"><i class="fa-solid fa-envelope absolute left-5 text-gray-400"></i><input id="forgot-email-input" type="email" placeholder="Your Email Address" required class="w-full bg-transparent pl-12 pr-5 py-3 text-white placeholder-gray-400 border-none rounded-xl focus:outline-none"></div><button type="submit" class="w-full py-3 rounded-xl action-button text-base flex items-center justify-center h-[44px]">Send Reset Link</button></form></div></div>
@@ -946,7 +991,7 @@
                 'https://i.imgur.com/8x8eFqg.jpg' // Default reward background
             ]);
 
-            const screens = { splash: document.getElementById('splash-screen'), auth: document.getElementById('auth-container'), dashboard: document.getElementById('dashboard-screen'), modal: document.getElementById('modal-screen'), forgot: document.getElementById('forgot-password-modal'), booking: document.getElementById('booking-screen'), participants: document.getElementById('participant-list-screen'), results: document.getElementById('results-submission-screen'), sponsorProfile: document.getElementById('sponsor-profile-screen'), userProfile: document.getElementById('user-profile-screen'), payment: document.getElementById('payment-screen'), guildPostForm: document.getElementById('guild-post-form-screen'), guildApplication: document.getElementById('guild-application-screen'), playerSquadPostForm: document.getElementById('player-squad-post-form-screen'), giftCardOpen: document.getElementById('gift-card-open-modal'), topupPurchase: document.getElementById('topup-purchase-modal'), adView: document.getElementById('ad-view-screen'), redeemTask: document.getElementById('redeem-task-screen') };
+            const screens = { splash: document.getElementById('splash-screen'), auth: document.getElementById('auth-container'), dashboard: document.getElementById('dashboard-screen'), modal: document.getElementById('modal-screen'), forgot: document.getElementById('forgot-password-modal'), booking: document.getElementById('booking-screen'), participants: document.getElementById('participant-list-screen'), results: document.getElementById('results-submission-screen'), sponsorProfile: document.getElementById('sponsor-profile-screen'), userProfile: document.getElementById('user-profile-screen'), payment: document.getElementById('payment-screen'), guildPostForm: document.getElementById('guild-post-form-screen'), guildApplication: document.getElementById('guild-application-screen'), playerSquadPostForm: document.getElementById('player-squad-post-form-screen'), giftCardOpen: document.getElementById('gift-card-open-modal'), topupPurchase: document.getElementById('topup-purchase-modal'), adView: document.getElementById('ad-view-screen'), redeemTask: document.getElementById('redeem-task-screen'), partner: document.getElementById('partner-screen') };
             const authViews = { login: document.getElementById('login-view'), signup: document.getElementById('signup-view') };
             const navContainer = document.querySelector('.nav-container');
             let isInitialAuthCheck = true, currentUserData = null;
@@ -1789,7 +1834,7 @@
                 const userTrigger = e.target.closest('.user-profile-trigger');
                 const verifiedBadge = e.target.closest('.verification-badge');
 
-                if (verifiedBadge) { e.preventDefault(); e.stopPropagation(); const badgeIndex = parseInt(verifiedBadge.dataset.badgeIndex); let badgeTitle = 'ভেরিফাইড স্পনসর'; let badgeDescription = 'এটি এডমিন দ্বারা নির্ধারিত একটি বিশেষ ব্যাজ।'; if (badgeIndex === 0) { badgeDescription = 'সে তার পার্সোনাল ডকুমেন্টস, NID ছবি দিয়ে ভেরিফাইড। তাই কোনো দ্বিধা ছাড়া ম্যাচ নিতে পারেন।'; } else if (badgeIndex === 1) { badgeDescription = 'সে NID ইত্যাদি দিয়ে ভেরিফাইড এবং বিশ্বস্ততার সাথে ৫০০ টির বেশি ইভেন্ট বা ম্যাচ সম্পন্ন করেছে।'; } showModal('success', badgeTitle, badgeDescription, 'ঠিক আছে'); return; }
+                if (verifiedBadge) { e.preventDefault(); e.stopPropagation(); const badgeIndex = parseInt(verifiedBadge.dataset.badgeIndex); let badgeTitle = 'BEST T2 TEAM'; let badgeDescription = 'এটি এডমিন দ্বারা নির্ধারিত একটি বিশেষ ব্যাজ।।'; if (badgeIndex === 0) { badgeDescription = 'সে তার পার্সোনাল ডকুমেন্টস, NID ছবি দিয়ে ভেরিফাইড। তাই কোনো দ্বিধা ছাড়া ম্যাচ নিতে পারেন।'; } else if (badgeIndex === 1) { badgeDescription = 'সে NID ইত্যাদি দিয়ে ভেরিফাইড এবং বিশ্বস্ততার সাথে ৫০০ টির বেশি ইভেন্ট বা ম্যাচ সম্পন্ন করেছে।'; } showModal('success', badgeTitle, badgeDescription, 'ঠিক আছে'); return; }
 
                 if (bookBtn && !bookBtn.disabled) { 
                     hideNavBar();
@@ -1900,14 +1945,10 @@
                     handle.style.transform = 'translateX(0px)';
                     track.style.width = '0px';
                     if (text) text.style.opacity = 1;
-                };
-
-                const onDragStart = (e) => {
-                    isDragging = true;
-                    startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
-                    handle.style.transition = 'none';
-                    track.style.transition = 'none';
-                    handle.style.cursor = 'grabbing';
+                    setTimeout(() => {
+                        handle.style.transition = 'none';
+                        track.style.transition = 'none';
+                    }, 300);
                 };
 
                 const onDragMove = (e) => {
@@ -1920,11 +1961,17 @@
                     track.style.width = `${newTranslate + handle.offsetWidth / 2}px`;
                     if (text) text.style.opacity = 1 - (newTranslate / maxTranslate);
                 };
-
+                
                 const onDragEnd = () => {
                     if (!isDragging) return;
                     isDragging = false;
                     handle.style.cursor = 'grab';
+
+                    document.removeEventListener('mousemove', onDragMove);
+                    document.removeEventListener('touchmove', onDragMove);
+                    document.removeEventListener('mouseup', onDragEnd);
+                    document.removeEventListener('touchend', onDragEnd);
+                    
                     const maxTranslate = swipeContainer.offsetWidth - handle.offsetWidth - 12;
 
                     if (currentX > maxTranslate * 0.8) {
@@ -1933,21 +1980,30 @@
                         if (text) text.style.opacity = 0;
                         
                         if (onConfirm) {
-                            onConfirm(resetSwipe); // Pass reset function so it can be called on failure
+                            onConfirm(resetSwipe);
                         } else {
-                            handleBookingConfirmation(); // Default action
+                            handleBookingConfirmation();
                         }
                     } else {
                         resetSwipe();
                     }
                 };
+
+                const onDragStart = (e) => {
+                    isDragging = true;
+                    startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+                    handle.style.transition = 'none';
+                    track.style.transition = 'none';
+                    handle.style.cursor = 'grabbing';
+                    
+                    document.addEventListener('mousemove', onDragMove);
+                    document.addEventListener('touchmove', onDragMove, { passive: false });
+                    document.addEventListener('mouseup', onDragEnd);
+                    document.addEventListener('touchend', onDragEnd);
+                };
                 
                 handle.addEventListener('mousedown', onDragStart);
                 handle.addEventListener('touchstart', onDragStart, { passive: true });
-                document.addEventListener('mousemove', onDragMove);
-                document.addEventListener('touchmove', onDragMove, { passive: false });
-                document.addEventListener('mouseup', onDragEnd, { once: true }); // Use once to auto-remove
-                document.addEventListener('touchend', onDragEnd, { once: true });
             }
             
             function initMyMatchesPage() { const container = document.getElementById('my-matches-content'); if (!container) return; const tabs = container.querySelectorAll('.my-matches-tab'); const sections = container.querySelectorAll('.tab-content-section'); tabs.forEach(tab => { tab.addEventListener('click', () => { if (tab.classList.contains('active-tab')) return; tabs.forEach(t => t.classList.remove('active-tab')); sections.forEach(s => s.classList.remove('active-section')); tab.classList.add('active-tab'); document.getElementById(tab.dataset.target)?.classList.add('active-section'); }); }); if (!container.querySelector('.active-tab')) { tabs[0]?.classList.add('active-tab'); sections[0]?.classList.add('active-section'); } }
@@ -2597,7 +2653,7 @@
                     } else {
                         currentPaymentData.amount = amount;
                         currentPaymentData.trxId = trxId;
-                        renderPaymentConfirmation();
+                        submitDepositRequest();
                     }
                 });
             }
@@ -2626,25 +2682,9 @@
                     } else {
                         currentPaymentData.amount = amount;
                         currentPaymentData.accountNumber = accountNumber;
-                        renderPaymentConfirmation();
+                        submitWithdrawRequest();
                     }
                 });
-            }
-
-            function renderPaymentConfirmation() {
-                const { type, method, methodKey, amount, trxId, accountNumber, proofFile } = currentPaymentData;
-                const isDeposit = type === 'deposit';
-                const contentArea = document.getElementById('payment-content-area'); contentArea.scrollTop = 0; backFromPaymentBtn.onclick = () => { if (isDeposit) { renderDepositForm(methodKey); } else { renderWithdrawForm(methodKey); } };
-                contentArea.innerHTML = `<div class="max-w-md mx-auto text-center flex flex-col items-center justify-center min-h-[calc(100vh-100px)]"><h2 class="text-2xl font-bold mb-4">আপনার অনুরোধ নিশ্চিত করুন</h2><p class="text-gray-400 mb-8">অনুগ্রহ করে নিচের তথ্যগুলো সঠিক কিনা যাচাই করুন।</p><div class="w-full text-left bg-[#1e1e1e] border border-gray-700 rounded-xl p-4 space-y-3 mb-8"><div class="flex justify-between items-center"><span class="text-gray-400">Request Type</span><span class="font-semibold">${isDeposit ? 'Deposit' : 'Withdrawal'}</span></div><div class="flex justify-between items-center"><span class="text-gray-400">Payment Method</span><span class="font-semibold">${method}</span></div><div class="flex justify-between items-center"><span class="text-gray-400">Amount</span><span class="font-semibold ${isDeposit ? 'text-green-400' : 'text-red-400'}">${amount.toFixed(2)} TK</span></div>${isDeposit ? `<div class="flex justify-between items-center"><span class="text-gray-400">Transaction ID</span><span class="font-semibold">${trxId}</span></div><div class="flex justify-between items-center"><span class="text-gray-400">Proof</span><span class="font-semibold">${proofFile ? proofFile.name : 'Not provided'}</span></div>` : `<div class="flex justify-between items-center"><span class="text-gray-400">Account Number</span><span class="font-semibold">${accountNumber}</span></div>`}</div><div id="hold-confirm-payment-btn" class="hold-confirm-btn"><svg class="hold-progress-ring" viewBox="0 0 120 120"><circle class="hold-progress-circle" r="56" cx="60" cy="60" /></svg><i class="fa-solid fa-fingerprint text-3xl text-white mb-1"></i><span class="text-xs font-semibold text-gray-300">চেপে ধরুন</span></div></div>`;
-                initHoldToConfirm();
-            }
-
-            function initHoldToConfirm() {
-                const btn = document.getElementById('hold-confirm-payment-btn'); const circle = btn.querySelector('.hold-progress-circle'); const holdDuration = 2000; let animationFrameId;
-                const startHold = () => { const startTime = Date.now(); const animate = () => { const elapsedTime = Date.now() - startTime; const progress = Math.min(elapsedTime / holdDuration, 1); circle.style.strokeDashoffset = 352 * (1 - progress); if (progress < 1) { animationFrameId = requestAnimationFrame(animate); } else { btn.style.pointerEvents = 'none'; btn.style.borderColor = '#10b981'; if (currentPaymentData.type === 'deposit') submitDepositRequest(); else if (currentPaymentData.type === 'withdraw') submitWithdrawRequest(); } }; animationFrameId = requestAnimationFrame(animate); };
-                const cancelHold = () => { cancelAnimationFrame(animationFrameId); circle.style.strokeDashoffset = 352; };
-                btn.addEventListener('mousedown', startHold); btn.addEventListener('touchstart', (e) => { e.preventDefault(); startHold(); });
-                btn.addEventListener('mouseup', cancelHold); btn.addEventListener('mouseleave', cancelHold); btn.addEventListener('touchend', cancelHold);
             }
             
             async function submitDepositRequest() {
@@ -2660,7 +2700,7 @@
                     await database.ref('deposits/' + depositId).set({ id: depositId, userId: auth.currentUser.uid, userName: currentUserData.name, method, amount, trxId, screenshotUrl, timestamp: new Date().toISOString(), status: 'pending' });
                     hideLoader(); screens.payment.classList.add('hidden'); navigateToPage('wallet-content'); showNavBar();
                     showCustomModal({ type: 'success', title: 'অনুরোধ সফল হয়েছে', message: 'আপনার জমার অনুরোধটি পর্যালোচনার জন্য পাঠানো হয়েছে। এডমিন অনুমোদন করলে আপনার ব্যালেন্সে টাকা যোগ হয়ে যাবে।', primaryButton: { text: 'ঠিক আছে' } });
-                } catch (error) { hideLoader(); handleFirebaseError(error); renderPaymentConfirmation(); }
+                } catch (error) { hideLoader(); handleFirebaseError(error); renderPaymentMethodSelection('deposit'); }
             }
             
             async function submitWithdrawRequest() {
@@ -2673,7 +2713,7 @@
                     await database.ref('withdrawals/' + withdrawId).set({ id: withdrawId, userId: auth.currentUser.uid, userName: currentUserData.name, method, amount, accountNumber, timestamp: new Date().toISOString(), status: 'pending' });
                     hideLoader(); screens.payment.classList.add('hidden'); navigateToPage('wallet-content'); showNavBar();
                     showCustomModal({ type: 'success', title: 'অনুরোধ সফল হয়েছে', message: 'আপনার টাকা উত্তোলনের অনুরোধটি ২৪ ঘণ্টার মধ্যে প্রসেস করা হবে।', primaryButton: { text: 'ঠিক আছে' } });
-                } catch (error) { await database.ref(`users/${auth.currentUser.uid}/wallet/live`).set(currentUserData.wallet?.live || 0); hideLoader(); handleFirebaseError(error); renderPaymentConfirmation(); }
+                } catch (error) { await database.ref(`users/${auth.currentUser.uid}/wallet/live`).set(currentUserData.wallet?.live || 0); hideLoader(); handleFirebaseError(error); renderPaymentMethodSelection('withdraw'); }
             }
 
             function renderHomeGuildPosts() {
@@ -3198,6 +3238,11 @@
                     closeSidebar();
                     navigateToPage('my-coupons-content');
                     setActiveNavItem(null);
+                });
+                 document.getElementById('sidebar-partner').addEventListener('click', () => {
+                    closeSidebar();
+                    screens.partner.classList.remove('hidden');
+                    renderPartnerScreen();
                 });
             }
 
@@ -4101,6 +4146,22 @@
                         throw new Error("Invalid code. Please make sure you copied the correct code.");
                     }
                  });
+            }
+
+             function renderPartnerScreen() {
+                const screen = screens.partner;
+                screen.classList.remove('hidden');
+                
+                document.getElementById('back-from-partner-screen').addEventListener('click', () => {
+                    screen.classList.add('hidden');
+                });
+
+                document.getElementById('copy-partner-link-btn').addEventListener('click', (e) => {
+                    const link = document.getElementById('partner-link-text').textContent;
+                    navigator.clipboard.writeText(link).then(() => {
+                        showModal('success', 'লিঙ্ক কপি হয়েছে!', 'লিঙ্কটি আপনার ক্লিপবোর্ডে কপি করা হয়েছে।');
+                    });
+                });
             }
 
         });
