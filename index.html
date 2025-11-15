@@ -16,8 +16,8 @@
         .screen.hidden { opacity: 0; transform: scale(1.05); pointer-events: none; }
         .auth-view { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; position: absolute; top: 0; left: 0; padding: 1rem; transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out; opacity: 0; transform: scale(0.95); pointer-events: none; }
         .auth-view.active { opacity: 1; transform: scale(1); pointer-events: auto; }
-        #modal-screen, #forgot-password-modal, #booking-screen, #participant-list-screen, #results-submission-screen, #sponsor-profile-screen, #payment-screen, #guild-post-form-screen, #guild-application-screen, #user-profile-screen, #player-squad-post-form-screen, #loading-overlay, #gift-card-open-modal, #topup-purchase-modal { z-index: 1000; background-color: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); }
-        #ad-view-screen { z-index: 1001; background-color: #121212; padding: 0;} /* New ad screen style */
+        #modal-screen, #forgot-password-modal, #booking-screen, #participant-list-screen, #results-submission-screen, #sponsor-profile-screen, #payment-screen, #guild-post-form-screen, #guild-application-screen, #user-profile-screen, #player-squad-post-form-screen, #loading-overlay, #gift-card-open-modal, #topup-purchase-modal, #redeem-task-screen { z-index: 1000; background-color: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); }
+        #ad-view-screen { z-index: 1001; background-color: #121212; padding: 0;}
         .modal-box { background-color: #242428; border: 1px solid #3a3a3a; box-shadow: 0 15px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05) inset; max-width: 380px; width: 90%; border-radius: 1.5rem; }
         .input-field { background-color: #121212; box-shadow: inset 6px 6px 12px #0c0c0c, inset -6px -6px 12px #1a1a1a; transition: box-shadow 0.2s ease; }
         .input-field:focus-within, .form-input:focus { box-shadow: inset 6px 6px 12px #0c0c0c, inset -6px -6px 12px #1a1a1a, 0 0 0 2px #1DB954 !important; outline: none; }
@@ -171,6 +171,74 @@
         .redeem-code-text { font-family: 'Courier New', Courier, monospace; font-size: 1rem; font-weight: bold; color: #6ee7b7; letter-spacing: 1px; }
         @keyframes scan-light { 0% { top: -10%; } 100% { top: 110%; } }
         .scan-overlay::after { content: ''; position: absolute; top: -10%; left: 0; width: 100%; height: 10%; background: linear-gradient(to bottom, rgba(110, 231, 183, 0), rgba(110, 231, 183, 0.5), rgba(110, 231, 183, 0)); animation: scan-light 2s ease-in-out infinite; }
+        
+        /* NEW Mission/Task Styles */
+        .task-card {
+            background-color: #28282B;
+            border-radius: 1rem;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border: 1px solid #3a3a3a;
+        }
+        .task-icon-container {
+            width: 50px;
+            height: 50px;
+            flex-shrink: 0;
+            background: linear-gradient(145deg, #2a2a2f, #232327);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            color: #3b82f6;
+            font-size: 1.5rem;
+            border: 2px solid #3b82f6;
+        }
+        .task-progress {
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #121212;
+            color: #a1a1aa;
+            font-size: 0.65rem;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 9999px;
+            border: 1px solid #3a3a3a;
+        }
+        .task-reward {
+            background-color: rgba(255, 165, 0, 0.1);
+            border: 1px solid rgba(255, 165, 0, 0.3);
+            color: #f59e0b;
+            font-weight: bold;
+            font-size: 0.8rem;
+            padding: 4px 8px;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .task-reward img { width: 16px; height: 16px; }
+        .task-action-btn {
+            background-color: #3b82f6;
+            color: white;
+            font-weight: bold;
+            padding: 0.6rem 1.5rem;
+            border-radius: 9999px;
+            transition: all 0.2s ease;
+        }
+        .task-action-btn:hover:not(:disabled) {
+            background-color: #2563eb;
+            transform: translateY(-2px);
+        }
+        .task-action-btn:disabled {
+            background-color: #4b5563;
+            cursor: not-allowed;
+        }
+
     </style>
 </head>
 <body class="overflow-hidden">
@@ -384,7 +452,7 @@
                     <div id="home-guild-feed" class="home-tab-content space-y-6 px-4"></div>
                     <div id="home-player-squad-feed" class="home-tab-content space-y-6 px-4"></div>
                     <div id="home-livestream-feed" class="home-tab-content px-4"></div>
-                    <div id="home-missions-feed" class="home-tab-content space-y-6 px-4"></div>
+                    <div id="home-missions-feed" class="home-tab-content space-y-4 px-4"></div>
                     <div id="home-store-feed" class="home-tab-content px-4"></div>
                 </div>
 
@@ -616,6 +684,11 @@
             <div class="w-10"></div>
         </header>
         <div id="payment-content-area" class="w-full h-full bg-[#121212] text-white overflow-y-auto no-scrollbar relative p-4 md:p-6"></div>
+    </div>
+
+    <!-- NEW Redeem Task Screen -->
+    <div id="redeem-task-screen" class="screen hidden !p-0 justify-start">
+        <div id="redeem-task-content" class="w-full h-full bg-[#121212] text-white overflow-y-auto no-scrollbar relative p-4 md:p-6 pb-28"></div>
     </div>
 
     <!-- Modals -->
@@ -873,13 +946,12 @@
                 'https://i.imgur.com/8x8eFqg.jpg' // Default reward background
             ]);
 
-            const screens = { splash: document.getElementById('splash-screen'), auth: document.getElementById('auth-container'), dashboard: document.getElementById('dashboard-screen'), modal: document.getElementById('modal-screen'), forgot: document.getElementById('forgot-password-modal'), booking: document.getElementById('booking-screen'), participants: document.getElementById('participant-list-screen'), results: document.getElementById('results-submission-screen'), sponsorProfile: document.getElementById('sponsor-profile-screen'), userProfile: document.getElementById('user-profile-screen'), payment: document.getElementById('payment-screen'), guildPostForm: document.getElementById('guild-post-form-screen'), guildApplication: document.getElementById('guild-application-screen'), playerSquadPostForm: document.getElementById('player-squad-post-form-screen'), giftCardOpen: document.getElementById('gift-card-open-modal'), topupPurchase: document.getElementById('topup-purchase-modal'), adView: document.getElementById('ad-view-screen') };
+            const screens = { splash: document.getElementById('splash-screen'), auth: document.getElementById('auth-container'), dashboard: document.getElementById('dashboard-screen'), modal: document.getElementById('modal-screen'), forgot: document.getElementById('forgot-password-modal'), booking: document.getElementById('booking-screen'), participants: document.getElementById('participant-list-screen'), results: document.getElementById('results-submission-screen'), sponsorProfile: document.getElementById('sponsor-profile-screen'), userProfile: document.getElementById('user-profile-screen'), payment: document.getElementById('payment-screen'), guildPostForm: document.getElementById('guild-post-form-screen'), guildApplication: document.getElementById('guild-application-screen'), playerSquadPostForm: document.getElementById('player-squad-post-form-screen'), giftCardOpen: document.getElementById('gift-card-open-modal'), topupPurchase: document.getElementById('topup-purchase-modal'), adView: document.getElementById('ad-view-screen'), redeemTask: document.getElementById('redeem-task-screen') };
             const authViews = { login: document.getElementById('login-view'), signup: document.getElementById('signup-view') };
             const navContainer = document.querySelector('.nav-container');
             let isInitialAuthCheck = true, currentUserData = null;
             let teamLogoFile = null;
             let newAvatarFile = null;
-            let dailyRewardInterval = null;
             
             const loadingOverlay = document.getElementById('loading-overlay');
             const loadingTextEl = document.getElementById('loading-text');
@@ -1189,7 +1261,8 @@
                         transactions: {},
                         storePurchaseCounters: {},
                         referralCode: generateReferralCode(),
-                        lastScratchClaim: 0
+                        lastScratchClaim: 0,
+                        missionProgress: {}
                     };
                     await database.ref('users/' + user.uid).set(newUserDbData);
                     
@@ -2223,7 +2296,7 @@
                 Object.values(userTransactions).forEach(ut => {
                      let amount = ut.amount;
                     let isReward = false;
-                    if (ut.type === 'Gift Card Reward') {
+                    if (ut.type === 'Gift Card Reward' || ut.type === 'Mission Reward') {
                          isReward = true;
                          amount = `+${ut.amount} ${ut.currency}`;
                     }
@@ -3143,7 +3216,7 @@
                 });
                 
                 if (visibleCoupons.length === 0) {
-                    container.innerHTML = `<p class="text-center text-gray-400 mt-8">You have no gift cards yet. Claim your daily reward or invite friends to earn them!</p>`;
+                    container.innerHTML = `<p class="text-center text-gray-400 mt-8">You have no gift cards yet. Complete missions to earn them!</p>`;
                     return;
                 }
                 
@@ -3161,20 +3234,17 @@
                     let cardClass = '';
                     let footerHTML = '';
 
-                    // MODIFICATION: Logic for showing claimed card image
                     if (coupon.scratched) {
                         cardClass = 'gift-card-claimed';
-                        footerHTML = ``; // No footer for claimed cards
-                        // If it's claimed and not a "bad luck" card, use the reward image
+                        footerHTML = ``;
                         if (coupon.reward && coupon.reward.type !== 'bad_luck' && coupon.reward.image) {
                             cardImage = coupon.reward.image;
                         } else {
-                             // Fallback for bad luck or if image is missing
                             cardImage = coupon.storeCardId 
                                 ? window.dbData.admin?.store?.giftCards?.[coupon.storeCardId]?.image || cardImages['Daily Reward']
                                 : cardImages[coupon.reason] || cardImages['Daily Reward'];
                         }
-                    } else { // Unclaimed card logic
+                    } else {
                         cardImage = coupon.storeCardId 
                             ? window.dbData.admin?.store?.giftCards?.[coupon.storeCardId]?.image || cardImages['Daily Reward']
                             : cardImages[coupon.reason] || cardImages['Daily Reward'];
@@ -3283,7 +3353,8 @@
                 const btn = document.getElementById('claim-scratch-card-btn');
                 const timerEl = document.getElementById('claim-cooldown-timer');
                 if(!btn || !timerEl) return;
-
+                
+                let dailyRewardInterval = null;
                 clearInterval(dailyRewardInterval);
 
                 if (timeSinceLastClaim >= twentyFourHours) {
@@ -3299,7 +3370,7 @@
                         const timeLeft = twentyFourHours - (Date.now() - lastClaim);
                         if (timeLeft <= 0) {
                             clearInterval(dailyRewardInterval);
-                            updateDailyRewardUI(currentUserData); // Re-run to update UI state
+                            renderMissionsPage(); 
                             return;
                         }
                         const hours = Math.floor(timeLeft / (1000 * 60 * 60));
@@ -3313,20 +3384,6 @@
                 }
             }
 
-            function renderMissionsPage() {
-                const container = document.getElementById('home-missions-feed');
-                container.innerHTML = `<div id="daily-reward-section" class="mt-4 bg-gradient-to-br from-gray-800 to-gray-900 p-6 rounded-2xl text-center border-2 border-yellow-500/50 shadow-lg max-w-sm mx-auto">
-                    <img src="https://i.imgur.com/lAjg29D.png" class="w-24 h-24 mx-auto mb-3">
-                    <h3 class="text-2xl font-bold text-yellow-300 mb-2">Daily Reward</h3>
-                    <p class="text-gray-400 mb-4 text-sm">Claim a free gift card every 24 hours!</p>
-                    <button id="claim-scratch-card-btn" class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 px-4 rounded-lg text-base transition-all duration-200 shadow-lg disabled:bg-gray-600 disabled:text-gray-300 disabled:cursor-not-allowed flex items-center justify-center h-[48px]">
-                        Claim Daily Reward
-                    </button>
-                    <div id="claim-cooldown-timer" class="hidden mt-3 text-base text-gray-300 font-mono"></div>
-                </div>`;
-                updateDailyRewardUI(currentUserData);
-                document.getElementById('claim-scratch-card-btn').addEventListener('click', handleDailyRewardClaim);
-            }
             async function renderStorePage(){
                 const container = document.getElementById('home-store-feed');
                 const giftCardItems = window.dbData.admin?.store?.giftCards || {};
@@ -3536,7 +3593,7 @@
                     
                     if (countdown <= 0) {
                         clearInterval(intervalId);
-                        adScreen.classList.add('hidden'); // Hide ad view
+                        adScreen.classList.add('hidden');
                         
                         let reward = coupon.reward;
                         if (!reward) {
@@ -3558,7 +3615,6 @@
                     }
                 }, 1000);
 
-                // This is a simple visibility check. If user switches tabs, it stops.
                 document.addEventListener("visibilitychange", function onVisible() {
                     if (document.visibilityState === 'hidden' && countdown > 0) {
                         clearInterval(intervalId);
@@ -3839,6 +3895,212 @@
                  }).join('');
 
                  contentArea.innerHTML = `<div class="space-y-2">${transactions.length > 0 ? transactionsHTML : '<p class="text-center text-gray-500 p-4">No transactions found.</p>'}</div>`;
+            }
+            
+            // --- NEW MISSIONS/TASKS LOGIC ---
+
+            function renderMissionsPage() {
+                const container = document.getElementById('home-missions-feed');
+                const tasks = window.dbData.admin?.missions || {};
+                
+                if (Object.keys(tasks).length === 0) {
+                    container.innerHTML = `<div class="text-center text-gray-500 p-10 bg-gray-800/50 rounded-lg"><i class="fa-solid fa-list-check text-4xl mb-4"></i><p>No missions available right now.</p></div>`;
+                    return;
+                }
+
+                const tasksHTML = Object.entries(tasks).map(([taskId, task]) => createTaskCardHTML(taskId, task)).join('');
+                container.innerHTML = tasksHTML;
+
+                container.querySelectorAll('.task-action-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const taskId = e.currentTarget.dataset.taskId;
+                        const task = tasks[taskId];
+                        if (task.type === 'watchAd') {
+                            handleWatchAdTask(taskId, task);
+                        } else if (task.type === 'redeem') {
+                            renderRedeemTaskPage(taskId, task);
+                        }
+                    });
+                });
+            }
+
+            function createTaskCardHTML(taskId, task) {
+                const userProgress = currentUserData.missionProgress?.[taskId] || { count: 0 };
+                const isCompletedToday = userProgress.lastCompleted && new Date(userProgress.lastCompleted).toDateString() === new Date().toDateString();
+
+                let iconHtml = '<i class="fa-solid fa-question"></i>';
+                if (task.icon) {
+                    iconHtml = `<i class="fa-solid ${task.icon}"></i>`;
+                }
+
+                const rewardCurrencyIcon = task.rewardType === 'diamond' 
+                    ? 'https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Levelup%2F1762763297995.png?alt=media&token=db9ebed1-ff51-49ed-a311-0327313dae56' 
+                    : 'https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Levelup%2F1762763055321.png?alt=media&token=58051d4b-446d-4a30-b588-bed5a5f49c8d';
+                
+                const buttonText = task.type === 'redeem' ? 'View' : 'Watch';
+                
+                return `
+                    <div class="task-card">
+                        <div class="task-icon-container">
+                            ${iconHtml}
+                            ${task.limit ? `<span class="task-progress">${userProgress.count}/${task.limit}</span>` : ''}
+                        </div>
+                        <div class="flex-grow">
+                            <h4 class="font-bold text-white">${task.title}</h4>
+                            <div class="task-reward mt-1">
+                                Win <img src="${rewardCurrencyIcon}" alt="${task.rewardType}">
+                                <span>${task.rewardAmount}</span>
+                            </div>
+                        </div>
+                        <button class="task-action-btn" data-task-id="${taskId}" ${isCompletedToday ? 'disabled' : ''}>
+                           ${isCompletedToday ? 'Completed' : buttonText}
+                        </button>
+                    </div>
+                `;
+            }
+
+            function handleWatchAdTask(taskId, task) {
+                const adScreen = screens.adView;
+                const totalDuration = task.duration || 30;
+                const showTimerAt = 20; // Timer becomes visible at 20 seconds remaining
+
+                let countdown = totalDuration;
+                
+                adScreen.innerHTML = `
+                    <header class="w-full p-4 bg-gray-900 flex justify-between items-center z-10 opacity-0 transition-opacity duration-500" id="ad-header">
+                        <h2 class="font-bold text-white">${task.title}</h2>
+                        <div class="flex items-center gap-2 text-white font-bold bg-black/50 px-3 py-1 rounded-full">
+                            <div class="w-4 h-4 border-2 border-white rounded-full animate-spin border-t-transparent"></div>
+                            <span id="ad-countdown-timer">${countdown}</span>s
+                        </div>
+                    </header>
+                    <iframe src="${task.url}" class="w-full flex-grow border-0"></iframe>
+                `;
+                adScreen.classList.remove('hidden');
+
+                const adHeader = document.getElementById('ad-header');
+                const timerEl = document.getElementById('ad-countdown-timer');
+                
+                const intervalId = setInterval(async () => {
+                    countdown--;
+                    if (timerEl) timerEl.textContent = countdown;
+                    
+                    if (countdown <= showTimerAt) {
+                        adHeader.classList.remove('opacity-0');
+                    }
+
+                    if (countdown <= 0) {
+                        clearInterval(intervalId);
+                        adScreen.classList.add('hidden');
+                        
+                        const userProgressRef = database.ref(`users/${auth.currentUser.uid}/missionProgress/${taskId}`);
+                        const newProgress = await userProgressRef.transaction(progress => {
+                            progress = progress || { count: 0 };
+                            progress.count++;
+                            progress.lastCompleted = new Date().toISOString();
+                            return progress;
+                        });
+
+                        // Give reward
+                        const currency = task.rewardType === 'diamond' ? 'diamonds' : 'coins';
+                        await database.ref(`users/${auth.currentUser.uid}/wallet/${currency}`).transaction(current => (current || 0) + task.rewardAmount);
+                        await addTransaction(auth.currentUser.uid, {
+                            type: 'Mission Reward',
+                            description: `Completed: ${task.title}`,
+                            amount: task.rewardAmount,
+                            currency: task.rewardType
+                        });
+
+                        showModal('success', 'Task Completed!', `You earned ${task.rewardAmount} ${task.rewardType}s.`);
+                    }
+                }, 1000);
+
+                document.addEventListener("visibilitychange", function onVisible() {
+                    if (document.visibilityState === 'hidden' && countdown > 0) {
+                        clearInterval(intervalId);
+                        adScreen.classList.add('hidden');
+                        showModal('error', 'Task Incomplete', 'You must stay on the page to complete the task. Please try again.');
+                        document.removeEventListener("visibilitychange", onVisible);
+                    } else if (countdown <= 0) {
+                        document.removeEventListener("visibilitychange", onVisible);
+                    }
+                }, { once: true });
+            }
+
+            function renderRedeemTaskPage(taskId, task) {
+                const contentArea = document.getElementById('redeem-task-content');
+                screens.redeemTask.classList.remove('hidden');
+
+                const rewardCurrencyIcon = task.rewardType === 'diamond' 
+                    ? 'https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Levelup%2F1762763297995.png?alt=media&token=db9ebed1-ff51-49ed-a311-0327313dae56' 
+                    : 'https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Levelup%2F1762763055321.png?alt=media&token=58051d4b-446d-4a30-b588-bed5a5f49c8d';
+
+                contentArea.innerHTML = `
+                    <header class="sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center -mx-4 -mt-4 mb-4">
+                        <button id="back-from-redeem-task" class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full"><i class="fa-solid fa-arrow-left"></i></button>
+                        <h2 class="text-xl font-bold">${task.title}</h2>
+                        <div class="w-10"></div>
+                    </header>
+                    <div class="space-y-6">
+                        <div class="bg-[#1e1e1e] p-4 rounded-xl border border-gray-700">
+                            <h3 class="font-bold text-green-400 mb-2">Rules & Instructions</h3>
+                            <p class="text-sm text-gray-300 whitespace-pre-wrap">${task.rules}</p>
+                        </div>
+                         <div class="bg-[#1e1e1e] p-4 rounded-xl border border-gray-700">
+                            <h3 class="font-bold text-green-400 mb-2">Download Link</h3>
+                             <div class="bg-black/30 p-3 rounded-lg flex justify-between items-center">
+                                <code class="text-sm text-gray-300 truncate">${task.url}</code>
+                                <button id="copy-task-url-btn" class="bg-gray-600 hover:bg-gray-700 w-10 h-10 rounded-md flex items-center justify-center transition-colors flex-shrink-0 ml-2"><i class="fa-solid fa-copy"></i></button>
+                            </div>
+                        </div>
+                        <div class="bg-[#1e1e1e] p-4 rounded-xl border border-gray-700">
+                             <h3 class="font-bold text-green-400 mb-2">Submit Your Code</h3>
+                             <form id="submit-redeem-code-form" class="space-y-3">
+                                <input type="text" id="redeem-task-code-input" class="form-input text-center" placeholder="Enter code here..." required>
+                                <button type="submit" class="w-full py-3 action-button rounded-lg font-bold flex items-center justify-center gap-2">
+                                    Claim <img src="${rewardCurrencyIcon}" class="w-5 h-5"> ${task.rewardAmount}
+                                </button>
+                             </form>
+                        </div>
+                    </div>
+                `;
+
+                contentArea.querySelector('#back-from-redeem-task').addEventListener('click', () => screens.redeemTask.classList.add('hidden'));
+                contentArea.querySelector('#copy-task-url-btn').addEventListener('click', () => {
+                    navigator.clipboard.writeText(task.url).then(() => showModal('success', 'Link Copied!'));
+                });
+                contentArea.querySelector('#submit-redeem-code-form').addEventListener('submit', (e) => handleRedeemTaskSubmit(e, taskId, task));
+            }
+
+            async function handleRedeemTaskSubmit(e, taskId, task) {
+                 e.preventDefault();
+                 const form = e.target;
+                 const inputCode = document.getElementById('redeem-task-code-input').value.trim();
+                 
+                 handleFormSubmit(form, 'Verifying Code...', async () => {
+                    if (inputCode === task.redeemCode) {
+                        const userProgressRef = database.ref(`users/${auth.currentUser.uid}/missionProgress/${taskId}`);
+                        await userProgressRef.update({
+                            count: 1,
+                            lastCompleted: new Date().toISOString()
+                        });
+
+                        const currency = task.rewardType === 'diamond' ? 'diamonds' : 'coins';
+                        await database.ref(`users/${auth.currentUser.uid}/wallet/${currency}`).transaction(current => (current || 0) + task.rewardAmount);
+                        await addTransaction(auth.currentUser.uid, {
+                            type: 'Mission Reward',
+                            description: `Completed: ${task.title}`,
+                            amount: task.rewardAmount,
+                            currency: task.rewardType
+                        });
+                        
+                        screens.redeemTask.classList.add('hidden');
+                        showModal('success', 'Task Completed!', `You earned ${task.rewardAmount} ${task.rewardType}s.`);
+
+                    } else {
+                        throw new Error("Invalid code. Please make sure you copied the correct code.");
+                    }
+                 });
             }
 
         });
