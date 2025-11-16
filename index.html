@@ -158,13 +158,13 @@
         .store-item-h-button { width: 100%; padding: 0.6rem 0; border-radius: 0.5rem; font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-top: auto; }
 
         /* NEW Topup Purchase / Redeem Code Styles */
-        #topup-purchase-modal .modal-box { max-width: 340px; background: transparent; border: none; box-shadow: none; }
+        #topup-purchase-modal .modal-box { max-width: 340px; background: transparent; border: none; box-shadow: none; perspective: 1000px; }
         .topup-card-flipper { position: relative; width: 100%; aspect-ratio: 3 / 4.2; transition: transform 2s cubic-bezier(0.19, 1, 0.22, 1); transform-style: preserve-3d; }
         .topup-card-flipper.is-flipped { transform: rotateY(180deg); }
-        .topup-card-face { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 1.5rem; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
-        .topup-card-back { background-image: linear-gradient(to bottom right, #2a2a2e, #1e1e1e); transform: rotateY(180deg); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1rem; }
-        .redeem-code-wrapper { background: #121212; padding: 0.75rem 1rem; border-radius: 0.5rem; border: 2px dashed #3a3a3a; margin-top: 1rem; width: 100%; }
-        .redeem-code-text { font-family: 'Courier New', Courier, monospace; font-size: 1rem; font-weight: bold; color: #6ee7b7; letter-spacing: 1px; }
+        .topup-card-face { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 1.5rem; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.5); background-size: cover; background-position: center; }
+        .topup-card-back { background-image: linear-gradient(to bottom right, #2a2a2e, #1e1e1e); transform: rotateY(180deg); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1.5rem; }
+        .redeem-code-wrapper { background: #121212; padding: 0.75rem 1rem; border-radius: 0.5rem; border: 2px dashed #3a3a3a; margin-top: 1rem; width: 100%; position: relative; overflow: hidden; }
+        .redeem-code-text { font-family: 'Courier New', Courier, monospace; font-size: 1.1rem; font-weight: bold; color: #6ee7b7; letter-spacing: 2px; }
         @keyframes scan-light { 0% { top: -10%; } 100% { top: 110%; } }
         .scan-overlay::after { content: ''; position: absolute; top: -10%; left: 0; width: 100%; height: 10%; background: linear-gradient(to bottom, rgba(110, 231, 183, 0), rgba(110, 231, 183, 0.5), rgba(110, 231, 183, 0)); animation: scan-light 2s ease-in-out infinite; }
         
@@ -285,7 +285,7 @@
             <a id="sidebar-monetize" class="sidebar-menu-item"><div class="icon-bg bg-yellow-600/20"><i class="fa-solid fa-sack-dollar text-yellow-500"></i></div><span>Monetize Earning</span></a>
         </nav>
         <div class="p-4 border-t border-gray-700/50 relative">
-            <a href="https://t.me/Blackmoney54" target="_blank" class="w-14 h-14 rounded-full bg-green-500 flex items-center justify-center text-white text-3xl absolute -top-7 right-4 shadow-lg hover:scale-110 transition-transform">
+            <a href="javascript:void(0)" id="sidebar-contact-btn" class="w-14 h-14 rounded-full bg-green-500 flex items-center justify-center text-white text-3xl absolute -top-7 right-4 shadow-lg hover:scale-110 transition-transform">
                 <i class="fa-solid fa-phone"></i>
             </a>
             <div class="bg-gray-800/50 p-2 rounded-full flex justify-around items-center">
@@ -619,13 +619,6 @@
                             <label for="edit-profile-name" class="form-label">Full Name</label>
                             <input type="text" id="edit-profile-name" class="form-input" required>
                         </div>
-                         <div>
-                            <label class="form-label">Your Referral Code</label>
-                            <div class="bg-gray-800 p-3 rounded-lg flex justify-between items-center">
-                                <code id="my-referral-code" class="text-lg font-bold tracking-wider text-green-400"></code>
-                                <button type="button" id="copy-my-ref-code-btn" class="bg-gray-600 hover:bg-gray-700 w-10 h-10 rounded-md flex items-center justify-center transition-colors"><i class="fa-solid fa-copy"></i></button>
-                            </div>
-                        </div>
                         <button type="submit" class="w-full py-3 mt-4 rounded-xl action-button text-lg flex items-center justify-center h-[48px]">Save Changes</button>
                     </form>
                 </div>
@@ -799,7 +792,22 @@
         };
         firebase.initializeApp(firebaseConfig);
         
-        const MAX_FILE_SIZE_KB = 500;
+        // --- FIX START: Moved loader variables and functions to global scope ---
+        let loadingOverlay = null;
+        let loadingTextEl = null;
+
+        function showLoader(text = 'Processing...') {
+            if (loadingOverlay) {
+                loadingTextEl.textContent = text;
+                loadingOverlay.classList.remove('hidden');
+            }
+        }
+        function hideLoader() {
+            if (loadingOverlay) {
+                loadingOverlay.classList.add('hidden');
+            }
+        }
+        // --- FIX END ---
 
         function showCustomModal(config) {
             const { type = 'error', title, message, primaryButton, secondaryButton, autoClose, onRender, iconHtml } = config;
@@ -907,17 +915,6 @@
         
         async function uploadImage(file, path) {
             if (!file) return null;
-
-            const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_KB * 1024;
-            if (file.size > MAX_FILE_SIZE_BYTES) {
-                showCustomModal({
-                    title: "ফাইল সাইজ অনেক বড়",
-                    message: `দুঃখিত, আপনি ${MAX_FILE_SIZE_KB} KB এর চেয়ে বড় ফাইল আপলোড করতে পারবেন না। <br> অনুগ্রহ করে নিচের বাটনটি ব্যবহার করে ছবির সাইজ কমান এবং আবার চেষ্টা করুন।`,
-                    primaryButton: { text: "ছবির সাইজ কমান", link: "https://www.reduceimages.com/" },
-                    secondaryButton: { text: "বন্ধ করুন" }
-                });
-                return null;
-            }
             
             showLoader('Uploading Image...');
             try {
@@ -982,13 +979,21 @@
                 img.src = url;
             });
         }
+        
+        function getBangladeshDateString() {
+            const now = new Date();
+            const bstTime = new Date(now.getTime() + (6 * 60 * 60 * 1000));
+            const year = bstTime.getUTCFullYear();
+            const month = String(bstTime.getUTCMonth() + 1).padStart(2, '0');
+            const day = String(bstTime.getUTCDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Preload common images for faster UI rendering
             preloadImages([
-                'https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Levelup%2F1762763055321.png?alt=media&token=58051d4b-446d-4a30-b588-bed5a5f49c8d', // Coin Icon
-                'https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Levelup%2F1762763297995.png?alt=media&token=db9ebed1-ff51-49ed-a311-0327313dae56', // Diamond Icon
-                'https://i.imgur.com/8x8eFqg.jpg' // Default reward background
+                'https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Levelup%2F1762763055321.png?alt=media&token=58051d4b-446d-4a30-b588-bed5a5f49c8d', 
+                'https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Levelup%2F1762763297995.png?alt=media&token=db9ebed1-ff51-49ed-a311-0327313dae56',
+                'https://i.imgur.com/8x8eFqg.jpg'
             ]);
 
             const screens = { splash: document.getElementById('splash-screen'), auth: document.getElementById('auth-container'), dashboard: document.getElementById('dashboard-screen'), modal: document.getElementById('modal-screen'), forgot: document.getElementById('forgot-password-modal'), booking: document.getElementById('booking-screen'), participants: document.getElementById('participant-list-screen'), results: document.getElementById('results-submission-screen'), sponsorProfile: document.getElementById('sponsor-profile-screen'), userProfile: document.getElementById('user-profile-screen'), payment: document.getElementById('payment-screen'), guildPostForm: document.getElementById('guild-post-form-screen'), guildApplication: document.getElementById('guild-application-screen'), playerSquadPostForm: document.getElementById('player-squad-post-form-screen'), giftCardOpen: document.getElementById('gift-card-open-modal'), topupPurchase: document.getElementById('topup-purchase-modal'), adView: document.getElementById('ad-view-screen'), redeemTask: document.getElementById('redeem-task-screen'), partner: document.getElementById('partner-screen') };
@@ -998,12 +1003,11 @@
             let teamLogoFile = null;
             let newAvatarFile = null;
             
-            const loadingOverlay = document.getElementById('loading-overlay');
-            const loadingTextEl = document.getElementById('loading-text');
+            // --- FIX START: Assign DOM elements to global loader variables ---
+            loadingOverlay = document.getElementById('loading-overlay');
+            loadingTextEl = document.getElementById('loading-text');
+            // --- FIX END ---
 
-            function showLoader(text = 'Processing...') { if (loadingOverlay) { loadingTextEl.textContent = text; loadingOverlay.classList.remove('hidden'); } }
-            function hideLoader() { if (loadingOverlay) { loadingOverlay.classList.add('hidden'); } }
-            
             function showNavBar() { if(navContainer) navContainer.classList.remove('hidden'); }
             function hideNavBar() { if(navContainer) navContainer.classList.add('hidden'); }
 
@@ -1045,16 +1049,13 @@
                 currentUserData = userData; 
                 const name = user.displayName || userData.name; 
                 const avatar = userData.avatar || DEFAULT_AVATAR;
-                // Main Profile Page
                 document.getElementById('dashboard-user-name').textContent = name;
                 document.getElementById('profile-page-avatar').src = avatar;
-                // Sidebar
                 document.getElementById('sidebar-username').textContent = name;
                 document.getElementById('sidebar-avatar').src = avatar;
                 document.getElementById('sidebar-teamname').textContent = userData.team?.name || 'No Team';
                 document.getElementById('sidebar-coin-balance').textContent = formatNumberCompact(userData.wallet?.coins || 0);
                 document.getElementById('sidebar-diamond-balance').textContent = formatNumberCompact(userData.wallet?.diamonds || 0);
-                document.getElementById('my-referral-code').textContent = userData.referralCode || 'N/A';
 
                 const teamBadgeEl = document.getElementById('sidebar-team-badge');
                 if (userData.team?.badgeUrl) {
@@ -2499,7 +2500,7 @@
                 content.querySelectorAll('.delete-mail-btn').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); if (confirm("Are you sure you want to delete this mail?")) { database.ref(`users/${auth.currentUser.uid}/mailbox/${e.currentTarget.dataset.mailId}`).remove(); } }));
                 content.querySelectorAll('.accept-ban-btn').forEach(btn => btn.addEventListener('click', e => { e.stopPropagation(); if (confirm('আপনি কি নিশ্চিত যে আপনি এই সিদ্ধান্তটি মেনে নিচ্ছেন?')) { const sponsorId = e.target.dataset.sponsorId; const mailId = Date.now(); const newMail = { id: mailId, type: 'ban_accepted', subject: 'User Accepted Ban', body: { reason: 'The user has accepted the ban issued for this match.'}, timestamp: new Date().toISOString(), read: false }; database.ref(`users/${sponsorId}/mailbox/${mailId}`).set(newMail); btn.closest('.mail-body').innerHTML += '<p class="text-center text-green-400 font-bold mt-4">Thank you for your cooperation.</p>'; } }));
             }
-
+            
             function setupProfilePageListeners() {
                 document.getElementById('wallet-button').addEventListener('click', () => { navigateToPage('wallet-content'); });
                 document.getElementById('profile-wallet-button').addEventListener('click', () => { navigateToPage('wallet-content'); });
@@ -2507,6 +2508,15 @@
                 document.getElementById('manage-posts-button').addEventListener('click', () => { navigateToPage('manage-posts-content'); });
                 document.getElementById('mailbox-button').addEventListener('click', () => { navigateToPage('mailbox-content'); });
                 document.getElementById('logout-button-settings').addEventListener('click', () => { auth.signOut().then(() => window.location.reload()); });
+
+                document.getElementById('edit-profile-btn').addEventListener('click', () => {
+                    document.getElementById('edit-profile-avatar-preview').src = currentUserData.avatar || DEFAULT_AVATAR;
+                    document.getElementById('edit-profile-name').value = currentUserData.name || '';
+                    navigateToPage('edit-profile-content');
+                });
+                document.getElementById('change-password-button').addEventListener('click', () => {
+                    navigateToPage('change-password-content');
+                });
 
                 document.getElementById('new-profile-image-upload').addEventListener('change', e => {
                     const file = e.target.files[0];
@@ -2518,12 +2528,6 @@
                     }
                 });
 
-                document.getElementById('copy-my-ref-code-btn').addEventListener('click', () => {
-                    navigator.clipboard.writeText(currentUserData.referralCode).then(() => {
-                        showModal('success', 'Referral Code Copied!', `Your code "${currentUserData.referralCode}" has been copied.`);
-                    });
-                });
-
                 document.getElementById('edit-profile-form').addEventListener('submit', e => {
                     e.preventDefault();
                     const form = e.target;
@@ -2533,7 +2537,7 @@
                         let newAvatarUrl = currentUserData.avatar; let newAvatarSize = currentUserData.avatarSizeKB || 0;
                         if (newAvatarFile) {
                             const uploadResult = await uploadImage(newAvatarFile, 'avatars');
-                            if (!uploadResult || !uploadResult.url) throw new Error('আপনার ছবির সাইজ ৫০০kb থেকে অনেক বেশি অনুগ্রহ করে ৫০০kb ভিতরে ছবি আপলোড করুন | যেকোনো অনলাইন ওয়েবসাইট থেকে ছবির সাইজ কমিয়ে নিতে পারেন ( image resize website ) ');
+                            if (!uploadResult || !uploadResult.url) throw new Error('Image upload failed. Please try again with a valid image file.');
                             newAvatarUrl = uploadResult.url; newAvatarSize = uploadResult.size;
                             updateTotalStorage(newAvatarSize - (currentUserData.avatarSizeKB || 0));
                         }
@@ -3087,7 +3091,7 @@
                 const container = document.getElementById('home-player-squad-feed');
                 const allPosts = Object.values(window.dbData.playerSquadPosts || {});
                 const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000);
-                const activePosts = allPosts.filter(p => new Date(p.timestamp).getTime() > thirtyDaysAgo).sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+                const activePosts = allPosts.filter(p => new Date(p.timestamp).getTime() > thirtyDaysAgo).sort((a,b) => new Date(b.timestamp) - a.timestamp);
 
                 if(activePosts.length === 0) {
                     container.innerHTML = `<div class="text-center text-gray-500 p-10 bg-gray-800/50 rounded-lg"><i class="fa-solid fa-user-plus text-4xl mb-4"></i><p>No one is looking for players or squads right now.</p></div>`;
@@ -3214,6 +3218,29 @@
                     });
                 });
                 
+                document.getElementById('sidebar-contact-btn').addEventListener('click', () => {
+                    const adminTelegramId = 'Blackmoney54';
+                    showCustomModal({
+                        title: 'Admin Support',
+                        message: `
+                            <div class="text-left text-gray-300">
+                                <p>যেকোনো সমস্যা বা সাহায্যের জন্য নিচে দেওয়া টেলিগ্রাম আইডিতে এডমিনের সাথে যোগাযোগ করুন।</p>
+                                <div class="bg-black/30 p-3 my-3 rounded-lg flex justify-between items-center">
+                                    <code id="admin-tg-id" class="text-lg font-bold tracking-wider text-green-400">${adminTelegramId}</code>
+                                    <button id="copy-admin-tg-btn" class="bg-gray-600 hover:bg-gray-700 w-10 h-10 rounded-md flex items-center justify-center transition-colors"><i class="fa-solid fa-copy"></i></button>
+                                </div>
+                            </div>`,
+                        primaryButton: { text: 'Close' },
+                        onRender: (modal) => {
+                            modal.querySelector('#copy-admin-tg-btn').addEventListener('click', () => {
+                                navigator.clipboard.writeText(adminTelegramId).then(() => {
+                                    showModal('success', 'Copied!', `Admin's Telegram ID has been copied.`);
+                                });
+                            });
+                        }
+                    });
+                });
+
                 document.getElementById('sidebar-store').addEventListener('click', () => {
                      closeSidebar();
                      navigateToPage('home-content');
@@ -3774,30 +3801,49 @@
                 btn.disabled = true;
 
                 modal.innerHTML = `
-                <div class="modal-box p-6 flex flex-col items-center">
-                    <div class="w-24 h-24 mb-4">
-                        <dotlottie-wc src="https://lottie.host/808b26f5-072f-4c59-b17b-232d665a3962/qYI7k2RGvS.lottie" autoplay loop></dotlottie-wc>
+                <div class="modal-box relative">
+                     <button id="close-topup-modal-btn" class="absolute top-2 right-3 text-gray-400 hover:text-white text-3xl z-20">&times;</button>
+                     <div class="topup-card-flipper">
+                        <div class="topup-card-face" style="background-image: url('${item.image}');"></div>
+                        <div class="topup-card-face topup-card-back">
+                            <!-- Content revealed after flip -->
+                        </div>
                     </div>
-                    <h3 class="font-bold text-2xl text-green-400">Purchase Successful!</h3>
-                    <p class="text-sm text-gray-400 mt-2 mb-4">Your Redeem Code is ready.</p>
-                    <div class="redeem-code-wrapper">
-                        <p id="redeem-code-display" class="redeem-code-text text-center"></p>
+                    <div id="topup-modal-footer" class="text-center mt-6 opacity-0 transition-opacity duration-500">
+                         <button id="copy-redeem-code-btn" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg text-sm flex items-center justify-center gap-2 transition-all duration-200">
+                            <i class="fa-solid fa-copy"></i> Copy Code
+                        </button>
                     </div>
-                    <button id="copy-redeem-code-btn" class="w-full mt-6 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg text-sm flex items-center justify-center gap-2 transition-all duration-200">
-                        <i class="fa-solid fa-copy"></i> Copy Code
-                    </button>
-                    <button id="close-topup-modal-btn" class="mt-3 text-gray-400 hover:text-white text-sm">Close</button>
                 </div>`;
                 modal.classList.remove('hidden');
 
+                const flipper = modal.querySelector('.topup-card-flipper');
+                const cardBack = modal.querySelector('.topup-card-back');
+                const footer = document.getElementById('topup-modal-footer');
+                
                 const redeemCode = await submitTopupPurchase(item, topupId, btn);
                 if (!redeemCode) {
                     modal.classList.add('hidden');
                     return;
                 }
-                
-                document.getElementById('redeem-code-display').textContent = redeemCode;
-                
+
+                setTimeout(() => {
+                    flipper.classList.add('is-flipped');
+                    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, zIndex: 1003 });
+                }, 100);
+
+                setTimeout(() => {
+                    cardBack.innerHTML = `
+                        <i class="fa-solid fa-gem text-5xl text-cyan-400 mb-2"></i>
+                        <h3 class="font-bold text-2xl text-green-400">Purchase Successful!</h3>
+                        <p class="text-sm text-gray-400 mt-1 mb-4">Your Redeem Code is ready.</p>
+                        <div class="redeem-code-wrapper scan-overlay">
+                            <p id="redeem-code-display" class="redeem-code-text text-center">${redeemCode}</p>
+                        </div>
+                    `;
+                    footer.classList.remove('opacity-0');
+                }, 1000); // Wait for flip to be halfway
+
                 const copyBtn = document.getElementById('copy-redeem-code-btn');
                 copyBtn.addEventListener('click', () => {
                     navigator.clipboard.writeText(redeemCode).then(() => {
@@ -3943,7 +3989,6 @@
             }
             
             // --- NEW MISSIONS/TASKS LOGIC ---
-
             function renderMissionsPage() {
                 const container = document.getElementById('home-missions-feed');
                 const tasks = window.dbData.admin?.missions || {};
@@ -3953,7 +3998,28 @@
                     return;
                 }
 
-                const tasksHTML = Object.entries(tasks).map(([taskId, task]) => createTaskCardHTML(taskId, task)).join('');
+                let tasksHTML = '';
+                const bannerAdHTML = `
+                    <div class="my-4 flex justify-center">
+                        <script type="text/javascript">
+                            atOptions = {
+                                'key' : 'e47c31db450a47318457030182d72c9b',
+                                'format' : 'iframe',
+                                'height' : 60,
+                                'width' : 468,
+                                'params' : {}
+                            };
+                        <\/script>
+                        <script type="text/javascript" src="//www.highperformanceformat.com/e47c31db450a47318457030182d72c9b/invoke.js"><\/script>
+                    </div>`;
+
+                Object.entries(tasks).forEach(([taskId, task], index) => {
+                    tasksHTML += createTaskCardHTML(taskId, task);
+                    if ((index + 1) % 3 === 0 && index < Object.keys(tasks).length -1) {
+                        tasksHTML += bannerAdHTML;
+                    }
+                });
+                
                 container.innerHTML = tasksHTML;
 
                 container.querySelectorAll('.task-action-btn').forEach(btn => {
@@ -3970,8 +4036,9 @@
             }
 
             function createTaskCardHTML(taskId, task) {
-                const userProgress = currentUserData.missionProgress?.[taskId] || { count: 0 };
-                const isCompletedToday = userProgress.lastCompleted && new Date(userProgress.lastCompleted).toDateString() === new Date().toDateString();
+                const userProgress = currentUserData.missionProgress?.[taskId] || { count: 0, lastCompletedDate: '' };
+                const todayBst = getBangladeshDateString();
+                const isCompletedToday = userProgress.lastCompletedDate === todayBst && userProgress.count >= (task.limit || 1);
 
                 let iconHtml = '<i class="fa-solid fa-question"></i>';
                 if (task.icon) {
@@ -3984,11 +4051,13 @@
                 
                 const buttonText = task.type === 'redeem' ? 'View' : 'Watch';
                 
+                let currentCount = userProgress.lastCompletedDate === todayBst ? userProgress.count : 0;
+                
                 return `
                     <div class="task-card">
                         <div class="task-icon-container">
                             ${iconHtml}
-                            ${task.limit ? `<span class="task-progress">${userProgress.count}/${task.limit}</span>` : ''}
+                            ${task.limit ? `<span class="task-progress">${currentCount}/${task.limit}</span>` : ''}
                         </div>
                         <div class="flex-grow">
                             <h4 class="font-bold text-white">${task.title}</h4>
@@ -4007,7 +4076,7 @@
             function handleWatchAdTask(taskId, task) {
                 const adScreen = screens.adView;
                 const totalDuration = task.duration || 30;
-                const showTimerAt = 20; // Timer becomes visible at 20 seconds remaining
+                const showTimerAt = 20;
 
                 let countdown = totalDuration;
                 
@@ -4039,14 +4108,19 @@
                         adScreen.classList.add('hidden');
                         
                         const userProgressRef = database.ref(`users/${auth.currentUser.uid}/missionProgress/${taskId}`);
-                        const newProgress = await userProgressRef.transaction(progress => {
-                            progress = progress || { count: 0 };
+                        await userProgressRef.transaction(progress => {
+                            progress = progress || { count: 0, lastCompletedDate: '' };
+                            const todayBst = getBangladeshDateString();
+                            
+                            if (progress.lastCompletedDate !== todayBst) {
+                                progress.count = 0;
+                            }
+                            
                             progress.count++;
-                            progress.lastCompleted = new Date().toISOString();
+                            progress.lastCompletedDate = todayBst;
                             return progress;
                         });
 
-                        // Give reward
                         const currency = task.rewardType === 'diamond' ? 'diamonds' : 'coins';
                         await database.ref(`users/${auth.currentUser.uid}/wallet/${currency}`).transaction(current => (current || 0) + task.rewardAmount);
                         await addTransaction(auth.currentUser.uid, {
@@ -4125,9 +4199,17 @@
                  handleFormSubmit(form, 'Verifying Code...', async () => {
                     if (inputCode === task.redeemCode) {
                         const userProgressRef = database.ref(`users/${auth.currentUser.uid}/missionProgress/${taskId}`);
-                        await userProgressRef.update({
-                            count: 1,
-                            lastCompleted: new Date().toISOString()
+                        await userProgressRef.transaction(progress => {
+                            progress = progress || { count: 0, lastCompletedDate: '' };
+                            const todayBst = getBangladeshDateString();
+                            
+                            if (progress.lastCompletedDate !== todayBst) {
+                                progress.count = 0;
+                            }
+                            
+                            progress.count++;
+                            progress.lastCompletedDate = todayBst;
+                            return progress;
                         });
 
                         const currency = task.rewardType === 'diamond' ? 'diamonds' : 'coins';
