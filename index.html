@@ -21,22 +21,62 @@
         .font-oswald { font-family: 'Oswald', sans-serif; }
         
         /* Screen Transitions */
-        .screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: start; opacity: 1; overflow-y: auto; padding: 1rem; z-index: 10; }
+        .screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: start; opacity: 1; overflow-y: auto; z-index: 10; }
         .screen.hidden { display: none; opacity: 0; pointer-events: none; z-index: -1; }
         
-        /* Auth View */
-        .auth-view { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; position: absolute; top: 0; left: 0; padding: 1rem; opacity: 0; pointer-events: none; }
-        .auth-view.active { opacity: 1; pointer-events: auto; }
-        
+        /* --- NEW AUTH SCREEN STYLES --- */
+        #auth-container {
+            perspective: 1200px;
+            padding: 1rem;
+        }
+        .auth-view {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 1rem;
+            opacity: 0;
+            pointer-events: none;
+            visibility: hidden;
+        }
+        .auth-view.active {
+            opacity: 1;
+            pointer-events: auto;
+            visibility: visible;
+        }
+        .auth-card {
+            background: linear-gradient(145deg, #242428, #1e1e1e);
+            border: 1px solid #3a3a3a;
+            border-radius: 1.5rem;
+            padding: 2rem 1.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            width: 100%;
+        }
+        .input-field {
+            background-color: #2a2a2e;
+            border: 1px solid #4a4a4a;
+            border-radius: 0.75rem;
+            box-shadow: none;
+            transition: all 0.2s ease;
+        }
+        .input-field:focus-within {
+            box-shadow: 0 0 0 2px #1DB954 !important;
+            border-color: #1DB954;
+        }
+        /* --- END NEW AUTH SCREEN STYLES --- */
+
         /* Modals & Overlays */
         #modal-screen, #forgot-password-modal, #loading-overlay, #topup-purchase-modal, #spin-result-modal, #store-loading-overlay, #badge-modal-screen { z-index: 1000; background-color: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); }
         #store-loading-overlay { z-index: 1002; background-color: rgba(18, 18, 18, 0.95); }
         #ad-view-screen { z-index: 1001; background-color: #121212; padding: 0;}
         .modal-box { background-color: #242428; border: 1px solid #3a3a3a; box-shadow: 0 15px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05) inset; max-width: 380px; width: 90%; border-radius: 1.5rem; transform: scale(0.8); opacity: 0; /* For GSAP */ }
         
-        /* Inputs & Buttons */
-        .input-field { background-color: #121212; box-shadow: inset 6px 6px 12px #0c0c0c, inset -6px -6px 12px #1a1a1a; transition: box-shadow 0.2s ease; }
-        .input-field:focus-within, .form-input:focus { box-shadow: inset 6px 6px 12px #0c0c0c, inset -6px -6px 12px #1a1a1a, 0 0 0 2px #1DB954 !important; outline: none; }
+        /* Buttons */
         .action-button, .booking-btn, .manage-btn { background-image: linear-gradient(to right, #1DB954, #1ed760); color: white; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: all 0.2s ease-in-out; border: none; }
         .action-button:hover:not(:disabled), .booking-btn:hover, .manage-btn:hover { box-shadow: 0 6px 20px rgba(29, 185, 84, 0.3); transform: translateY(-2px); }
         .action-button:active:not(:disabled), .booking-btn:active, .manage-btn:active { box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); transform: translateY(1px); }
@@ -48,53 +88,20 @@
         .password-toggle { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); cursor: pointer; color: #9ca3af; }
         
         /* --- PREMIUM SIDEBAR BALANCE CARDS --- */
-        .premium-balance-card { 
-            position: relative; 
-            border-radius: 16px; 
-            padding: 12px; 
-            overflow: hidden; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            height: 85px; 
-            border: 1px solid rgba(255,255,255,0.1); 
-            transition: transform 0.2s; 
-            backdrop-filter: blur(10px);
-        }
+        .premium-balance-card { position: relative; border-radius: 16px; padding: 12px; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 85px; border: 1px solid rgba(255,255,255,0.1); transition: transform 0.2s; backdrop-filter: blur(10px); }
         .premium-balance-card:active { transform: scale(0.96); }
 
         /* Coin Card - Gold Theme */
-        .coin-card { 
-            background: linear-gradient(145deg, rgba(255, 193, 7, 0.15) 0%, rgba(20, 20, 20, 0.8) 100%);
-            box-shadow: 0 4px 20px rgba(255, 193, 7, 0.15);
-            border: 1px solid rgba(255, 193, 7, 0.3);
-        }
+        .coin-card { background: linear-gradient(145deg, rgba(255, 193, 7, 0.15) 0%, rgba(20, 20, 20, 0.8) 100%); box-shadow: 0 4px 20px rgba(255, 193, 7, 0.15); border: 1px solid rgba(255, 193, 7, 0.3); }
         .coin-card .icon { width: 28px; height: 28px; margin-bottom: 4px; filter: drop-shadow(0 0 8px rgba(255, 193, 7, 0.8)); }
         .coin-card .amount { font-family: 'Oswald', sans-serif; font-size: 18px; font-weight: bold; color: #FFD700; text-shadow: 0 0 15px rgba(255, 215, 0, 0.4); }
-        .coin-card .plus-btn { 
-            position: absolute; top: 6px; right: 6px; 
-            width: 20px; height: 20px; border-radius: 50%; 
-            background: rgba(255, 215, 0, 0.2); color: #FFD700; 
-            display: flex; align-items: center; justify-content: center; 
-            font-size: 12px; border: 1px solid rgba(255, 215, 0, 0.4); cursor: pointer;
-        }
+        .coin-card .plus-btn { position: absolute; top: 6px; right: 6px; width: 20px; height: 20px; border-radius: 50%; background: rgba(255, 215, 0, 0.2); color: #FFD700; display: flex; align-items: center; justify-content: center; font-size: 12px; border: 1px solid rgba(255, 215, 0, 0.4); cursor: pointer; }
 
         /* Diamond Card - Cyan/Blue Theme */
-        .diamond-card { 
-            background: linear-gradient(145deg, rgba(6, 182, 212, 0.15) 0%, rgba(20, 20, 20, 0.8) 100%);
-            box-shadow: 0 4px 20px rgba(6, 182, 212, 0.15);
-            border: 1px solid rgba(6, 182, 212, 0.3);
-        }
+        .diamond-card { background: linear-gradient(145deg, rgba(6, 182, 212, 0.15) 0%, rgba(20, 20, 20, 0.8) 100%); box-shadow: 0 4px 20px rgba(6, 182, 212, 0.15); border: 1px solid rgba(6, 182, 212, 0.3); }
         .diamond-card .icon { width: 28px; height: 28px; margin-bottom: 4px; filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.8)); }
         .diamond-card .amount { font-family: 'Oswald', sans-serif; font-size: 18px; font-weight: bold; color: #22d3ee; text-shadow: 0 0 15px rgba(34, 211, 238, 0.4); }
-        .diamond-card .plus-btn { 
-            position: absolute; top: 6px; right: 6px; 
-            width: 20px; height: 20px; border-radius: 50%; 
-            background: rgba(34, 211, 238, 0.2); color: #22d3ee; 
-            display: flex; align-items: center; justify-content: center; 
-            font-size: 12px; border: 1px solid rgba(34, 211, 238, 0.4); cursor: pointer;
-        }
+        .diamond-card .plus-btn { position: absolute; top: 6px; right: 6px; width: 20px; height: 20px; border-radius: 50%; background: rgba(34, 211, 238, 0.2); color: #22d3ee; display: flex; align-items: center; justify-content: center; font-size: 12px; border: 1px solid rgba(34, 211, 238, 0.4); cursor: pointer; }
 
         /* --- SPLASH SCREEN ANIMATION (CSS Reset for GSAP) --- */
         #splash-screen-lottie { position: absolute; opacity: 1; transform: scale(1); }
@@ -119,78 +126,12 @@
         .nav-restore-btn.visible { opacity: 1; pointer-events: auto; transform: translateX(0); }
 
         /* --- FIGMA STYLE SPIN WHEEL (Optimized for GSAP) --- */
-        .wheel-container-pro {
-            position: relative;
-            width: 320px;
-            height: 320px;
-            margin: 0 auto;
-            border-radius: 50%;
-            background: conic-gradient(from 0deg, #FFD700, #F59E0B, #FFD700);
-            padding: 8px;
-            box-shadow: 0 0 30px rgba(245, 158, 11, 0.4), inset 0 0 20px rgba(0,0,0,0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .wheel-outer-rim {
-            width: 100%;
-            height: 100%;
-            background: #1a1a1a;
-            border-radius: 50%;
-            position: relative;
-            overflow: hidden;
-            border: 4px solid #2a2a2a;
-        }
-        
-        /* GSAP will handle rotation, removed CSS transition */
-        .wheel-pro {
-            width: 100%;
-            height: 100%;
-            position: relative;
-        }
-
-        .wheel-segment-pro {
-            position: absolute;
-            width: 50%;
-            height: 50%;
-            transform-origin: bottom right;
-            top: 0;
-            left: 0;
-            clip-path: polygon(0 0, 100% 0, 100% 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-sizing: border-box;
-        }
-        
-        .wheel-center-cap {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 60px;
-            height: 60px;
-            background: radial-gradient(circle, #ffffff 0%, #e2e2e2 100%);
-            border-radius: 50%;
-            border: 4px solid #F59E0B;
-            z-index: 20;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .wheel-pointer-pro {
-            position: absolute;
-            top: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 40px;
-            height: 50px;
-            z-index: 30;
-            filter: drop-shadow(0 4px 4px rgba(0,0,0,0.6));
-        }
+        .wheel-container-pro { position: relative; width: 320px; height: 320px; margin: 0 auto; border-radius: 50%; background: conic-gradient(from 0deg, #FFD700, #F59E0B, #FFD700); padding: 8px; box-shadow: 0 0 30px rgba(245, 158, 11, 0.4), inset 0 0 20px rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; }
+        .wheel-outer-rim { width: 100%; height: 100%; background: #1a1a1a; border-radius: 50%; position: relative; overflow: hidden; border: 4px solid #2a2a2a; }
+        .wheel-pro { width: 100%; height: 100%; position: relative; }
+        .wheel-segment-pro { position: absolute; width: 50%; height: 50%; transform-origin: bottom right; top: 0; left: 0; clip-path: polygon(0 0, 100% 0, 100% 100%); display: flex; align-items: center; justify-content: center; box-sizing: border-box; }
+        .wheel-center-cap { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; background: radial-gradient(circle, #ffffff 0%, #e2e2e2 100%); border-radius: 50%; border: 4px solid #F59E0B; z-index: 20; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; }
+        .wheel-pointer-pro { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 40px; height: 50px; z-index: 30; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.6)); }
 
         /* General Styles */
         .countdown-item { background-color: rgba(255,255,255,0.1); padding: 2px 5px; border-radius: 4px; }
@@ -199,8 +140,9 @@
         .form-section { background: #1e1e1e; border: 1px solid #2a2a2a; }
         .form-label { color: #a1a1aa; font-size: 0.8rem; margin-bottom: 0.5rem; font-weight: 600; }
         .form-input, .form-select, .form-textarea { background: #121212; border: 1px solid #333; color: white; padding: 0.75rem; border-radius: 0.5rem; width: 100%; transition: border-color 0.2s; }
+        .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: #1DB954; box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.3); outline: none; }
         .igl-input-box { background-color: rgba(212, 175, 55, 0.1); border: 1px solid #d4af37 !important; }
-        .post-card, .guild-post-card, .player-squad-post-card { background: #28282B; border: 1px solid #3a3a3a; } /* GSAP opacity handled in JS */
+        .post-card, .guild-post-card, .player-squad-post-card, .news-post-card { background: #28282B; border: 1px solid #3a3a3a; }
         .slot-progress-bar { background-color: #444; }
         .slot-progress-fill { background-image: linear-gradient(to right, #1DB954, #34d399); }
         .dashboard-page { opacity: 1; } /* GSAP handles transitions */
@@ -231,7 +173,8 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .banned-card { opacity: 0.6; background: #28282B; pointer-events: none; box-shadow: inset 0 0 20px rgba(255, 50, 50, 0.3); }
-        .gender-radio:checked + label, .custom-radio:checked + label { background-color: #1DB954; color: white; border-color: #1DB954; }
+        .gender-radio + label, .custom-radio + label { background-color: #2a2a2e; border: 1px solid #4a4a4a; transition: all 0.2s ease; }
+        .gender-radio:checked + label, .custom-radio:checked + label { background-color: #1DB954; color: white; border-color: #1DB954; box-shadow: 0 4px 10px rgba(29, 185, 84, 0.3); }
         #strength-bar-container { width: 100%; height: 6px; background-color: #333; border-radius: 3px; overflow: hidden; margin-top: -8px; margin-bottom: 8px; }
         #strength-bar { height: 100%; width: 0%; border-radius: 3px; transition: width 0.3s, background-color 0.3s; }
         .strength-weak { background-color: #ef4444; width: 33%; }
@@ -241,12 +184,12 @@
         .clickable-post-indicator { position: absolute; bottom: 10px; left: 10px; background-color: rgba(29, 185, 84, 0.8); color: white; border-radius: 12px; padding: 4px 8px; font-size: 10px; font-weight: bold; display: flex; align-items: center; gap: 4px; z-index: 10; pointer-events: none; }
         .post-card.highlighted-post, .guild-post-card.highlighted-post, .player-squad-post-card.highlighted-post { box-shadow: 0 0 15px 5px rgba(29, 185, 84, 0.6); border: 2px solid #1DB954; transform: scale(1.02); animation: pulse-green-glow 1.5s infinite; }
         .verification-badge { width: 1.4em; height: 1.4em; margin-left: 0.4em; vertical-align: middle; cursor: pointer; object-fit: contain; }
-        .premium-header { background: rgba(30, 30, 30, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0 0 24px 24px; }
+        .premium-header { background: rgba(30, 30, 30, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0 0 1.5rem 1.5rem; padding-top: 0.5rem; padding-bottom: 0.5rem; }
         .header-back-btn { background-color: rgba(255, 255, 255, 0.1); }
-        .setting-item { background-color: #2a2a2a; border-radius: 0.75rem; padding: 1.1rem 1rem; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: background-color 0.2s, transform 0.2s; border: 1px solid #3a3a3a; width: 100%; }
+        .setting-item { background-color: #2a2a2a; border-radius: 0.75rem; padding: 0.75rem; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: background-color 0.2s, transform 0.2s; border: 1px solid #3a3a3a; width: 100%; }
         .setting-item:hover { background-color: #3a3a3a; transform: scale(1.02); }
-        .setting-icon { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 1rem; }
-        .setting-icon i { font-size: 1.2rem; color: white; }
+        .setting-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 0.75rem; }
+        .setting-icon i { font-size: 1rem; color: white; }
         .bg-icon-blue { background-color: #3b82f6; }
         .bg-icon-green { background-color: #22c55e; }
         .bg-icon-orange { background-color: #f97316; }
@@ -254,7 +197,7 @@
         .bg-icon-yellow { background-color: #eab308; }
         .bg-icon-purple { background-color: #8b5cf6; }
         .bg-icon-cyan { background-color: #0891b2; }
-        .setting-label { font-size: 1.05rem; font-weight: 600; color: #e5e7eb; }
+        .setting-label { font-size: 0.95rem; font-weight: 600; color: #e5e7eb; }
         .section-header { color: #9ca3af; font-weight: bold; text-transform: uppercase; font-size: 0.8rem; padding: 1.5rem 0.25rem 0.5rem 0.25rem; }
         .payment-method-btn { background-color: #2a2a2a; border: 1px solid #3a3a3a; transition: all 0.2s ease; }
         .payment-method-btn:hover { background-color: #3a3a3a; transform: translateY(-2px); border-color: #1DB954; }
@@ -317,81 +260,27 @@
         .topup-history-item .status-rejected { color: #ef4444; }
 
         /* NEW Premium Badge Modal Styles */
-        .badge-modal-box {
-            background-color: #242428;
-            background-image: linear-gradient(145deg, #2a2a2e 0%, #1e1e24 100%);
-            border: 1px solid #3a3a3a;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05) inset;
-            max-width: 320px;
-            width: 90%;
-            border-radius: 1.5rem;
-            transform: scale(0.8);
-            opacity: 0; /* For GSAP */
-            padding: 1.5rem 1rem 1rem 1rem;
-            text-align: center;
-            position: relative;
-        }
-        .badge-modal-media-container {
-            margin-top: -60px; /* Pulls the media up */
-            margin-bottom: 1rem;
-            filter: drop-shadow(0 8px 20px rgba(0,0,0,0.4));
-        }
-        .badge-modal-media {
-            width: 100px;
-            height: 100px;
-            object-fit: contain;
-            border-radius: 1.25rem;
-            background-color: rgba(0,0,0,0.3);
-            padding: 0.75rem;
-            margin-left: auto;
-            margin-right: auto;
-            border: 2px solid #4a4a4a;
-        }
-        .badge-modal-close-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 32px;
-            height: 32px;
-            background-color: rgba(0,0,0,0.3);
-            border-radius: 50%;
-            color: #a1a1aa;
-            font-size: 1.2rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.2s, color 0.2s;
-            z-index: 10;
-        }
-        .badge-modal-close-btn:hover {
-            background-color: rgba(255,255,255,0.1);
-            color: white;
-        }
+        .badge-modal-box { background-color: #242428; background-image: linear-gradient(145deg, #2a2a2e 0%, #1e1e24 100%); border: 1px solid #3a3a3a; box-shadow: 0 15px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05) inset; max-width: 320px; width: 90%; border-radius: 1.5rem; transform: scale(0.8); opacity: 0; /* For GSAP */ padding: 1.5rem 1rem 1rem 1rem; text-align: center; position: relative; }
+        .badge-modal-media-container { margin-top: -60px; /* Pulls the media up */ margin-bottom: 1rem; filter: drop-shadow(0 8px 20px rgba(0,0,0,0.4)); }
+        .badge-modal-media { width: 100px; height: 100px; object-fit: contain; border-radius: 1.25rem; background-color: rgba(0,0,0,0.3); padding: 0.75rem; margin-left: auto; margin-right: auto; border: 2px solid #4a4a4a; }
+        .badge-modal-close-btn { position: absolute; top: 10px; right: 10px; width: 32px; height: 32px; background-color: rgba(0,0,0,0.3); border-radius: 50%; color: #a1a1aa; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background-color 0.2s, color 0.2s; z-index: 10; }
+        .badge-modal-close-btn:hover { background-color: rgba(255,255,255,0.1); color: white; }
         
         /* NEW Profile Info Styles */
-        .profile-info-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem 0;
-            border-bottom: 1px solid #3a3a3a;
-        }
-         .profile-info-item:last-child {
-            border-bottom: none;
-        }
-        .profile-info-label {
-            font-size: 0.9rem;
-            color: #a1a1aa;
-            font-weight: 600;
-        }
-        .profile-info-value {
-            font-size: 0.9rem;
-            color: #e5e7eb;
-            font-weight: 500;
-            text-align: right;
-        }
+        .profile-info-item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid #3a3a3a; }
+        .profile-info-item:last-child { border-bottom: none; }
+        .profile-info-label { font-size: 0.9rem; color: #a1a1aa; font-weight: 600; }
+        .profile-info-value { font-size: 0.9rem; color: #e5e7eb; font-weight: 500; text-align: right; }
 
+        /* NEW News Post & Voting Styles */
+        .poll-option-btn { background-color: #3a3a3a; border: 2px solid #3a3a3a; }
+        .poll-option-btn.selected { background-color: #1e40af; border-color: #3b82f6; }
+        .poll-result-bar { background-color: #444; }
+        .poll-result-fill { background-image: linear-gradient(to right, #1d4ed8, #3b82f6); }
+        .poll-result-item.voted .poll-result-fill { background-image: linear-gradient(to right, #15803d, #22c55e); }
+        
+        /* NEW Dispute/Report Styles */
+        .dispute-card { border: 2px solid #ef4444; box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
     </style>
 </head>
 <body class="overflow-hidden">
@@ -402,12 +291,12 @@
         <!-- Top Fixed Section -->
         <div class="p-4 border-b border-gray-700/50 flex-shrink-0">
             <div id="sidebar-profile-header" class="flex items-center gap-4 cursor-pointer">
-                <img id="sidebar-avatar" src="https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/dfdc00fc6bb93771364bbf5000dad222.jpg?alt=media&token=ff33f08b-1b2e-424e-b636-f664d8044bed" class="w-16 h-16 rounded-full object-cover border-2 border-gray-600">
+                <img id="sidebar-avatar" src="https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/dfdc00fc6bb93771364bbf5000dad222.jpg?alt=media&token=ff33f08b-1b2e-424e-b636-f664d8044bed" class="w-16 h-16 rounded-full object-cover border-2 border-gray-600" loading="lazy">
                 <div>
                     <h2 id="sidebar-username" class="text-xl font-bold text-white">USER NAME</h2>
                     <div class="flex items-center">
                        <p id="sidebar-teamname" class="text-sm text-gray-400">TEAM NAME</p>
-                       <img id="sidebar-team-badge" src="" class="h-4 ml-2 hidden" alt="Team Badge">
+                       <img id="sidebar-team-badge" src="" class="h-4 ml-2 hidden" alt="Team Badge" loading="lazy">
                     </div>
                 </div>
             </div>
@@ -415,12 +304,12 @@
             <div class="mt-6 grid grid-cols-2 gap-3">
                  <div class="premium-balance-card coin-card">
                     <div id="sidebar-coin-plus" class="plus-btn"><i class="fa-solid fa-plus"></i></div>
-                    <img src="https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Levelup%2F1762763055321.png?alt=media&token=58051d4b-446d-4a30-b588-bed5a5f49c8d" class="icon">
+                    <img src="https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Levelup%2F1762763055321.png?alt=media&token=58051d4b-446d-4a30-b588-bed5a5f49c8d" class="icon" loading="lazy">
                     <span id="sidebar-coin-balance" class="amount">0.00</span>
                 </div>
                  <div class="premium-balance-card diamond-card">
                     <div id="sidebar-diamond-plus" class="plus-btn"><i class="fa-solid fa-plus"></i></div>
-                    <img src="https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Levelup%2F1762763297995.png?alt=media&token=db9ebed1-ff51-49ed-a311-0327313dae56" class="icon">
+                    <img src="https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Levelup%2F1762763297995.png?alt=media&token=db9ebed1-ff51-49ed-a311-0327313dae56" class="icon" loading="lazy">
                     <span id="sidebar-diamond-balance" class="amount">0.00</span>
                 </div>
             </div>
@@ -463,28 +352,80 @@
             <!-- Lottie -->
             <dotlottie-wc id="splash-screen-lottie" src="https://lottie.host/09fd19d9-9bd5-42ca-8089-880621573a27/qqEJoYOp7E.lottie" style="width: 300px; height: 300px; position: absolute;" autoplay loop></dotlottie-wc>
             <!-- Logo -->
-            <img id="splash-screen-logo" src="https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/dfdc00fc6bb93771364bbf5000dad222.jpg?alt=media&token=ff33f08b-1b2e-424e-b636-f664d8044bed" alt="LEVEL UP Logo" class="w-48 h-48 rounded-full opacity-0 transform scale-50">
+            <img id="splash-screen-logo" src="https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/dfdc00fc6bb93771364bbf5000dad222.jpg?alt=media&token=ff33f08b-1b2e-424e-b636-f664d8044bed" alt="LEVEL UP Logo" class="w-48 h-48 rounded-full opacity-0 transform scale-50" loading="lazy">
         </div>
     </div>
 
     <!-- Screen 2: Auth -->
-    <div id="auth-container" class="screen bg-black hidden !justify-center">
-        <div id="login-view" class="auth-view active"><div class="w-full max-w-sm text-white text-center"><img src="https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/dfdc00fc6bb93771364bbf5000dad222.jpg?alt=media&token=ff33f08b-1b2e-424e-b636-f664d8044bed" alt="Logo" class="w-24 h-24 mx-auto mb-4 rounded-full"><h1 class="text-4xl font-bold">LEVEL UP</h1><p class="text-md text-gray-400 mb-10">Welcome Back</p><form id="login-form-element" class="space-y-5"><div class="relative flex items-center w-full input-field rounded-2xl"><i class="fa-solid fa-envelope absolute left-5 text-gray-400"></i><input id="login-email" type="text" placeholder="Email" required class="w-full bg-transparent pl-12 pr-5 py-4 text-white placeholder-gray-400 border-none rounded-2xl focus:outline-none"></div><div class="relative flex items-center w-full input-field rounded-2xl"><i class="fa-solid fa-lock absolute left-5 text-gray-400"></i><input id="login-password" type="password" placeholder="Password" required class="w-full bg-transparent pl-12 pr-12 py-4 text-white placeholder-gray-400 border-none rounded-2xl focus:outline-none"><i id="toggle-login-password" class="fa-solid fa-eye password-toggle"></i></div><div><a href="#" id="forgot-password-link" class="block text-sm text-right text-gray-400 hover:text-white -mt-2 mb-6">Forgot password?</a><button type="submit" class="w-full py-4 rounded-2xl action-button text-lg flex items-center justify-center h-[52px]">Sign In</button></div></form><div class="text-center mt-8 text-base text-gray-400 space-y-4"><p>Don't have an account? <a href="#" id="show-signup" class="font-bold text-[#1DB954] hover:underline">Sign Up</a></p><p><a href="https://t.me/Blackmoney54" target="_blank" rel="noopener noreferrer" class="hover:underline">Contact <span class="text-[#1DB954] font-semibold">Help</span></a></p></div></div></div>
-        <div id="signup-view" class="auth-view"><div class="w-full max-w-sm text-white"><div class="text-center mb-6"><img src="https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/dfdc00fc6bb93771364bbf5000dad222.jpg?alt=media&token=ff33f08b-1b2e-424e-b636-f664d8044bed" alt="Logo" class="w-20 h-20 mx-auto mb-3 rounded-full"><h1 class="text-3xl font-bold">Create Account</h1></div><form id="signup-form-element" class="space-y-4">
-            <div class="relative flex items-center w-full input-field rounded-xl"><i class="fa-solid fa-user absolute left-5 text-gray-400"></i><input id="signup-fullname" type="text" placeholder="Full Name" required class="w-full bg-transparent pl-12 pr-5 py-3 text-sm text-white placeholder-gray-400 border-none rounded-xl focus:outline-none"></div>
-            <div class="relative flex items-center w-full input-field rounded-xl"><i class="fa-solid fa-envelope absolute left-5 text-gray-400"></i><input id="signup-email" type="email" placeholder="Email Address (@gmail.com only)" required class="w-full bg-transparent pl-12 pr-5 py-3 text-sm text-white placeholder-gray-400 border-none rounded-xl focus:outline-none"></div>
-            <div class="flex items-center w-full rounded-xl input-field px-5">
-                <i class="fa-brands fa-whatsapp text-gray-400 mr-3 text-lg"></i>
-                <span class="text-gray-400 text-sm pr-2">+880</span>
-                <input id="signup-whatsapp" type="tel" placeholder="WhatsApp Number" required class="flex-1 bg-transparent py-3 text-sm text-white placeholder-gray-400 border-none focus:outline-none">
+    <div id="auth-container" class="screen bg-black hidden !justify-center p-4">
+        <!-- Login View -->
+        <div id="login-view" class="auth-view active w-full max-w-sm">
+            <div class="auth-card">
+                <img src="https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/dfdc00fc6bb93771364bbf5000dad222.jpg?alt=media&token=ff33f08b-1b2e-424e-b636-f664d8044bed" alt="Logo" class="w-20 h-20 mx-auto mb-4 rounded-full" loading="lazy">
+                <h1 class="text-3xl font-oswald font-bold text-white text-center">Welcome Back</h1>
+                <p class="text-gray-400 mb-8 text-center">Sign in to continue</p>
+                <form id="login-form-element" class="space-y-5">
+                    <div class="relative flex items-center w-full input-field p-1">
+                        <i class="fa-solid fa-envelope absolute left-4 text-gray-400"></i>
+                        <input id="login-email" type="text" placeholder="Email" required class="w-full bg-transparent pl-10 pr-4 py-3 text-white placeholder-gray-400 border-none rounded-lg focus:outline-none">
+                    </div>
+                    <div class="relative flex items-center w-full input-field p-1">
+                        <i class="fa-solid fa-lock absolute left-4 text-gray-400"></i>
+                        <input id="login-password" type="password" placeholder="Password" required class="w-full bg-transparent pl-10 pr-10 py-3 text-white placeholder-gray-400 border-none rounded-lg focus:outline-none">
+                        <i id="toggle-login-password" class="fa-solid fa-eye password-toggle"></i>
+                    </div>
+                    <a href="#" id="forgot-password-link" class="block text-sm text-right text-gray-400 hover:text-white -mt-2">Forgot password?</a>
+                    <button type="submit" class="w-full py-3 rounded-xl action-button text-lg flex items-center justify-center h-[52px]">Sign In</button>
+                </form>
+                <div class="mt-6 text-center text-sm">
+                    <p class="text-gray-400">Don't have an account? <a href="#" id="show-signup" class="font-semibold text-green-400 hover:text-green-300">Sign Up</a></p>
+                </div>
             </div>
-            <div class="relative flex items-center w-full input-field rounded-xl"><i class="fa-solid fa-lock absolute left-5 text-gray-400"></i><input id="signup-password" type="password" placeholder="Password" required class="w-full bg-transparent pl-12 pr-12 py-3 text-sm text-white placeholder-gray-400 border-none rounded-xl focus:outline-none"><i id="toggle-signup-password" class="fa-solid fa-eye password-toggle"></i></div>
-            <div id="strength-bar-container"><div id="strength-bar"></div></div>
-            <div class="relative flex items-center w-full input-field rounded-xl"><i class="fa-solid fa-lock absolute left-5 text-gray-400"></i><input id="signup-confirm-password" type="password" placeholder="Confirm Password" required class="w-full bg-transparent pl-12 pr-12 py-3 text-sm text-white placeholder-gray-400 border-none rounded-xl focus:outline-none"><i id="toggle-confirm-password" class="fa-solid fa-eye password-toggle"></i></div>
-            <p id="password-match-msg" class="text-xs -mt-2 ml-2 h-4"></p>
-            <div class="flex justify-center space-x-2 my-2"><div><input type="radio" id="male" name="gender" class="hidden gender-radio" value="male" checked><label for="male" class="cursor-pointer flex items-center justify-center w-24 h-11 text-xs text-gray-400 rounded-full input-field">Male</label></div><div><input type="radio" id="female" name="gender" class="hidden gender-radio" value="female"><label for="female" class="cursor-pointer flex items-center justify-center w-24 h-11 text-xs text-gray-400 rounded-full input-field">Female</label></div><div><input type="radio" id="other" name="gender" class="hidden gender-radio" value="other"><label for="other" class="cursor-pointer flex items-center justify-center w-24 h-11 text-xs text-gray-400 rounded-full input-field">Other</label></div></div>
-            <button type="submit" class="w-full py-4 mt-4 rounded-xl action-button text-lg flex items-center justify-center h-[52px]">Sign Up</button>
-        </form><div class="text-center mt-4"><p class="text-sm text-gray-400">Already have an account? <a href="#" id="show-login" class="font-bold text-[#1DB954] hover:underline">Sign In</a></p></div></div></div>
+        </div>
+    
+        <!-- Signup View -->
+        <div id="signup-view" class="auth-view w-full max-w-sm">
+            <div class="auth-card">
+                 <h1 class="text-3xl font-oswald font-bold text-white text-center">Create Account</h1>
+                 <p class="text-gray-400 mb-6 text-center">Get started with LEVEL UP</p>
+                 <form id="signup-form-element" class="space-y-4">
+                    <div class="relative flex items-center w-full input-field p-1">
+                        <i class="fa-solid fa-user absolute left-4 text-gray-400"></i>
+                        <input id="signup-fullname" type="text" placeholder="Full Name" required class="w-full bg-transparent pl-10 pr-4 py-2 text-sm text-white placeholder-gray-400 border-none rounded-lg focus:outline-none">
+                    </div>
+                    <div class="relative flex items-center w-full input-field p-1">
+                        <i class="fa-solid fa-envelope absolute left-4 text-gray-400"></i>
+                        <input id="signup-email" type="email" placeholder="Email Address (@gmail.com only)" required class="w-full bg-transparent pl-10 pr-4 py-2 text-sm text-white placeholder-gray-400 border-none rounded-lg focus:outline-none">
+                    </div>
+                    <div class="flex items-center w-full input-field rounded-lg px-4 py-2">
+                        <i class="fa-brands fa-whatsapp text-gray-400 mr-3 text-lg"></i>
+                        <span class="text-gray-400 text-sm pr-2 border-r border-gray-600">+880</span>
+                        <input id="signup-whatsapp" type="tel" placeholder="WhatsApp Number" required class="flex-1 bg-transparent pl-2 text-sm text-white placeholder-gray-400 border-none focus:outline-none">
+                    </div>
+                    <div class="relative flex items-center w-full input-field p-1">
+                        <i class="fa-solid fa-lock absolute left-4 text-gray-400"></i>
+                        <input id="signup-password" type="password" placeholder="Password" required class="w-full bg-transparent pl-10 pr-10 py-2 text-sm text-white placeholder-gray-400 border-none rounded-lg focus:outline-none">
+                        <i id="toggle-signup-password" class="fa-solid fa-eye password-toggle"></i>
+                    </div>
+                    <div id="strength-bar-container" class="!mt-1 !mb-2"><div id="strength-bar"></div></div>
+                    <div class="relative flex items-center w-full input-field p-1">
+                        <i class="fa-solid fa-lock absolute left-4 text-gray-400"></i>
+                        <input id="signup-confirm-password" type="password" placeholder="Confirm Password" required class="w-full bg-transparent pl-10 pr-10 py-2 text-sm text-white placeholder-gray-400 border-none rounded-lg focus:outline-none">
+                        <i id="toggle-confirm-password" class="fa-solid fa-eye password-toggle"></i>
+                    </div>
+                    <p id="password-match-msg" class="text-xs -mt-2 ml-2 h-4"></p>
+                    <div class="flex justify-center space-x-2">
+                        <div><input type="radio" id="male" name="gender" class="hidden gender-radio" value="male" checked><label for="male" class="cursor-pointer flex items-center justify-center w-24 h-10 text-xs text-gray-300 rounded-lg">Male</label></div>
+                        <div><input type="radio" id="female" name="gender" class="hidden gender-radio" value="female"><label for="female" class="cursor-pointer flex items-center justify-center w-24 h-10 text-xs text-gray-300 rounded-lg">Female</label></div>
+                        <div><input type="radio" id="other" name="gender" class="hidden gender-radio" value="other"><label for="other" class="cursor-pointer flex items-center justify-center w-24 h-10 text-xs text-gray-300 rounded-lg">Other</label></div>
+                    </div>
+                    <button type="submit" class="w-full py-3 mt-4 rounded-xl action-button text-lg flex items-center justify-center h-[52px]">Sign Up</button>
+                </form>
+                 <div class="mt-6 text-center text-sm">
+                    <p class="text-gray-400">Already have an account? <a href="#" id="show-login" class="font-semibold text-green-400 hover:text-green-300">Sign In</a></p>
+                 </div>
+            </div>
+        </div>
     </div>
     
     <!-- Screen 3: Dashboard -->
@@ -496,18 +437,21 @@
                     <button id="sidebar-toggle" class="text-xl text-gray-300 w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10">
                         <i class="fa-solid fa-bars"></i>
                     </button>
-                    <!-- MODIFIED: Simplified header title -->
-                    <h1 class="text-2xl font-oswald font-bold tracking-wider text-white">LEVEL UP</h1>
+                    <!-- MODIFIED: Animated header title -->
+                    <h1 id="animated-header-title" class="text-2xl font-oswald font-bold tracking-wider text-white flex">
+                        <span>L</span><span>E</span><span>V</span><span>E</span><span>L</span><span class="inline-block w-2"></span><span>U</span><span>P</span>
+                    </h1>
                 </div>
                 <div class="flex items-center gap-2">
-                    <!-- MODIFIED: Search button for animation -->
                     <button id="home-search-btn" class="text-xl text-gray-300 w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10">
                         <i class="fa-solid fa-search"></i>
                     </button>
-                    <div id="wallet-button" class="bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 rounded-full p-2 px-4 flex items-center gap-3 cursor-pointer hover:border-green-500 transition-all duration-300">
+                    <!-- MODIFIED: Wallet button UI updated -->
+                    <div id="wallet-button" class="bg-gray-800/50 border border-gray-700 rounded-full p-2 pl-3 pr-4 flex items-center gap-3 cursor-pointer hover:border-green-500 transition-all duration-300">
                         <i class="fa-solid fa-wallet text-xl text-green-400"></i>
-                        <div>
-                            <p class="text-sm font-bold text-white font-oswald tracking-wider"><span id="header-wallet-balance">0.00</span> <span class="text-xs font-normal text-gray-300">TK</span></p>
+                        <div class="text-left">
+                            <p class="text-base font-bold text-white font-oswald tracking-wider leading-none"><span id="header-wallet-balance">0.00</span> TK</p>
+                            <p class="text-[10px] text-gray-400 uppercase font-semibold">Live Balance</p>
                         </div>
                     </div>
                 </div>
@@ -607,7 +551,7 @@
                 <button class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full back-button">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
-                <h2 class="text-xl font-bold">My Posts</h2>
+                <h2 class="text-xl font-bold">My Community Posts</h2>
                 <div class="w-10"></div>
             </header>
              <header id="lucky-spin-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
@@ -687,6 +631,7 @@
                 <div id="home-content" class="dashboard-page">
                     <div id="home-tabs" class="px-4 py-2 flex items-center gap-4 overflow-x-auto no-scrollbar sticky top-[68px] bg-[#121212] z-30">
                         <button class="home-tab-link active-home-tab" data-target="post-feed">All</button>
+                        <button class="home-tab-link" data-target="home-news-feed">News</button>
                         <button class="home-tab-link" data-target="home-tournaments-feed">Tournament</button>
                         <button class="home-tab-link" data-target="home-guild-feed">Guild</button>
                         <button class="home-tab-link" data-target="home-player-squad-feed">Squad</button>
@@ -703,6 +648,7 @@
                     </div>
                     
                     <div id="post-feed" class="home-tab-content active space-y-6 px-4"></div>
+                    <div id="home-news-feed" class="home-tab-content space-y-6 px-4"></div>
                     <div id="home-tournaments-feed" class="home-tab-content space-y-6 px-4"></div>
                     <div id="home-guild-feed" class="home-tab-content space-y-6 px-4"></div>
                     <div id="home-player-squad-feed" class="home-tab-content space-y-6 px-4"></div>
@@ -737,7 +683,7 @@
                     <!-- MODIFIED: Profile Info Section -->
                     <div class="mb-6 bg-[#2a2a2a] p-4 rounded-xl border border-gray-700">
                         <div class="flex items-center gap-4 mb-4">
-                            <img id="profile-page-avatar" src="" class="w-20 h-20 rounded-full object-cover border-2 border-gray-600">
+                            <img id="profile-page-avatar" src="" class="w-20 h-20 rounded-full object-cover border-2 border-gray-600" loading="lazy">
                             <div class="flex-grow">
                                 <h2 id="dashboard-user-name" class="text-2xl font-bold text-white truncate"></h2>
                                 <div class="flex items-center gap-2 mt-1">
@@ -800,7 +746,7 @@
                                 <button id="manage-posts-button" class="setting-item">
                                     <div class="flex items-center">
                                         <div class="setting-icon bg-icon-purple"><i class="fa-solid fa-handshake-angle"></i></div>
-                                        <span class="setting-label">My Post</span>
+                                        <span class="setting-label">Community Posts</span>
                                     </div>
                                     <i class="fa-solid fa-chevron-right text-gray-500"></i>
                                 </button>
@@ -836,6 +782,18 @@
                     <form id="team-form" class="space-y-6">
                         <div class="form-section p-4 rounded-xl space-y-4">
                             <div>
+                                <label class="form-label text-center block">Team Logo</label>
+                                <div class="relative w-24 h-24 mx-auto">
+                                    <input type="file" id="team-logo-upload" class="hidden" accept="image/*">
+                                    <label for="team-logo-upload" class="cursor-pointer group">
+                                        <img id="team-logo-preview" src="" class="rounded-full w-full h-full object-cover border-2 border-gray-600 group-hover:border-green-500 transition-colors" loading="lazy">
+                                        <div class="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <i class="fa-solid fa-camera text-2xl"></i>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                            <div>
                                 <label for="team-name" class="form-label">Team Name</label>
                                 <div class="relative">
                                     <input type="text" id="team-name" class="form-input pr-12" placeholder="Enter your team's name" required readonly>
@@ -844,15 +802,10 @@
                                 <p class="text-xs text-yellow-400 mt-2 hidden" id="team-name-change-notice"><i class="fa-solid fa-coins mr-1"></i>Changing your team name will cost 1000 Coins.</p>
                             </div>
                             <div>
-                                <label class="form-label text-center block">Team Logo</label>
-                                <div class="relative w-24 h-24 mx-auto">
-                                    <input type="file" id="team-logo-upload" class="hidden" accept="image/*">
-                                    <label for="team-logo-upload" class="cursor-pointer group">
-                                        <img id="team-logo-preview" src="" class="rounded-full w-full h-full object-cover border-2 border-gray-600 group-hover:border-green-500 transition-colors">
-                                        <div class="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center transition-opacity">
-                                            <i class="fa-solid fa-camera text-2xl"></i>
-                                        </div>
-                                    </label>
+                                <label class="form-label">Squad Type</label>
+                                <div class="flex gap-2">
+                                    <div><input type="radio" id="squad-boys" name="squad-type" class="hidden custom-radio" value="boys" checked><label for="squad-boys" class="block w-full text-center py-2 px-4 rounded-lg cursor-pointer">Boys Squad</label></div>
+                                    <div><input type="radio" id="squad-girls" name="squad-type" class="hidden custom-radio" value="girls"><label for="squad-girls" class="block w-full text-center py-2 px-4 rounded-lg cursor-pointer">Girls Squad</label></div>
                                 </div>
                             </div>
                         </div>
@@ -901,8 +854,8 @@
                         <div class="relative w-32 h-32 mx-auto">
                             <input type="file" id="new-profile-image-upload" class="hidden" accept="image/*">
                             <label for="new-profile-image-upload" class="cursor-pointer group">
-                                <img id="edit-profile-avatar-preview" src="" class="rounded-full w-full h-full object-cover border-4 border-gray-700 group-hover:border-green-500 transition-colors">
-                                <div class="absolute inset-0 bg-black/60 rounded-full flex items-center justify-center transition-opacity">
+                                <img id="edit-profile-avatar-preview" src="" class="rounded-full w-full h-full object-cover border-4 border-gray-700 group-hover:border-green-500 transition-colors" loading="lazy">
+                                <div class="absolute inset-0 bg-black/60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                     <i class="fa-solid fa-camera text-3xl"></i>
                                 </div>
                             </label>
@@ -916,19 +869,19 @@
                 </div>
                  <div id="change-password-content" class="dashboard-page hidden p-4">
                     <form id="change-password-form" class="space-y-4">
-                        <div class="relative flex items-center w-full input-field rounded-xl">
-                            <i class="fa-solid fa-key absolute left-5 text-gray-400"></i>
-                            <input id="current-password" type="password" placeholder="Current Password" required class="w-full bg-transparent pl-12 pr-12 py-3 text-sm text-white placeholder-gray-400 border-none rounded-xl focus:outline-none">
+                        <div class="relative flex items-center w-full input-field rounded-xl p-1">
+                            <i class="fa-solid fa-key absolute left-4 text-gray-400"></i>
+                            <input id="current-password" type="password" placeholder="Current Password" required class="w-full bg-transparent pl-10 pr-10 py-2 text-sm text-white placeholder-gray-400 border-none rounded-lg focus:outline-none">
                              <i class="fa-solid fa-eye password-toggle"></i>
                         </div>
-                        <div class="relative flex items-center w-full input-field rounded-xl">
-                            <i class="fa-solid fa-lock absolute left-5 text-gray-400"></i>
-                            <input id="new-password" type="password" placeholder="New Password" required class="w-full bg-transparent pl-12 pr-12 py-3 text-sm text-white placeholder-gray-400 border-none rounded-xl focus:outline-none">
+                        <div class="relative flex items-center w-full input-field rounded-xl p-1">
+                            <i class="fa-solid fa-lock absolute left-4 text-gray-400"></i>
+                            <input id="new-password" type="password" placeholder="New Password" required class="w-full bg-transparent pl-10 pr-10 py-2 text-sm text-white placeholder-gray-400 border-none rounded-lg focus:outline-none">
                             <i class="fa-solid fa-eye password-toggle"></i>
                         </div>
-                        <div class="relative flex items-center w-full input-field rounded-xl">
-                           <i class="fa-solid fa-lock absolute left-5 text-gray-400"></i>
-                            <input id="confirm-new-password" type="password" placeholder="Confirm New Password" required class="w-full bg-transparent pl-12 pr-12 py-3 text-sm text-white placeholder-gray-400 border-none rounded-xl focus:outline-none">
+                        <div class="relative flex items-center w-full input-field rounded-xl p-1">
+                           <i class="fa-solid fa-lock absolute left-4 text-gray-400"></i>
+                            <input id="confirm-new-password" type="password" placeholder="Confirm New Password" required class="w-full bg-transparent pl-10 pr-10 py-2 text-sm text-white placeholder-gray-400 border-none rounded-lg focus:outline-none">
                              <i class="fa-solid fa-eye password-toggle"></i>
                         </div>
                         <button type="submit" class="w-full py-3 mt-4 rounded-xl action-button text-lg flex items-center justify-center h-[48px]">Update Password</button>
@@ -939,7 +892,12 @@
                         <button id="delete-account-btn" class="w-full py-3 rounded-xl bg-red-800 hover:bg-red-700 text-white font-bold transition-colors">Delete My Account</button>
                     </div>
                 </div>
-                <div id="coming-soon-content" class="dashboard-page hidden p-6 text-center flex flex-col justify-center items-center h-[calc(100vh-100px)]"><i class="fa-solid fa-tools text-6xl text-green-500 mb-6"></i><h1 class="text-4xl font-bold">Coming Soon!</h1><p class="text-gray-400 mt-2">This feature is under active development.</p><button id="back-home-btn" class="mt-8 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg">Back to Home</button></div>
+                <div id="coming-soon-content" class="dashboard-page hidden p-6 text-center flex flex-col justify-center items-center h-[calc(100vh-100px)] overflow-y-hidden">
+                    <i class="fa-solid fa-tools text-6xl text-green-500 mb-6"></i>
+                    <h1 class="text-4xl font-bold">Coming Soon!</h1>
+                    <p class="text-gray-400 mt-2">This feature is under active development.</p>
+                    <button id="back-home-btn" class="mt-8 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg">Back to Home</button>
+                </div>
 
                 <!-- [REFACTORED] Fullscreen Overlays are now regular pages -->
                 <div id="booking-content" class="dashboard-page hidden p-4 md:p-6"></div>
@@ -954,7 +912,7 @@
                 <div id="redeem-task-content" class="dashboard-page hidden p-4 md:p-6"></div>
                 <div id="partner-content" class="dashboard-page hidden p-6">
                     <div class="text-center">
-                        <img src="https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/dfdc00fc6bb93771364bbf5000dad222.jpg?alt=media&token=ff33f08b-1b2e-424e-b636-f664d8044bed" alt="LEVEL UP Logo" class="w-24 h-24 rounded-full mx-auto border-4 border-green-500 mb-4">
+                        <img src="https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/dfdc00fc6bb93771364bbf5000dad222.jpg?alt=media&token=ff33f08b-1b2e-424e-b636-f664d8044bed" alt="LEVEL UP Logo" class="w-24 h-24 rounded-full mx-auto border-4 border-green-500 mb-4" loading="lazy">
                         <h1 class="text-3xl font-bold font-oswald text-green-400">LEVEL UP পার্টনার প্রোগ্রামে স্বাগতম!</h1>
                         <p class="text-gray-400 mt-2">আপনার গেমিং ইভেন্টগুলো আয়োজন করুন এবং আয় করুন আমাদের সাথে।</p>
                     </div>
@@ -994,7 +952,7 @@
     
     <!-- Modals -->
     <div id="modal-screen" class="screen hidden !justify-center"></div>
-    <div id="forgot-password-modal" class="screen hidden !justify-center"><div class="modal-box p-6 text-white text-center flex flex-col items-center relative"><button id="close-forgot-modal" class="absolute top-3 right-4 text-gray-400 hover:text-white text-2xl">&times;</button><h3 class="text-2xl font-bold mb-2">Reset Password</h3><p class="text-gray-300 text-sm mb-6">Enter your email and we'll send you a reset link.</p><form id="forgot-password-form" class="w-full"><div class="relative flex items-center w-full input-field rounded-xl mb-4"><i class="fa-solid fa-envelope absolute left-5 text-gray-400"></i><input id="forgot-email-input" type="email" placeholder="Your Email Address" required class="w-full bg-transparent pl-12 pr-5 py-3 text-white placeholder-gray-400 border-none rounded-xl focus:outline-none"></div><button type="submit" class="w-full py-3 rounded-xl action-button text-base flex items-center justify-center h-[44px]">Send Reset Link</button></form></div></div>
+    <div id="forgot-password-modal" class="screen hidden !justify-center"><div class="modal-box p-6 text-white text-center flex flex-col items-center relative"><button id="close-forgot-modal" class="absolute top-3 right-4 text-gray-400 hover:text-white text-2xl">&times;</button><h3 class="text-2xl font-bold mb-2">Reset Password</h3><p class="text-gray-300 text-sm mb-6">Enter your email and we'll send you a reset link.</p><form id="forgot-password-form" class="w-full"><div class="relative flex items-center w-full input-field rounded-xl mb-4 p-1"><i class="fa-solid fa-envelope absolute left-4 text-gray-400"></i><input id="forgot-email-input" type="email" placeholder="Your Email Address" required class="w-full bg-transparent pl-10 pr-4 py-3 text-white placeholder-gray-400 border-none rounded-lg focus:outline-none"></div><button type="submit" class="w-full py-3 rounded-xl action-button text-base flex items-center justify-center h-[44px]">Send Reset Link</button></form></div></div>
     
     <div id="loading-overlay" class="screen hidden !justify-center" style="z-index: 1001; background-color: rgba(18, 18, 18, 0.8); backdrop-filter: blur(8px);">
         <div class="text-center">
@@ -1018,7 +976,7 @@
 
     <div id="image-lightbox" class="screen hidden !justify-center" onclick="hideLightbox()">
         <button class="absolute top-4 right-4 text-white text-4xl">&times;</button>
-        <img id="lightbox-img" src="" alt="Screenshot" onclick="event.stopPropagation()">
+        <img id="lightbox-img" src="" alt="Screenshot" onclick="event.stopPropagation()" loading="lazy">
     </div>
 
     <audio id="booking-success-sound" preload="auto"></audio>
@@ -1225,7 +1183,7 @@
         const database = firebase.database();
         const storage = firebase.storage();
         
-        window.dbData = { users: {}, posts: {}, sliderImages: [], admin: {}, guildPosts: {}, playerSquadPosts: {}, redeemCodes: {} };
+        window.dbData = { users: {}, posts: {}, newsPosts: {}, sliderImages: [], admin: {}, guildPosts: {}, playerSquadPosts: {}, redeemCodes: {} };
         const DEFAULT_AVATAR = "https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/dfdc00fc6bb93771364bbf5000dad222.jpg?alt=media&token=ff33f08b-1b2e-424e-b636-f664d8044bed";
         const DEFAULT_TEAM_LOGO = "https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/dfdc00fc6bb93771364bbf5000dad222.jpg?alt=media&token=ff33f08b-1b2e-424e-b636-f664d8044bed";
         const APP_LOGO_URL = "https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/dfdc00fc6bb93771364bbf5000dad222.jpg?alt=media&token=ff33f08b-1b2e-424e-b636-f664d8044bed";
@@ -1242,12 +1200,13 @@
             { diamonds: 505, price: 505 }
         ];
         let currentPaymentData = {};
+        let countdownInterval = null; // [FIX] Global interval for countdowns
 
         // --- Utility Functions ---
         function timeAgo(isoDateString) { const date = new Date(isoDateString); const seconds = Math.floor((new Date() - date) / 1000); if (seconds < 2) return `just now`; if (seconds < 60) return `${seconds}s ago`; const minutes = Math.floor(seconds / 60); if (minutes < 60) return `${minutes}m ago`; const hours = Math.floor(minutes / 60); if (hours < 24) return `${hours}h ago`; const days = Math.floor(hours / 24); return `${days}d ago`; }
         function truncateName(name, maxLength = 15) { if (!name || typeof name !== 'string') return ''; if (name.length <= maxLength) return name; return name.substring(0, maxLength) + '..'; }
         function formatNumberCompact(num) { num = Number(num); if (isNaN(num)) return '0'; if (num < 1000) { return String(num % 1 === 0 ? num : num.toFixed(1)).replace(/\.0$/, ''); } const si = [{ v: 1E3, s: "k" }, { v: 1E6, s: "M" }, { v: 1E9, s: "B" }, { v: 1E12, s: "T" },]; let i; for (i = si.length - 1; i > 0; i--) { if (num >= si[i].v) { break; } } return (num / si[i].v).toFixed(1).replace(/\.0$/, "") + si[i].s; }
-        function preloadImages(urls) { urls.forEach(url => { const img = new Image(); img.src = url; }); }
+        function preloadImages(urls) { urls.forEach(url => { const img = new Image(); img.src = url; img.loading = 'lazy'; }); }
         function getBangladeshDateString() { const now = new Date(); const bstTime = new Date(now.getTime() + (6 * 60 * 60 * 1000)); const year = bstTime.getUTCFullYear(); const month = String(bstTime.getUTCMonth() + 1).padStart(2, '0'); const day = String(bstTime.getUTCDate()).padStart(2, '0'); return `${year}-${month}-${day}`; }
         
         // --- Firebase Helper Functions ---
@@ -1276,6 +1235,10 @@
             if (db.posts) {
                 Object.values(db.posts).forEach(post => { if(post.imageUrl) imagesToLoad.add(post.imageUrl); });
             }
+             // Add News Post Images
+            if (db.newsPosts) {
+                Object.values(db.newsPosts).forEach(post => { if(post.imageUrl) imagesToLoad.add(post.imageUrl); });
+            }
             // Add Guild Images
             if (db.guildPosts) {
                 Object.values(db.guildPosts).forEach(gp => { if(gp.guildImage) imagesToLoad.add(gp.guildImage); });
@@ -1285,6 +1248,7 @@
                 if (!preloadedCache.has(url)) {
                     const img = new Image();
                     img.src = url;
+                    img.loading = 'lazy';
                     preloadedCache.add(url);
                 }
             });
@@ -1295,7 +1259,6 @@
             loadingOverlay = document.getElementById('loading-overlay');
             loadingTextEl = document.getElementById('loading-text');
             const screens = { splash: document.getElementById('splash-screen'), auth: document.getElementById('auth-container'), dashboard: document.getElementById('dashboard-screen'), modal: document.getElementById('modal-screen'), forgot: document.getElementById('forgot-password-modal'), topupPurchase: document.getElementById('topup-purchase-modal'), adView: document.getElementById('ad-view-screen') };
-            const authViews = { login: document.getElementById('login-view'), signup: document.getElementById('signup-view') };
             const navContainer = document.querySelector('.nav-container');
             let currentUserData = null;
             
@@ -1383,7 +1346,7 @@
                     updateActiveNavItem(pageId);
 
                     const renderFunctionMap = {
-                        'home-content': () => { renderAllPosts(); renderTournamentsFeed(); renderHomeGuildPosts(); renderHomePlayerSquadPosts(); renderMissionsPage(); renderStorePage(); },
+                        'home-content': () => { renderAllPosts(); renderNewsFeed(); renderTournamentsFeed(); renderHomeGuildPosts(); renderHomePlayerSquadPosts(); renderMissionsPage(); renderStorePage(); },
                         'my-matches-content': renderMyMatchesPage, 'manage-posts-content': renderManageNeedPage, 'lucky-spin-content': renderLuckySpinPage,
                         'history-content': renderHistoryPage, 'redeem-content': renderRedeemPage, 'wallet-content': renderWalletPage, 'lup-wallet-screen': renderLupWalletPage,
                         'topup-screen': renderTopUpPage, 'mailbox-content': renderMailbox, 'search-content': () => { document.getElementById('search-results-container').innerHTML = '<p class="text-center text-gray-500 mt-8">Type at least 3 characters to search.</p>'; },
@@ -1523,7 +1486,7 @@
                 
                 bookings.forEach(booking => {
                     const post = posts.find(p => p.id === booking.postId && p.status === 'completed');
-                    if (post) {
+                    if (post && post.details.matchType !== 'Clash Squad') { // Exclude CS from kill/win stats
                         played++;
                         const finalRankings = Object.values(post.participants || {}).map(p => { let totalPoints = 0; if (post.approvedResults && post.approvedResults[p.userId]) { Object.values(post.approvedResults[p.userId]).forEach(mapResult => { totalPoints += calculatePoints(mapResult.kills, mapResult.position); }); } return { userId: p.userId, totalPoints }; }).sort((a, b) => b.totalPoints - a.totalPoints);
                         if (finalRankings.length > 0 && finalRankings[0].userId === auth.currentUser.uid) { wins++; }
@@ -1532,6 +1495,11 @@
                             Object.values(post.approvedResults[auth.currentUser.uid]).forEach(mapResult => {
                                 kills += parseInt(mapResult.kills) || 0;
                             });
+                        }
+                    } else if (post) { // Still count CS matches as played
+                        played++;
+                        if (post.csResults?.winner === userData.team?.id) {
+                            wins++;
                         }
                     }
                 });
@@ -1615,8 +1583,8 @@
             };
             
             function setupRealtimeListener(user) {
-                database.ref().on('value', (snapshot) => {
-                    window.dbData = snapshot.val() || { users: {}, posts: {}, sliderImages: [], admin: {}, guildPosts: {}, playerSquadPosts: {}, redeemCodes: {} };
+                database.ref().on('value', snapshot => {
+                    window.dbData = snapshot.val() || { users: {}, posts: {}, newsPosts: {}, sliderImages: [], admin: {}, guildPosts: {}, playerSquadPosts: {}, redeemCodes: {} };
                     const currentUserDataFromDb = window.dbData.users?.[user.uid];
                     if (!currentUserDataFromDb) { auth.signOut(); return; }
 
@@ -1626,7 +1594,7 @@
                     const currentPageId = navigationHistory[navigationHistory.length - 1];
                     // Re-render current page to reflect new data
                     const renderFunctionMap = {
-                        'home-content': () => { renderAllPosts(); renderTournamentsFeed(); renderHomeGuildPosts(); renderHomePlayerSquadPosts(); renderMissionsPage(); renderStorePage(); },
+                        'home-content': () => { renderAllPosts(); renderNewsFeed(); renderTournamentsFeed(); renderHomeGuildPosts(); renderHomePlayerSquadPosts(); renderMissionsPage(); renderStorePage(); },
                         'my-matches-content': renderMyMatchesPage,
                         'manage-posts-content': renderManageNeedPage,
                         'lucky-spin-content': renderLuckySpinPage,
@@ -1637,6 +1605,14 @@
                         'lup-wallet-screen': renderLupWalletPage,
                         'topup-screen': renderTopUpPage,
                         'mailbox-content': renderMailbox,
+                        'results-submission-content': () => {
+                            const postId = document.getElementById('results-submission-content').dataset.postId;
+                            if (postId) {
+                                const post = window.dbData.posts[postId];
+                                if (post.status.startsWith('live')) renderLiveMatchPage(postId);
+                                else if (post.status === 'completed') renderHistoryMatchDetailsPage(postId);
+                            }
+                        }
                     };
                     renderFunctionMap[currentPageId]?.();
                 });
@@ -1684,7 +1660,6 @@
                 }
             });
             
-            // ... (Auth Listeners Remain Same) ...
             function setupAuthPageListeners() {
                 const togglePassword = (input, icon) => { const type = input.getAttribute('type') === 'password' ? 'text' : 'password'; input.setAttribute('type', type); icon.classList.toggle('fa-eye'); icon.classList.toggle('fa-eye-slash'); };
                 document.getElementById('toggle-login-password').addEventListener('click', (e) => togglePassword(document.getElementById('login-password'), e.target));
@@ -1693,13 +1668,54 @@
                 const signupPassword = document.getElementById('signup-password'); const confirmPassword = document.getElementById('signup-confirm-password'); const matchMsg = document.getElementById('password-match-msg'); const strengthBar = document.getElementById('strength-bar');
                 signupPassword.addEventListener('input', () => { const password = signupPassword.value; let strength = 0; if (password.length >= 8) strength++; if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++; if (password.match(/\d/)) strength++; if (password.match(/[^a-zA-Z\d]/)) strength++; strengthBar.className = 'strength-bar'; if (strength <= 1) strengthBar.classList.add('strength-weak'); else if (strength <= 3) strengthBar.classList.add('strength-medium'); else strengthBar.classList.add('strength-strong'); });
                 confirmPassword.addEventListener('input', () => { if (confirmPassword.value === "") { matchMsg.textContent = ''; } else if (confirmPassword.value === signupPassword.value) { matchMsg.textContent = 'Passwords match!'; matchMsg.style.color = '#10b981'; } else { matchMsg.textContent = 'Passwords do not match.'; matchMsg.style.color = '#ef4444'; } });
-                document.getElementById('show-signup').addEventListener('click', (e) => { e.preventDefault(); authViews.login.classList.remove('active'); authViews.signup.classList.add('active'); });
-                document.getElementById('show-login').addEventListener('click', (e) => { e.preventDefault(); authViews.signup.classList.remove('active'); authViews.login.classList.add('active'); });
+                
+                const authContainer = document.getElementById('auth-container');
+                function switchAuthView(showSignup) {
+                    const loginView = document.getElementById('login-view');
+                    const signupView = document.getElementById('signup-view');
+                    const viewToHide = showSignup ? loginView : signupView;
+                    const viewToShow = showSignup ? signupView : loginView;
+                    const direction = showSignup ? 1 : -1;
+
+                    gsap.set(authContainer, { perspective: 1200 });
+                    gsap.set(viewToHide, { transformOrigin: "center center" });
+                    gsap.set(viewToShow, { transformOrigin: "center center", autoAlpha: 0, rotationY: -90 * direction, xPercent: 50 * direction });
+
+                    const tl = gsap.timeline({
+                        onStart: () => {
+                            loginView.classList.remove('active');
+                            signupView.classList.remove('active');
+                        },
+                        onComplete: () => {
+                            viewToShow.classList.add('active');
+                        }
+                    });
+
+                    tl.to(viewToHide, { duration: 0.5, rotationY: 90 * direction, xPercent: -50 * direction, autoAlpha: 0, ease: "power2.in" })
+                    .to(viewToShow, { duration: 0.5, rotationY: 0, xPercent: 0, autoAlpha: 1, ease: "power2.out" }, "-=0.25");
+                }
+
+                document.getElementById('show-signup').addEventListener('click', (e) => { e.preventDefault(); switchAuthView(true); });
+                document.getElementById('show-login').addEventListener('click', (e) => { e.preventDefault(); switchAuthView(false); });
+
                 document.getElementById('forgot-password-link').addEventListener('click', (e) => { e.preventDefault(); screens.forgot.classList.remove('hidden');});
                 document.getElementById('close-forgot-modal').addEventListener('click', () => { screens.forgot.classList.add('hidden'); });
                 document.getElementById('forgot-password-form').addEventListener('submit', (e) => { e.preventDefault(); const email = document.getElementById('forgot-email-input').value; handleFormSubmit(e.target, 'Sending...', () => auth.sendPasswordResetEmail(email).then(() => { screens.forgot.classList.add('hidden'); showModal('success', 'Email Sent', `A password reset link has been sent to ${email}.`, 'OK'); })); });
             }
             setupAuthPageListeners();
+
+            function animateHeaderTitle() {
+                const titleSpans = document.querySelectorAll('#animated-header-title span');
+                if (!titleSpans.length) return;
+
+                const tl = gsap.timeline({
+                    repeat: -1, 
+                    repeatDelay: 3 
+                });
+
+                tl.to(titleSpans, { color: "#FFD700", duration: 0.1, stagger: 0.15, ease: "power1.inOut" })
+                .to(titleSpans, { color: "#FFFFFF", duration: 0.1, stagger: { each: 0.15, from: "end" }, ease: "power1.inOut" }, "+=3"); 
+            }
 
             function transitionToDashboard() {
                 screens.auth.classList.add('hidden');
@@ -1719,6 +1735,8 @@
                     setupSidebar();
                     setupNavbarSwipe();
                     setupNewNavigationListeners();
+                    animateHeaderTitle(); // Call the new animation function
+                    initializeCountdowns(); // [FIX] Start the single global timer
                 }, 50);
             }
 
@@ -1740,7 +1758,6 @@
                     });
             };
 
-            // ... (Referral Code, Signup, Login Listeners remain same) ...
             const generateReferralCode = (length = 6) => {
                 const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
                 let result = '';
@@ -1765,11 +1782,10 @@
                     const user = userCredential.user;
                     const fullName = form.querySelector('#signup-fullname').value;
                     await user.updateProfile({ displayName: fullName });
-                    const newUserDbData = { userId: Math.floor(100000000 + Math.random() * 900000000), name: fullName, email: email, whatsapp: '+880' + form.querySelector('#signup-whatsapp').value, gender: form.querySelector('input[name="gender"]:checked').value, avatar: DEFAULT_AVATAR, role: 'user', wallet: { live: 0, event: 0, coins: 0, diamonds: 0 }, tickets: 5, team: null, bookings: {}, mailbox: {}, transactions: {}, storePurchaseCounters: {}, referralCode: generateReferralCode(), spinStats: { adSpins: 0, lastAdSpin: 0 }, missionProgress: {} };
+                    const newUserDbData = { userId: Math.floor(100000000 + Math.random() * 900000000), name: fullName, email: email, whatsapp: '+880' + form.querySelector('#signup-whatsapp').value, gender: form.querySelector('input[name="gender"]:checked').value, avatar: DEFAULT_AVATAR, role: 'user', wallet: { live: 0, event: 0, coins: 0, diamonds: 0 }, tickets: 5, team: null, bookings: {}, mailbox: {}, transactions: {}, storePurchaseCounters: {}, referralCode: generateReferralCode(), spinStats: { adSpins: 0, lastAdSpin: 0 }, missionProgress: {}, votes: {} };
                     await database.ref('users/' + user.uid).set(newUserDbData);
                     localStorage.setItem('accountCreated', 'true');
                     showCustomModal({ type: 'success', title: 'Registration Successful!', message: 'Welcome to LEVEL UP! You got 5 free tickets.', autoClose: 2500 });
-                    setTimeout(() => window.location.reload(), 2500);
                 });
             });
 
@@ -1781,12 +1797,9 @@
                     const password = document.getElementById('login-password').value;
                     if (email && !email.includes('@')) { email += '@gmail.com'; }
                     await auth.signInWithEmailAndPassword(email, password);
-                    showCustomModal({ type: 'success', title: 'Login Successful!', message: 'Welcome back! Taking you to the home page...', autoClose: 2000 });
-                    setTimeout(() => window.location.reload(), 2000);
                 });
             });
             
-            // FIX: Refactored image upload handler to only manage the preview image
             document.getElementById('team-logo-upload').addEventListener('change', e => {
                 const file = e.target.files[0];
                 if (file) {
@@ -1804,7 +1817,6 @@
                 
                 // GSAP Stagger Animation for search results
                 gsap.from(resultsContainer.children, { y: 50, opacity: 0, duration: 0.5, stagger: 0.1, ease: "power2.out" });
-                initializeCountdowns(); 
             }
             document.getElementById('search-input-mobile').addEventListener('input', e => {
                 const searchTerm = e.target.value.toLowerCase().trim();
@@ -1829,8 +1841,6 @@
                     renderHomePlayerSquadPosts();
                     return;
                 }
-                // ... Search logic ...
-                // (Simplified for brevity, ensure GSAP is added inside each render block if filtering)
             }
 
             function renderAllPosts() {
@@ -1859,10 +1869,8 @@
                     feed.innerHTML = `<div class="text-center text-gray-500 p-10 bg-gray-800/50 rounded-lg"><i class="fa-solid fa-ghost text-4xl mb-4"></i><p>No posts available at the moment.</p></div>`;
                 } else {
                     feed.innerHTML = postsHTML;
-                    // GSAP Stagger Animation
                     gsap.from("#post-feed > div", { y: 100, opacity: 0, duration: 0.6, stagger: 0.1, ease: "power2.out" });
                 }
-                initializeCountdowns();
             }
 
             function renderTournamentsFeed() {
@@ -1873,14 +1881,10 @@
                     return;
                 }
                 feed.innerHTML = posts.map(createPostCardHTML).join('');
-                // GSAP Stagger Animation
                 gsap.from("#home-tournaments-feed > div", { y: 50, opacity: 0, duration: 0.5, stagger: 0.1, ease: "power2.out" });
-                initializeCountdowns();
             }
             
             const createPostCardHTML = (post) => {
-                const matchEndTime = new Date(post.matchDate).getTime();
-                if (matchEndTime < Date.now()) return ''; 
                 const isBooked = currentUserData?.bookings && !!currentUserData.bookings[post.id];
                 if (isBooked) return '';
 
@@ -1922,6 +1926,8 @@
                     ? `<p class="font-oswald text-2xl font-bold text-white">${post.entryFee} <span class="text-sm">TK</span></p>`
                     : `<p class="font-oswald text-2xl font-bold text-green-400">FREE</p>`;
 
+                const mapsInfo = post.details.matchType === 'Clash Squad' ? '' : `<div class="col-span-2"><strong class="text-gray-400 text-xs uppercase">Maps:</strong> <span class="text-white font-semibold block">${post.details.numMatches} | ${post.details.maps.join(', ')}</span></div>`;
+
                 return `<div class="post-card rounded-2xl overflow-hidden" data-post-id-wrapper="${post.id}">
                     <div class="p-4">
                         <div class="flex justify-between items-start gap-4">
@@ -1952,7 +1958,7 @@
                             <div><strong class="text-gray-400 text-xs uppercase">Date:</strong> <span class="text-white font-semibold block">${formattedDate}</span></div>
                             <div><strong class="text-gray-400 text-xs uppercase">ID Pass:</strong> <span class="text-white font-semibold block">${formatTime(post.details.idPassTime)}</span></div>
                             <div><strong class="text-gray-400 text-xs uppercase">Match Starts:</strong> <span class="text-white font-semibold block">${formatTime(post.details.matchStartTime)}</span></div>
-                            <div class="col-span-2"><strong class="text-gray-400 text-xs uppercase">Maps:</strong> <span class="text-white font-semibold block">${post.details.numMatches} | ${post.details.maps.join(', ')}</span></div>
+                            ${mapsInfo}
                         </div>
                         ${prizeOrPracticeHTML}
                     </div>
@@ -1972,26 +1978,50 @@
                 </div>`;
             }
 
-            function initializeCountdowns() { 
-                document.querySelectorAll('.countdown-container').forEach(c => { 
-                    const update = () => { 
-                        const t = new Date(c.dataset.countdown).getTime(), n = new Date().getTime(), d = t - n; 
-                        if (d < 0) { 
-                            c.innerHTML = `<p class="text-red-500 font-bold text-sm">EVENT ENDED</p>`; 
-                            return; 
-                        } 
-                        // UPDATED: Removed seconds from the timer display
-                        c.innerHTML = `<div class="flex justify-end gap-1.5 text-white">
-                                           <div class="countdown-item text-center"><span>${String(Math.floor(d/(1e3*60*60*24))).padStart(2,'0')}</span><p>Days</p></div>
-                                           <div class="countdown-item text-center"><span>${String(Math.floor(d%(1e3*60*60*24)/(1e3*60*60))).padStart(2,'0')}</span><p>Hrs</p></div>
-                                           <div class="countdown-item text-center"><span>${String(Math.floor(d%(1e3*60*60)/(1e3*60))).padStart(2,'0')}</span><p>Min</p></div>
-                                       </div>`; 
-                    }; 
-                    update(); 
-                    setInterval(update, 1000); 
-                }); 
+            function updateAllCountdowns() {
+                document.querySelectorAll('.countdown-container, .claim-countdown').forEach(c => {
+                    const targetTime = new Date(c.dataset.countdown || c.dataset.countdownTo).getTime();
+                    const now = new Date().getTime();
+                    let diff = targetTime - now;
+
+                    if (c.classList.contains('claim-countdown') && diff <= 0) {
+                        const postId = c.dataset.postId;
+                        const parentCard = document.querySelector(`.post-card[data-post-id="${postId}"]`);
+                        if (parentCard) {
+                             parentCard.querySelector('.claim-reward-section').innerHTML = `<button class="action-button py-2 px-6 rounded-lg claim-reward-btn" data-post-id="${postId}">Claim Reward</button>`;
+                        }
+                        c.remove();
+                        return;
+                    }
+                    
+                    if (diff < 0) {
+                        c.innerHTML = `<p class="text-red-500 font-bold text-sm">EVENT ENDED</p>`;
+                        c.closest('.post-card')?.classList.add('opacity-50', 'grayscale');
+                        return;
+                    }
+                    
+                    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = c.classList.contains('claim-countdown') ? Math.floor((diff % (1000 * 60)) / 1000) : 0;
+                    
+                    if (c.classList.contains('claim-countdown')) {
+                        c.innerHTML = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                    } else {
+                         c.innerHTML = `<div class="flex justify-end gap-1.5 text-white">
+                                       <div class="countdown-item text-center"><span>${String(days).padStart(2, '0')}</span><p>Days</p></div>
+                                       <div class="countdown-item text-center"><span>${String(hours).padStart(2, '0')}</span><p>Hrs</p></div>
+                                       <div class="countdown-item text-center"><span>${String(minutes).padStart(2, '0')}</span><p>Min</p></div>
+                                   </div>`;
+                    }
+                });
             }
 
+            function initializeCountdowns() {
+                if (countdownInterval) clearInterval(countdownInterval);
+                countdownInterval = setInterval(updateAllCountdowns, 1000);
+                updateAllCountdowns();
+            }
             
             function setupHomePageScrolling() {
                 const mainContentArea = document.querySelector('#dashboard-screen main');
@@ -2000,7 +2030,6 @@
                 mainContentArea.addEventListener('scroll', () => {
                     if (mainContentArea.scrollTop > 1000) {
                         scrollToTopBtn.classList.add('visible');
-                        // Simple GSAP pop for scroll btn
                         gsap.to(scrollToTopBtn, { scale: 1, opacity: 1, duration: 0.3 });
                     } else {
                         scrollToTopBtn.classList.remove('visible');
@@ -2032,7 +2061,7 @@
 
                     switch(slide.type) {
                         case 'video': mediaElement = `<video class="slider-media" src="${slide.url}" loop playsinline ${slide.autoplay ? 'autoplay' : ''} ${!slide.isMuted ? '' : 'muted'}></video>`; break;
-                        case 'gif': case 'image': default: mediaElement = `<img src="${slide.url}" class="slider-media" alt="Slider Content">`; break;
+                        case 'gif': case 'image': default: mediaElement = `<img src="${slide.url}" class="slider-media" alt="Slider Content" loading="lazy">`; break;
                     }
                     if (hasPostId) { clickableIndicator = `<div class="clickable-post-indicator"><i class="fas fa-link"></i> VIEW POST</div>`; }
                     
@@ -2052,12 +2081,12 @@
                     resetAutoScrollTimer();
                 }));
 
-                if (slides.length <= 1) { updateSlider(false); return; }
-
                 let isDragging = false, startPos = 0, currentTranslate = 0, prevTranslate = 0, animationID, autoScrollTimer = null, autoScrollInterval = null;
 
-                const slideWidth = () => slides[0].getBoundingClientRect().width;
+                const slideWidth = () => slides.length > 0 ? slides[0].getBoundingClientRect().width : 0;
+                
                 const updateSlider = (animate = true) => {
+                    if (slides.length === 0) return;
                     const targetTranslate = -cI * slideWidth();
                     if (animate) { gsap.to(sC, { x: targetTranslate, duration: 0.5, ease: "power2.inOut" }); } 
                     else { gsap.set(sC, { x: targetTranslate }); }
@@ -2065,6 +2094,9 @@
                     Array.from(dC.children).forEach((dot, index) => { dot.classList.toggle('bg-white', index === cI); dot.classList.toggle('bg-white/50', index !== cI); });
                     sC.querySelectorAll('video').forEach((video, index) => { if (index === cI && slidesArray[index].autoplay) { video.play().catch(e => {}); } else { video.pause(); } });
                 };
+
+                if (slides.length <= 1) { updateSlider(false); return; }
+
                 const stopAutoScroll = () => { clearInterval(autoScrollInterval); clearTimeout(autoScrollTimer); };
                 const startAutoScroll = () => { stopAutoScroll(); autoScrollInterval = setInterval(() => { cI = (cI + 1) % slides.length; updateSlider(); }, 5000); };
                 const resetAutoScrollTimer = () => { stopAutoScroll(); autoScrollTimer = setTimeout(startAutoScroll, 5000); };
@@ -2090,7 +2122,6 @@
                 updateSlider(false); startAutoScroll();
             }
 
-            // ... (Highlight Post, FAB, Other Event Listeners) ...
             function highlightPost(postId, postType = 'event') {
                 handleNavigation('home-content');
 
@@ -2127,7 +2158,6 @@
                         postFeed.prepend(postElement);
                         postElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         postElement.classList.add('highlighted-post');
-                        // Use GSAP pulse
                         gsap.fromTo(postElement, { scale: 1 }, { scale: 1.05, duration: 0.5, yoyo: true, repeat: 3 });
                         setTimeout(() => {
                             postElement.classList.remove('highlighted-post');
@@ -2155,7 +2185,7 @@
             needFab.addEventListener('click', () => { 
                 showCustomModal({
                     title: 'কি পোস্ট করতে চান?',
-                    iconHtml: `<img src="${APP_LOGO_URL}" alt="Logo" class="w-24 h-24 rounded-full object-cover">`,
+                    iconHtml: `<img src="${APP_LOGO_URL}" alt="Logo" class="w-24 h-24 rounded-full object-cover" loading="lazy">`,
                     message: `<div class="space-y-3"><button id="fab-need-guild" class="w-full py-3 rounded-lg action-button font-bold text-sm">Guild</button><button id="fab-need-player-squad" class="w-full py-3 rounded-lg action-button font-bold text-sm">Player/Squad</button></div>`,
                     primaryButton: null,
                     onRender: (modal) => {
@@ -2178,6 +2208,11 @@
                 if (team) { 
                     teamNameInput.value = team.name; 
                     document.getElementById('team-logo-preview').src = team.logo || DEFAULT_TEAM_LOGO; 
+                    if(team.squadType === 'girls') {
+                        document.getElementById('squad-girls').checked = true;
+                    } else {
+                        document.getElementById('squad-boys').checked = true;
+                    }
                     for(let i=0; i < 7; i++) { 
                         const member = team.members[i]; 
                         const nameInput = document.querySelector(`#member-${i}-name`); 
@@ -2216,8 +2251,10 @@
                 
                 for (let i = 0; i < 7; i++) {
                     const uidInput = document.querySelector(`#member-${i}-uid`);
-                    uidInput.classList.remove('border-green-500', 'border-red-500', 'border-2');
-                    uidInput.style.borderColor = ''; 
+                    if(uidInput) {
+                        uidInput.classList.remove('border-green-500', 'border-red-500', 'border-2');
+                        uidInput.style.borderColor = '';
+                    }
                 }
             
                 const submitButton = form.querySelector('button[type="submit"]');
@@ -2255,7 +2292,6 @@
                     const isNameTaken = allUsers.some(user => user.team && user.team.name.toLowerCase() === teamName.toLowerCase() && (!currentUserData.team || user.team.id !== currentUserData.team.id));
                     if (isNameTaken) throw new Error('This team name is already in use. Please choose another.');
                     
-                    // FIX: Get file directly from input on submit
                     const teamLogoFile = document.getElementById('team-logo-upload').files[0];
                     let logoInfo = { url: currentUserData.team?.logo || DEFAULT_TEAM_LOGO, size: currentUserData.team?.logoSizeKB || 0 };
                     const oldSize = logoInfo.size;
@@ -2273,7 +2309,8 @@
                     if (members.length < 4) throw new Error('Please provide details for at least 4 players.');
                     
                     const wasUpdating = !!currentUserData.team;
-                    const teamData = { id: wasUpdating ? currentUserData.team.id : Date.now(), name: teamName, logo: logoInfo.url, logoSizeKB: logoInfo.size, members };
+                    const squadType = document.querySelector('input[name="squad-type"]:checked').value;
+                    const teamData = { id: wasUpdating ? currentUserData.team.id : Date.now(), name: teamName, logo: logoInfo.url, logoSizeKB: logoInfo.size, squadType: squadType, members };
                     
                     await database.ref('users/' + auth.currentUser.uid + '/team').set(teamData);
                     
@@ -2312,10 +2349,10 @@
                 if (bookBtn && !bookBtn.disabled) { 
                     const postId = bookBtn.dataset.postId;
                     const post = window.dbData.posts[postId];
-                    const isSoloMatch = post.details.teamType.toLowerCase() === 'solo';
+                    const isSoloMatch = post.details.teamType.toLowerCase() === 'solo' || post.details.teamType.toLowerCase() === '1v1';
 
                     if (currentUserData.wallet.live < post.entryFee) { showModal('error', 'Insufficient Balance', `You need ${post.entryFee} TK to book this match. Your balance is ${currentUserData.wallet.live.toFixed(2)} TK.`); return; } 
-                    if (!isSoloMatch && !currentUserData.team) { showModal('error', 'No Team Found', `You must create a team to join Squad or Duo matches. Go to Profile -> My Team.`, 'Go to Profile', () => { handleNavigation('profile-content'); setTimeout(() => document.getElementById('create-team-button').click(), 250); }); return; } 
+                    if (!isSoloMatch && !currentUserData.team) { showModal('error', 'No Team Found', `You must create a team to join Squad, Duo or CS matches. Go to Profile -> My Team.`, 'Go to Profile', () => { handleNavigation('profile-content'); setTimeout(() => document.getElementById('create-team-button').click(), 250); }); return; } 
 
                     bookingState = { postId, post, selectedTeam: currentUserData.team, selectedPlayers: [] }; 
                     handleNavigation('booking-content');
@@ -2326,8 +2363,7 @@
             });
 
             function playBookingSound() { const soundUrl = window.dbData.admin?.settings?.bookingSoundUrl; if (soundUrl) { const audio = document.getElementById('booking-success-sound'); if (audio) { audio.src = soundUrl; audio.play().catch(e => console.error("Audio play failed.", e)); } } }
-
-            // ... (Booking steps, rendering, and logic largely unchanged except for GSAP injections) ...
+            
             function handleBookingConfirmation() {
                 const { post, selectedTeam, selectedPlayers } = bookingState;
                 const updates = {};
@@ -2347,181 +2383,149 @@
                 }).catch(err => { handleFirebaseError(err); });
             }
 
-            // এখানে নতুন কোড পেস্ট করুন
-function renderBookingStep_Rules() {
-    const contentArea = document.getElementById('booking-content');
-    const post = bookingState.post;
-    const rules = post.details.rules;
-    const rulesHTML = (rules && rules.length > 0) ? `<ul class="list-disc list-inside text-gray-300 space-y-2">${rules.map(rule => `<li>${rule}</li>`).join('')}</ul>` : '<p class="text-gray-300">No specific rules provided for this match.</p>';
-    
-    contentArea.innerHTML = `
-        <div class="flex flex-col h-full">
-            <div class="flex-grow overflow-y-auto no-scrollbar">
-                <div class="p-4 bg-[#1e1e1e] border border-gray-700 rounded-lg mb-6">${rulesHTML}</div>
-                <label for="agree-rules" class="flex items-center space-x-3 cursor-pointer">
-                    <input type="checkbox" id="agree-rules" class="hidden">
-                    <div class="w-6 h-6 border-2 border-gray-500 rounded flex items-center justify-center check-icon-container">
-                        <i class="fa-solid fa-check text-white hidden"></i>
-                    </div>
-                    <span class="text-gray-300">I have read and agree to the match rules.</span>
-                </label>
-            </div>
-            <div class="flex-shrink-0 p-4 bg-[#121212] flex gap-2">
-                <button id="booking-back-btn-2" class="w-1/3 py-3 rounded-lg bg-gray-600 font-bold">Back</button>
-                <button id="booking-next-btn-2" class="w-2/3 py-3 rounded-lg action-button" disabled>Next</button>
-            </div>
-        </div>`;
+            function renderBookingStep_Rules() {
+                const contentArea = document.getElementById('booking-content');
+                const post = bookingState.post;
+                const rules = post.details.rules;
+                const rulesHTML = (rules && rules.length > 0) ? `<ul class="list-disc list-inside text-gray-300 space-y-2">${rules.map(rule => `<li>${rule}</li>`).join('')}</ul>` : '<p class="text-gray-300">No specific rules provided for this match.</p>';
+                
+                contentArea.innerHTML = `
+                    <div class="flex flex-col h-full">
+                        <div class="flex-grow overflow-y-auto no-scrollbar">
+                            <div class="p-4 bg-[#1e1e1e] border border-gray-700 rounded-lg mb-6">${rulesHTML}</div>
+                            <label for="agree-rules" class="flex items-center space-x-3 cursor-pointer">
+                                <input type="checkbox" id="agree-rules" class="hidden">
+                                <div class="w-6 h-6 border-2 border-gray-500 rounded flex items-center justify-center check-icon-container">
+                                    <i class="fa-solid fa-check text-white hidden"></i>
+                                </div>
+                                <span class="text-gray-300">I have read and agree to the match rules.</span>
+                            </label>
+                        </div>
+                        <div class="flex-shrink-0 p-4 bg-[#121212] flex gap-2">
+                            <button id="booking-back-btn-2" class="w-1/3 py-3 rounded-lg bg-gray-600 font-bold">Back</button>
+                            <button id="booking-next-btn-2" class="w-2/3 py-3 rounded-lg action-button" disabled>Next</button>
+                        </div>
+                    </div>`;
 
-    const agreeCheckbox = contentArea.querySelector('#agree-rules'), nextBtn = contentArea.querySelector('#booking-next-btn-2');
-    agreeCheckbox.addEventListener('change', () => { contentArea.querySelector('.check-icon-container .fa-check').classList.toggle('hidden', !agreeCheckbox.checked); nextBtn.disabled = !agreeCheckbox.checked; });
-    nextBtn.addEventListener('click', renderBookingStep_TeamSelection);
-    contentArea.querySelector('#booking-back-btn-2').addEventListener('click', () => { window.history.back(); });
-}
-
-// NEW FUNCTION TO ROUTE BASED ON TEAM TYPE
-function renderBookingStep_TeamSelection() {
-    const post = bookingState.post;
-    const teamType = post.details.teamType.toLowerCase();
-    if (teamType === 'solo') {
-        renderBookingStep_SoloForm();
-    } else if (teamType === 'duo') {
-        renderBookingStep_DuoSelection();
-    } else if (teamType === 'squad') {
-        renderBookingStep_PlayerSelection();
-    }
-}
-
-function renderBookingStep_SoloForm() {
-    const contentArea = document.getElementById('booking-content');
-    const myTeam = currentUserData.team;
-    let selectionHTML = '';
-
-    if (myTeam && myTeam.members && myTeam.members.length > 0) {
-        const igl = myTeam.members[0];
-        selectionHTML = `<div class="p-4 bg-green-500/30 border border-green-500 rounded-lg"><p class="font-semibold">${igl.name} (from your team)</p><p class="text-xs text-gray-400">UID: ${igl.uid}</p></div><p class="text-xs text-center text-gray-400 mt-2">You will be registered using your IGL info.</p>`;
-    } else {
-        selectionHTML = `<div class="form-section p-4 rounded-xl space-y-4"><p class="text-sm text-gray-300 mb-2">Provide your in-game details for this solo match.</p><div><label for="solo-ingame-name" class="form-label">In-Game Name</label><input type="text" id="solo-ingame-name" class="form-input" placeholder="Your In-Game Name" value="${currentUserData.name || ''}" required></div><div><label for="solo-ingame-uid" class="form-label">In-Game UID</label><input type="text" id="solo-ingame-uid" class="form-input" placeholder="Your In-Game UID" required></div></div>`;
-    }
-
-    contentArea.innerHTML = `
-        <div class="flex flex-col h-full">
-            <div class="flex-grow overflow-y-auto no-scrollbar">
-                <h1 class="text-2xl font-bold mb-6">Confirm Your Entry</h1>
-                <div class="space-y-3">${selectionHTML}</div>
-            </div>
-            <div class="flex-shrink-0 p-4 bg-[#121212] flex gap-2">
-                <button id="booking-back-btn-3" class="w-1/3 py-3 rounded-lg bg-gray-600 font-bold">Back</button>
-                <button id="booking-next-btn-3" class="w-2/3 py-3 rounded-lg action-button">Next</button>
-            </div>
-        </div>`;
-
-    contentArea.querySelector('#booking-back-btn-3').addEventListener('click', () => window.history.back());
-    contentArea.querySelector('#booking-next-btn-3').addEventListener('click', () => {
-        if (myTeam && myTeam.members && myTeam.members.length > 0) {
-            bookingState.selectedPlayers = [myTeam.members[0]];
-        } else {
-            const soloName = document.getElementById('solo-ingame-name').value.trim();
-            const soloUid = document.getElementById('solo-ingame-uid').value.trim();
-            if (!soloName || !soloUid) {
-                showModal('error', 'Details Required', 'Please enter your In-Game Name and UID.');
-                return;
+                const agreeCheckbox = contentArea.querySelector('#agree-rules'), nextBtn = contentArea.querySelector('#booking-next-btn-2');
+                agreeCheckbox.addEventListener('change', () => { contentArea.querySelector('.check-icon-container .fa-check').classList.toggle('hidden', !agreeCheckbox.checked); nextBtn.disabled = !agreeCheckbox.checked; });
+                nextBtn.addEventListener('click', renderBookingStep_TeamSelection);
+                contentArea.querySelector('#booking-back-btn-2').addEventListener('click', () => { window.history.back(); });
             }
-            bookingState.selectedPlayers = [{ name: soloName, uid: soloUid }];
-        }
-        renderBookingStep_Confirm();
-    });
-}
 
-function renderBookingStep_DuoSelection() {
-    const contentArea = document.getElementById('booking-content');
-    const myTeam = currentUserData.team;
-    const selectionHTML = myTeam.members.map((member, index) => `<label class="flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition-colors duration-200 ${index === 0 ? 'bg-green-500/30 border-green-500' : 'bg-[#1e1e1e] border-gray-700'} border"><input type="checkbox" class="player-checkbox hidden" value="${index}" ${index === 0 ? 'checked disabled' : ''}><div class="w-6 h-6 border-2 border-gray-500 rounded-md flex items-center justify-center check-icon-container"><i class="fa-solid fa-check text-white ${index === 0 ? '' : 'hidden'}"></i></div><div><p class="font-semibold">${member.name} ${index === 0 ? '(IGL - You)' : ''}</p><p class="text-xs text-gray-400">UID: ${member.uid}</p></div></label>`).join('');
-    
-    contentArea.innerHTML = `
-        <div class="flex flex-col h-full">
-            <div class="flex-grow overflow-y-auto no-scrollbar">
-                <h1 class="text-2xl font-bold mb-6">Select Your Duo</h1>
-                <div class="space-y-3">${selectionHTML}</div>
-            </div>
-            <div class="flex-shrink-0 p-4 bg-[#121212] flex gap-2">
-                <button id="booking-back-btn-3" class="w-1/3 py-3 rounded-lg bg-gray-600 font-bold">Back</button>
-                <button id="booking-next-btn-3" class="w-2/3 py-3 rounded-lg action-button" disabled>Next</button>
-            </div>
-        </div>`;
-        
-    contentArea.querySelector('#booking-back-btn-3').addEventListener('click', () => window.history.back());
-    contentArea.querySelector('#booking-next-btn-3').addEventListener('click', () => {
-        const selectedIndexes = Array.from(contentArea.querySelectorAll('.player-checkbox:checked')).map(cb => parseInt(cb.value)); 
-        bookingState.selectedPlayers = selectedIndexes.map(i => myTeam.members[i]);
-        renderBookingStep_Confirm();
-    });
-    
-    const checkboxes = contentArea.querySelectorAll('.player-checkbox:not(:disabled)');
-    const nextBtn = contentArea.querySelector('#booking-next-btn-3');
-    checkboxes.forEach(cb => {
-        cb.addEventListener('change', () => {
-            const checkedCount = contentArea.querySelectorAll('.player-checkbox:checked').length;
-            cb.closest('label').classList.toggle('bg-green-500/30', cb.checked);
-            cb.closest('label').classList.toggle('border-green-500', cb.checked);
-            cb.closest('label').classList.toggle('bg-[#1e1e1e]', !cb.checked);
-            cb.closest('label').classList.toggle('border-gray-700', !cb.checked);
-            cb.closest('label').querySelector('.fa-check').classList.toggle('hidden', !cb.checked);
-            if (checkedCount > 2) {
-                cb.checked = false;
-                cb.closest('label').classList.remove('bg-green-500/30', 'border-green-500');
-                cb.closest('label').classList.add('bg-[#1e1e1e]', 'border-gray-700');
-                cb.closest('label').querySelector('.fa-check').classList.add('hidden');
+            function renderBookingStep_TeamSelection() {
+                const post = bookingState.post;
+                const teamType = post.details.teamType.toLowerCase();
+
+                // Clash Squad Logic
+                if (post.details.matchType === 'Clash Squad') {
+                    if (teamType === '4v4') {
+                        renderBookingStep_PlayerSelection(4); // 4 players total
+                    } else if (teamType === '2v2') {
+                        renderBookingStep_PlayerSelection(2); // 2 players total
+                    } else if (teamType === '1v1') {
+                        renderBookingStep_PlayerSelection(1); // 1 player total
+                    }
+                    return;
+                }
+
+                // Battle Royal Logic
+                if (teamType === 'solo') {
+                    renderBookingStep_SoloForm();
+                } else if (teamType === 'duo') {
+                    renderBookingStep_PlayerSelection(2); // 2 players total
+                } else if (teamType === 'squad') {
+                    renderBookingStep_PlayerSelection(5); // 5 players total
+                }
             }
-            nextBtn.disabled = contentArea.querySelectorAll('.player-checkbox:checked').length !== 2;
-        });
-    });
-}
 
-function renderBookingStep_PlayerSelection() {
-    const contentArea = document.getElementById('booking-content');
-    const myTeam = currentUserData.team;
-    const selectionHTML = myTeam.members.map((member, index) => `<label class="flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition-colors duration-200 ${index === 0 ? 'bg-green-500/30 border-green-500' : 'bg-[#1e1e1e] border-gray-700'} border"><input type="checkbox" class="player-checkbox hidden" value="${index}" ${index === 0 ? 'checked disabled' : ''}><div class="w-6 h-6 border-2 border-gray-500 rounded-md flex items-center justify-center check-icon-container"><i class="fa-solid fa-check text-white ${index === 0 ? '' : 'hidden'}"></i></div><div><p class="font-semibold">${member.name} ${index === 0 ? '(IGL - You)' : ''}</p><p class="text-xs text-gray-400">UID: ${member.uid}</p></div></label>`).join('');
-    
-    contentArea.innerHTML = `
-        <div class="flex flex-col h-full">
-            <div class="flex-grow overflow-y-auto no-scrollbar">
-                <h1 class="text-2xl font-bold mb-6">Select Your Squad (5 Players)</h1>
-                <p class="text-sm text-yellow-400 -mt-4 mb-4">Select 4 players plus yourself (IGL) to form a 5-player squad for this match.</p>
-                <div class="space-y-3">${selectionHTML}</div>
-            </div>
-            <div class="flex-shrink-0 p-4 bg-[#121212] flex gap-2">
-                <button id="booking-back-btn-3" class="w-1/3 py-3 rounded-lg bg-gray-600 font-bold">Back</button>
-                <button id="booking-next-btn-3" class="w-2/3 py-3 rounded-lg action-button" disabled>Next</button>
-            </div>
-        </div>`;
+            function renderBookingStep_SoloForm() {
+                const contentArea = document.getElementById('booking-content');
+                const myTeam = currentUserData.team;
+                let selectionHTML = '';
 
-    contentArea.querySelector('#booking-back-btn-3').addEventListener('click', () => window.history.back());
-    contentArea.querySelector('#booking-next-btn-3').addEventListener('click', () => {
-        const selectedIndexes = Array.from(contentArea.querySelectorAll('.player-checkbox:checked')).map(cb => parseInt(cb.value)); 
-        bookingState.selectedPlayers = selectedIndexes.map(i => myTeam.members[i]);
-        renderBookingStep_Confirm();
-    });
-    
-    const checkboxes = contentArea.querySelectorAll('.player-checkbox:not(:disabled)');
-    const nextBtn = contentArea.querySelector('#booking-next-btn-3');
-    checkboxes.forEach(cb => {
-        cb.addEventListener('change', () => {
-            const checkedCount = contentArea.querySelectorAll('.player-checkbox:checked').length;
-            cb.closest('label').classList.toggle('bg-green-500/30', cb.checked);
-            cb.closest('label').classList.toggle('border-green-500', cb.checked);
-            cb.closest('label').classList.toggle('bg-[#1e1e1e]', !cb.checked);
-            cb.closest('label').classList.toggle('border-gray-700', !cb.checked);
-            cb.closest('label').querySelector('.fa-check').classList.toggle('hidden', !cb.checked);
-            if (checkedCount > 5) {
-                cb.checked = false;
-                cb.closest('label').classList.remove('bg-green-500/30', 'border-green-500');
-                cb.closest('label').classList.add('bg-[#1e1e1e]', 'border-gray-700');
-                cb.closest('label').querySelector('.fa-check').classList.add('hidden');
+                if (myTeam && myTeam.members && myTeam.members.length > 0) {
+                    const igl = myTeam.members[0];
+                    selectionHTML = `<div class="p-4 bg-green-500/30 border border-green-500 rounded-lg"><p class="font-semibold">${igl.name} (from your team)</p><p class="text-xs text-gray-400">UID: ${igl.uid}</p></div><p class="text-xs text-center text-gray-400 mt-2">You will be registered using your IGL info.</p>`;
+                } else {
+                    selectionHTML = `<div class="form-section p-4 rounded-xl space-y-4"><p class="text-sm text-gray-300 mb-2">Provide your in-game details for this solo match.</p><div><label for="solo-ingame-name" class="form-label">In-Game Name</label><input type="text" id="solo-ingame-name" class="form-input" placeholder="Your In-Game Name" value="${currentUserData.name || ''}" required></div><div><label for="solo-ingame-uid" class="form-label">In-Game UID</label><input type="text" id="solo-ingame-uid" class="form-input" placeholder="Your In-Game UID" required></div></div>`;
+                }
+
+                contentArea.innerHTML = `
+                    <div class="flex flex-col h-full">
+                        <div class="flex-grow overflow-y-auto no-scrollbar">
+                            <h1 class="text-2xl font-bold mb-6">Confirm Your Entry</h1>
+                            <div class="space-y-3">${selectionHTML}</div>
+                        </div>
+                        <div class="flex-shrink-0 p-4 bg-[#121212] flex gap-2">
+                            <button id="booking-back-btn-3" class="w-1/3 py-3 rounded-lg bg-gray-600 font-bold">Back</button>
+                            <button id="booking-next-btn-3" class="w-2/3 py-3 rounded-lg action-button">Next</button>
+                        </div>
+                    </div>`;
+
+                contentArea.querySelector('#booking-back-btn-3').addEventListener('click', () => window.history.back());
+                contentArea.querySelector('#booking-next-btn-3').addEventListener('click', () => {
+                    if (myTeam && myTeam.members && myTeam.members.length > 0) {
+                        bookingState.selectedPlayers = [myTeam.members[0]];
+                    } else {
+                        const soloName = document.getElementById('solo-ingame-name').value.trim();
+                        const soloUid = document.getElementById('solo-ingame-uid').value.trim();
+                        if (!soloName || !soloUid) {
+                            showModal('error', 'Details Required', 'Please enter your In-Game Name and UID.');
+                            return;
+                        }
+                        bookingState.selectedPlayers = [{ name: soloName, uid: soloUid }];
+                    }
+                    renderBookingStep_Confirm();
+                });
             }
-            nextBtn.disabled = contentArea.querySelectorAll('.player-checkbox:checked').length !== 5;
-        });
-    });
-}
+            
+            function renderBookingStep_PlayerSelection(requiredPlayers) {
+                const contentArea = document.getElementById('booking-content');
+                const myTeam = currentUserData.team;
+                const selectionHTML = myTeam.members.map((member, index) => `<label class="flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition-colors duration-200 ${index === 0 ? 'bg-green-500/30 border-green-500' : 'bg-[#1e1e1e] border-gray-700'} border"><input type="checkbox" class="player-checkbox hidden" value="${index}" ${index === 0 ? 'checked disabled' : ''}><div class="w-6 h-6 border-2 border-gray-500 rounded-md flex items-center justify-center check-icon-container"><i class="fa-solid fa-check text-white ${index === 0 ? '' : 'hidden'}"></i></div><div><p class="font-semibold">${member.name} ${index === 0 ? '(IGL - You)' : ''}</p><p class="text-xs text-gray-400">UID: ${member.uid}</p></div></label>`).join('');
+                
+                contentArea.innerHTML = `
+                    <div class="flex flex-col h-full">
+                        <div class="flex-grow overflow-y-auto no-scrollbar">
+                            <h1 class="text-2xl font-bold mb-6">Select Your Team (${requiredPlayers} Players)</h1>
+                            ${requiredPlayers > 1 ? `<p class="text-sm text-yellow-400 -mt-4 mb-4">Select ${requiredPlayers - 1} players plus yourself (IGL) to form a ${requiredPlayers}-player team for this match.</p>` : ''}
+                            <div class="space-y-3">${selectionHTML}</div>
+                        </div>
+                        <div class="flex-shrink-0 p-4 bg-[#121212] flex gap-2">
+                            <button id="booking-back-btn-3" class="w-1/3 py-3 rounded-lg bg-gray-600 font-bold">Back</button>
+                            <button id="booking-next-btn-3" class="w-2/3 py-3 rounded-lg action-button" ${requiredPlayers === 1 ? '' : 'disabled'}>Next</button>
+                        </div>
+                    </div>`;
+
+                contentArea.querySelector('#booking-back-btn-3').addEventListener('click', () => window.history.back());
+                contentArea.querySelector('#booking-next-btn-3').addEventListener('click', () => {
+                    const selectedIndexes = Array.from(contentArea.querySelectorAll('.player-checkbox:checked')).map(cb => parseInt(cb.value)); 
+                    bookingState.selectedPlayers = selectedIndexes.map(i => myTeam.members[i]);
+                    renderBookingStep_Confirm();
+                });
+                
+                const checkboxes = contentArea.querySelectorAll('.player-checkbox:not(:disabled)');
+                const nextBtn = contentArea.querySelector('#booking-next-btn-3');
+                checkboxes.forEach(cb => {
+                    cb.addEventListener('change', () => {
+                        const checkedCount = contentArea.querySelectorAll('.player-checkbox:checked').length;
+                        cb.closest('label').classList.toggle('bg-green-500/30', cb.checked);
+                        cb.closest('label').classList.toggle('border-green-500', cb.checked);
+                        cb.closest('label').classList.toggle('bg-[#1e1e1e]', !cb.checked);
+                        cb.closest('label').classList.toggle('border-gray-700', !cb.checked);
+                        cb.closest('label').querySelector('.fa-check').classList.toggle('hidden', !cb.checked);
+                        
+                        if (checkedCount > requiredPlayers) {
+                            cb.checked = false;
+                            cb.closest('label').classList.remove('bg-green-500/30', 'border-green-500');
+                            cb.closest('label').classList.add('bg-[#1e1e1e]', 'border-gray-700');
+                            cb.closest('label').querySelector('.fa-check').classList.add('hidden');
+                        }
+                        nextBtn.disabled = contentArea.querySelectorAll('.player-checkbox:checked').length !== requiredPlayers;
+                    });
+                });
+            }
 
             function renderBookingStep_Confirm() {
                 const contentArea = document.getElementById('booking-content'); 
@@ -2632,14 +2636,13 @@ function renderBookingStep_PlayerSelection() {
                 };
                 
                 handle.addEventListener('mousedown', onDragStart);
-                handle.addEventListener('touchstart', onDragStart, { passive: true });
+                handle.addEventListener('touchstart', onDragStart, { passive: false });
             }
             
             function initMyMatchesPage() { const container = document.getElementById('my-matches-content'); if (!container) return; const tabs = container.querySelectorAll('.my-matches-tab'); const sections = container.querySelectorAll('.tab-content-section'); tabs.forEach(tab => { tab.addEventListener('click', () => { if (tab.classList.contains('active-tab')) return; tabs.forEach(t => t.classList.remove('active-tab')); sections.forEach(s => s.classList.remove('active-section')); tab.classList.add('active-tab'); document.getElementById(tab.dataset.target)?.classList.add('active-section'); }); }); if (!container.querySelector('.active-tab')) { tabs[0]?.classList.add('active-tab'); sections[0]?.classList.add('active-section'); } }
-            function renderMyMatchesPage() { const bookings = Object.values(currentUserData.bookings || {}); const posts = window.dbData.posts || {}; const upcomingContainer = document.getElementById('upcoming-matches-container'); const historyContainer = document.getElementById('history-matches-container'); upcomingContainer.innerHTML = ''; historyContainer.innerHTML = ''; let upcomingCount = 0, historyCount = 0; bookings.sort((a,b) => new Date(b.bookingDate) - new Date(a.bookingDate)).forEach(booking => { const post = posts[booking.postId]; if (post) { const isBanned = (post.bannedUsers || []).includes(auth.currentUser.uid); if (isBanned || post.status === 'completed' || post.status === 'cancelled') { historyContainer.innerHTML += createMyMatchPostCardHTML(post, isBanned); historyCount++; } else { upcomingContainer.innerHTML += createMyMatchPostCardHTML(post, isBanned); upcomingCount++; } } }); if (upcomingCount === 0) upcomingContainer.innerHTML = '<p class="text-gray-500 p-4 text-center">You have no upcoming matches.</p>'; if (historyCount === 0) historyContainer.innerHTML = '<p class="text-gray-500 p-4 text-center">No recent match history found.</p>'; initializeCountdowns(); }
+            function renderMyMatchesPage() { const bookings = Object.values(currentUserData.bookings || {}); const posts = window.dbData.posts || {}; const upcomingContainer = document.getElementById('upcoming-matches-container'); const historyContainer = document.getElementById('history-matches-container'); upcomingContainer.innerHTML = ''; historyContainer.innerHTML = ''; let upcomingCount = 0, historyCount = 0; bookings.sort((a,b) => new Date(b.bookingDate) - new Date(a.bookingDate)).forEach(booking => { const post = posts[booking.postId]; if (post) { const isBanned = (post.bannedUsers || []).includes(auth.currentUser.uid); if (isBanned || post.status === 'completed' || post.status === 'cancelled') { historyContainer.innerHTML += createMyMatchPostCardHTML(post, isBanned); historyCount++; } else { upcomingContainer.innerHTML += createMyMatchPostCardHTML(post, isBanned); upcomingCount++; } } }); if (upcomingCount === 0) upcomingContainer.innerHTML = '<p class="text-gray-500 p-4 text-center">You have no upcoming matches.</p>'; if (historyCount === 0) historyContainer.innerHTML = '<p class="text-gray-500 p-4 text-center">No recent match history found.</p>'; }
             
             function createMyMatchPostCardHTML(post, isBanned = false) {
-               // ... (Previous logic) ...
                 const isLive = post.status.startsWith('live');
                 const participantInfo = Object.values(post.participants || {}).find(p => p.userId === auth.currentUser.uid);
                 const slotNumber = participantInfo ? participantInfo.slotNumber : '?';
@@ -2656,8 +2659,16 @@ function renderBookingStep_PlayerSelection() {
                     if (post.status === 'cancelled') {
                         bottomSectionHTML = `<div class="p-3 bg-red-900/50 text-center"><p class="font-bold text-red-400">MATCH CANCELLED ${post.cancellationReason === 'auto' ? '(Auto)' : ''}</p></div>`;
                     } else {
-                        const finalRankings = Object.values(post.participants || {}).map(p => { let totalPoints = 0; if (post.approvedResults && post.approvedResults[p.userId]) { Object.values(post.approvedResults[p.userId]).forEach(mapResult => { totalPoints += calculatePoints(mapResult.kills, mapResult.position); }); } return { userId: p.userId, totalPoints }; }).sort((a, b) => b.totalPoints - a.totalPoints); const myRankIndex = finalRankings.findIndex(r => r.userId === auth.currentUser.uid); const myRank = myRankIndex !== -1 ? myRankIndex + 1 : 'N/A'; const myPoints = myRankIndex !== -1 ? finalRankings[myRankIndex].totalPoints : 'N/A';
-                        bottomSectionHTML = `<div class="p-3 bg-gray-800/80"><p class="text-center font-bold text-gray-300 mb-2">MATCH COMPLETED</p><div class="flex justify-around text-center"><div class="font-oswald"><p class="text-2xl font-bold text-green-400">#${myRank}</p><p class="text-xs text-gray-400">RANK</p></div><div class="font-oswald"><p class="text-2xl font-bold text-white">${myPoints}</p><p class="text-xs text-gray-400">POINTS</p></div></div></div>`;
+                        if (post.details.matchType === 'Clash Squad') {
+                             const myTeamId = currentUserData.team?.id;
+                             const winnerId = post.csResults?.winner;
+                             const myRounds = myTeamId === post.csResults?.team1?.id ? post.csResults.team1.rounds : post.csResults?.team2?.rounds;
+                             const isWinner = myTeamId === winnerId;
+                             bottomSectionHTML = `<div class="p-3 ${isWinner ? 'bg-green-800/80' : 'bg-gray-800/80'}"><p class="text-center font-bold text-gray-300 mb-2">MATCH COMPLETED</p><div class="flex justify-around text-center"><div class="font-oswald"><p class="text-2xl font-bold ${isWinner ? 'text-green-400' : 'text-white'}">${isWinner ? 'VICTORY' : 'DEFEAT'}</p><p class="text-xs text-gray-400">RESULT</p></div><div class="font-oswald"><p class="text-2xl font-bold text-white">${myRounds || 0}</p><p class="text-xs text-gray-400">ROUNDS WON</p></div></div></div>`;
+                        } else {
+                            const finalRankings = Object.values(post.participants || {}).map(p => { let totalPoints = 0; if (post.approvedResults && post.approvedResults[p.userId]) { Object.values(post.approvedResults[p.userId]).forEach(mapResult => { totalPoints += calculatePoints(mapResult.kills, mapResult.position); }); } return { userId: p.userId, totalPoints }; }).sort((a, b) => b.totalPoints - a.totalPoints); const myRankIndex = finalRankings.findIndex(r => r.userId === auth.currentUser.uid); const myRank = myRankIndex !== -1 ? myRankIndex + 1 : 'N/A'; const myPoints = myRankIndex !== -1 ? finalRankings[myRankIndex].totalPoints : 'N/A';
+                            bottomSectionHTML = `<div class="p-3 bg-gray-800/80"><p class="text-center font-bold text-gray-300 mb-2">MATCH COMPLETED</p><div class="flex justify-around text-center"><div class="font-oswald"><p class="text-2xl font-bold text-green-400">#${myRank}</p><p class="text-xs text-gray-400">RANK</p></div><div class="font-oswald"><p class="text-2xl font-bold text-white">${myPoints}</p><p class="text-xs text-gray-400">POINTS</p></div></div></div>`;
+                        }
                     }
                 } else if (isLive) {
                     if (post.roomId && post.roomPass) {
@@ -2680,7 +2691,6 @@ function renderBookingStep_PlayerSelection() {
                 return `${cardWrapperStart}${cardHTML}${cardWrapperEnd}`;
             }
 
-            // ... (Participant List, Match Details, Live Match Logic largely same) ...
             document.getElementById('my-matches-content').addEventListener('click', e => { 
                 const copyBtn = e.target.closest('.copy-btn-card');
                 if (copyBtn) {
@@ -2755,7 +2765,6 @@ function renderBookingStep_PlayerSelection() {
                 document.getElementById('participant-list-header-title').textContent = `${post.details.eventName} - Teams`;
                 content.innerHTML = `<div class="p-4"><p class="text-lg mb-2">Slots Filled: <span class="font-bold">${post.participants ? Object.keys(post.participants).length : 0}/${post.slots.total}</span></p><div class="space-y-2 participant-list">${(post.participants && Object.keys(post.participants).length > 0) ? participantsHTML : '<p class="text-gray-500 p-4">No teams have booked yet.</p>'}</div></div>`;
                 
-                // GSAP Stagger
                 gsap.from(".participant-list > div", { x: -50, opacity: 0, stagger: 0.05, duration: 0.4 });
             }
             
@@ -2765,11 +2774,82 @@ function renderBookingStep_PlayerSelection() {
 
             function calculatePoints(kills, position) { const pp = { 1: 12, 2: 9, 3: 8, 4: 7, 5: 6, 6: 5, 7: 4, 8: 3, 9: 2, 10: 1, 11: 0, 12: 0 }; return (parseInt(kills) || 0) + (pp[parseInt(position)] || 0); }
             
+            // --- Clash Squad Specific Functions ---
+            
+            function renderCSLiveMatchPage(postId) {
+                const post = window.dbData.posts[postId];
+                if (!post || !post.csResults) return '';
+
+                const { team1, team2 } = post.csResults;
+                if (!team1 || !team2) return '<p class="text-center text-gray-400">Waiting for match data...</p>';
+
+                return `
+                    <div class="p-4">
+                        ${post.roomId ? `<div class="bg-gradient-to-br from-green-900 to-gray-800 border border-green-700 rounded-xl p-4 shadow-lg mb-6"><h3 class="text-lg font-bold text-center text-green-300 mb-3">Room Details</h3><div class="space-y-3"><div class="flex justify-between items-center bg-black/30 p-2 rounded-lg"><span class="text-gray-400 text-sm font-semibold">Room ID:</span><code class="text-white font-bold text-lg">${post.roomId}</code><button class="copy-btn bg-gray-600 hover:bg-gray-500 w-8 h-8 rounded-md flex items-center justify-center" data-copy-text="${post.roomId}"><i class="fa-solid fa-copy"></i></button></div><div class="flex justify-between items-center bg-black/30 p-2 rounded-lg"><span class="text-gray-400 text-sm font-semibold">Password:</span><code class="text-white font-bold text-lg">${post.roomPass}</code><button class="copy-btn bg-gray-600 hover:bg-gray-500 w-8 h-8 rounded-md flex items-center justify-center" data-copy-text="${post.roomPass}"><i class="fa-solid fa-copy"></i></button></div></div></div>` : ''}
+                        
+                        <div class="flex justify-between items-center">
+                            <div class="flex-1 text-center">
+                                <img src="${team1.logo || DEFAULT_TEAM_LOGO}" class="w-20 h-20 rounded-full mx-auto border-4 border-blue-500 object-cover" loading="lazy">
+                                <p class="font-bold mt-2 truncate">${team1.name}</p>
+                            </div>
+                            <div class="text-center px-4">
+                                <p class="text-6xl font-oswald font-bold">${team1.rounds || 0} - ${team2.rounds || 0}</p>
+                                <p class="text-sm text-gray-400">Rounds</p>
+                            </div>
+                            <div class="flex-1 text-center">
+                                <img src="${team2.logo || DEFAULT_TEAM_LOGO}" class="w-20 h-20 rounded-full mx-auto border-4 border-red-500 object-cover" loading="lazy">
+                                <p class="font-bold mt-2 truncate">${team2.name}</p>
+                            </div>
+                        </div>
+                         <p class="text-center text-yellow-400 font-semibold mt-8 animate-pulse">Waiting for sponsor to update results...</p>
+                    </div>
+                `;
+            }
+
+            function renderCSHistoryPage(postId) {
+                 const post = window.dbData.posts[postId];
+                if (!post || !post.csResults) return '';
+
+                const { team1, team2, winner, resultImage } = post.csResults;
+                if (!team1 || !team2) return '<p class="text-center text-gray-400">Match data is incomplete.</p>';
+                
+                const winnerData = team1.id === winner ? team1 : team2;
+                
+                return `
+                    <div class="p-4">
+                        <div class="text-center mb-6">
+                            <img src="${winnerData.logo || DEFAULT_TEAM_LOGO}" class="w-28 h-28 rounded-full mx-auto border-4 border-yellow-400 object-cover mb-2" loading="lazy">
+                            <p class="text-xs text-yellow-400 font-bold">WINNER</p>
+                            <h3 class="text-2xl font-bold">${winnerData.name}</h3>
+                        </div>
+                        <div class="flex justify-between items-center bg-[#1e1e1e] p-4 rounded-xl border border-gray-700">
+                            <div class="flex-1 text-center">
+                                <p class="font-bold text-lg truncate">${team1.name}</p>
+                            </div>
+                            <div class="text-center px-4">
+                                <p class="text-5xl font-oswald font-bold">${team1.rounds || 0} - ${team2.rounds || 0}</p>
+                            </div>
+                             <div class="flex-1 text-center">
+                                <p class="font-bold text-lg truncate">${team2.name}</p>
+                            </div>
+                        </div>
+                        ${resultImage ? `<div class="mt-6"><h4 class="font-bold text-center mb-2">Final Result</h4><img src="${resultImage}" class="w-full h-auto object-contain rounded-lg cursor-pointer" onclick="event.stopPropagation(); showLightbox('${resultImage}')" loading="lazy"></div>` : ''}
+                    </div>
+                `;
+            }
+
             function renderHistoryMatchDetailsPage(postId) { 
                 const post = window.dbData.posts[postId]; if (!post) return;
                 const content = document.getElementById('results-submission-content');
                 document.getElementById('results-submission-header-title').textContent = post.details.eventName;
                 
+                // Clash Squad History
+                if (post.details.matchType === 'Clash Squad') {
+                    content.innerHTML = renderCSHistoryPage(postId);
+                    return;
+                }
+
+                // Battle Royal History
                 const myResults = post.approvedResults?.[auth.currentUser.uid] || {}; 
                 const mySubmissionsHTML = `<div class="space-y-3">${post.details.maps.map(map => { const result = myResults[map]; if (!result) return ''; const screenshotHTML = result.screenshot ? `<img src="${result.screenshot}" class="w-24 h-16 object-cover rounded-md cursor-pointer flex-shrink-0" onclick="event.stopPropagation(); showLightbox('${result.screenshot}')" loading="lazy">` : ''; return `<div class="p-4 bg-[#1e1e1e] border border-gray-700 rounded-xl flex items-center gap-4">${screenshotHTML}<div class="flex-grow"><h4 class="font-bold text-lg text-green-400">${map}</h4><div class="flex gap-4 mt-1 text-sm"><span><i class="fa-solid fa-crosshairs text-red-400 mr-1"></i> Kills: <span class="font-semibold">${result.kills}</span></span><span><i class="fa-solid fa-trophy text-yellow-400 mr-1"></i> Position: <span class="font-semibold">#${result.position}</span></span></div></div></div>`; }).join('')}</div>`; 
                 const hasRated = post.feedback && Object.values(post.feedback).some(fb => fb.userId === auth.currentUser.uid); 
@@ -2781,10 +2861,23 @@ function renderBookingStep_PlayerSelection() {
             
             function renderLiveMatchPage(postId) {
                 const content = document.getElementById('results-submission-content');
-                content.dataset.postId = postId; // Store postId for reference
+                content.dataset.postId = postId; // Store postId for refreshes
                 const post = window.dbData.posts[postId]; if (!post) return;
                 document.getElementById('results-submission-header-title').textContent = post.details.eventName;
                 
+                // Clash Squad Live View
+                if(post.details.matchType === 'Clash Squad') {
+                    content.innerHTML = renderCSLiveMatchPage(postId);
+                     content.querySelectorAll('.copy-btn').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            const text = e.currentTarget.dataset.copyText;
+                            navigator.clipboard.writeText(text).then(() => showModal('success', 'Copied!', 'Room details copied to clipboard.'));
+                        });
+                    });
+                    return;
+                }
+
+                // Battle Royal Live View
                 content.innerHTML = `
                     <div class="p-4">
                         <div class="flex gap-2 mb-4">
@@ -2851,7 +2944,7 @@ function renderBookingStep_PlayerSelection() {
                     const user = window.dbData.users[p.userId]; if (!user) return null;
                     const team = user.team; const name = isSolo ? p.players[0].name : (team ? team.name : 'Unknown Team'); const logo = isSolo ? user.avatar || DEFAULT_AVATAR : (team ? team.logo || DEFAULT_TEAM_LOGO : DEFAULT_TEAM_LOGO);
                     let totalPoints = 0, totalKills = 0, totalPP = 0;
-                    if (resultsSource[p.userId]) { Object.values(resultsSource[p.userId]).forEach(mapResult => { totalPoints += calculatePoints(mapResult.kills, mapResult.position); totalKills += parseInt(mapResult.kills) || 0; totalPP += (calculatePoints(0, mapResult.position)); }); }
+                    if (resultsSource[p.userId]) { Object.values(resultsSource[p.userId]).forEach(mapResult => { totalPoints += calculatePoints(mapResult.kills, mapResult.position); totalKills += parseInt(mapResult.kills) || 0; totalPP += calculatePoints(0, mapResult.position); }); }
                     return { userId: p.userId, name: name, logo: logo, totalPoints, totalKills, totalPP };
                 }).filter(Boolean).sort((a, b) => b.totalPoints - a.totalPoints);
 
@@ -2996,7 +3089,6 @@ function renderBookingStep_PlayerSelection() {
                 await newTransactionRef.set(fullTransactionData);
             }
 
-            // ... (Wallet and other logic same) ...
             async function renderWalletPage() {
                 const contentArea = document.getElementById('wallet-content');
                 const allPosts = Object.values(window.dbData.posts || {});
@@ -3044,12 +3136,24 @@ function renderBookingStep_PlayerSelection() {
                         if(post.status === 'cancelled' && post.entryFee > 0) { transactions.push({ date: post.cancelledAt || new Date().toISOString(), type: 'Refund', description: `Refund from "${post.details.eventName}"`, amount: post.entryFee }); }
                         if (post.status === 'completed') {
                             totalEntryFees += post.entryFee;
-                            const finalRankings = Object.values(post.participants || {}).map(p => { let totalPoints = 0; if (post.approvedResults && post.approvedResults[p.userId]) { Object.values(post.approvedResults[p.userId]).forEach(mapResult => { totalPoints += calculatePoints(mapResult.kills, mapResult.position); }); } return { userId: p.userId, totalPoints }; }).sort((a, b) => b.totalPoints - a.totalPoints);
-                            const myRankIndex = finalRankings.findIndex(r => r.userId === auth.currentUser.uid);
-                            if (myRankIndex !== -1) {
-                                const myRank = myRankIndex + 1;
-                                const prizeInfo = (post.details.winningPrizes || []).find(prize => prize.rank === `Top ${myRank}`);
-                                if (prizeInfo) { const prizeAmount = parseFloat(prizeInfo.prize); totalWinnings += prizeAmount; transactions.push({ date: post.completedAt || new Date().toISOString(), type: 'Winning Prize', description: `Rank #${myRank} in "${post.details.eventName}"`, amount: prizeAmount }); }
+                            if (post.details.matchType === 'Clash Squad') {
+                                const myTeamId = currentUserData.team?.id;
+                                if (post.csResults?.winner === myTeamId) {
+                                     const prizeInfo = (post.details.winningPrizes || []).find(prize => prize.rank === 'Top 1');
+                                     if(prizeInfo) {
+                                         const prizeAmount = parseFloat(prizeInfo.prize);
+                                         totalWinnings += prizeAmount;
+                                         transactions.push({ date: post.completedAt || new Date().toISOString(), type: 'Winning Prize', description: `Winner in "${post.details.eventName}"`, amount: prizeAmount });
+                                     }
+                                }
+                            } else {
+                                const finalRankings = Object.values(post.participants || {}).map(p => { let totalPoints = 0; if (post.approvedResults && post.approvedResults[p.userId]) { Object.values(post.approvedResults[p.userId]).forEach(mapResult => { totalPoints += calculatePoints(mapResult.kills, mapResult.position); }); } return { userId: p.userId, totalPoints }; }).sort((a, b) => b.totalPoints - a.totalPoints);
+                                const myRankIndex = finalRankings.findIndex(r => r.userId === auth.currentUser.uid);
+                                if (myRankIndex !== -1) {
+                                    const myRank = myRankIndex + 1;
+                                    const prizeInfo = (post.details.winningPrizes || []).find(prize => prize.rank === `Top ${myRank}`);
+                                    if (prizeInfo) { const prizeAmount = parseFloat(prizeInfo.prize); totalWinnings += prizeAmount; transactions.push({ date: post.completedAt || new Date().toISOString(), type: 'Winning Prize', description: `Rank #${myRank} in "${post.details.eventName}"`, amount: prizeAmount }); }
+                                }
                             }
                         }
                     }
@@ -3167,7 +3271,6 @@ function renderBookingStep_PlayerSelection() {
                 }).join('');
                 content.innerHTML = `<div class="p-4"><div class="space-y-2">${sortedMail.length > 0 ? mailHTML : '<p class="text-center text-gray-500 mt-8">Your mailbox is empty.</p>'}</div></div>`;
                 
-                // GSAP Stagger for Mail Items
                 gsap.from(".mail-item", { x: -20, opacity: 0, stagger: 0.05, duration: 0.4, ease: "power2.out" });
 
                 content.querySelectorAll('.mail-item').forEach(item => item.addEventListener('click', e => { if (e.target.closest('.delete-mail-btn') || e.target.closest('.accept-ban-btn')) return; const mailId = item.dataset.mailId; item.querySelector('.mail-body').classList.toggle('hidden'); if (!currentUserData.mailbox[mailId]?.read) { database.ref(`users/${auth.currentUser.uid}/mailbox/${mailId}/read`).set(true); } }));
@@ -3249,7 +3352,6 @@ function renderBookingStep_PlayerSelection() {
                     });
                 });
 
-                // FIX: Refactored image upload handler to only manage the preview image
                 document.getElementById('new-profile-image-upload').addEventListener('change', e => {
                     const file = e.target.files[0];
                     if (file) {
@@ -3266,7 +3368,6 @@ function renderBookingStep_PlayerSelection() {
                         const newName = document.getElementById('edit-profile-name').value.trim();
                         if (!newName) throw new Error('Please enter your full name.');
                         
-                        // FIX: Get file directly from input on submit
                         const newAvatarFile = document.getElementById('new-profile-image-upload').files[0];
                         let newAvatarUrl = currentUserData.avatar; let newAvatarSize = currentUserData.avatarSizeKB || 0;
                         if (newAvatarFile) {
@@ -3361,19 +3462,19 @@ function renderBookingStep_PlayerSelection() {
             
             function startDepositFlow() { handleNavigation('payment-content'); document.querySelector('#payment-header h2').textContent = 'টাকা জমা দিন'; renderPaymentMethodSelection('deposit'); }
             function startWithdrawFlow() { handleNavigation('payment-content'); document.querySelector('#payment-header h2').textContent = 'টাকা উত্তোলন করুন'; renderPaymentMethodSelection('withdraw'); }
+            
             function renderPaymentMethodSelection(type) {
                 const contentArea = document.getElementById('payment-content'); contentArea.scrollTop = 0;
-                contentArea.innerHTML = `<h2 class="text-xl font-bold text-center mb-6">পেমেন্ট মাধ্যম বেছে নিন</h2><div class="space-y-4 max-w-sm mx-auto">${Object.keys(paymentMethods).map(key => `<button class="w-full flex items-center p-4 rounded-xl payment-method-btn" data-method-key="${key}" data-type="${type}"><img src="${paymentMethods[key].logo}" class="payment-method-img" loading="lazy"><span class="text-lg font-semibold">${paymentMethods[key].name}</span><i class="fa-solid fa-chevron-right text-gray-500 ml-auto"></i></button>`).join('')}</div>`;
+                contentArea.innerHTML = `<h2 class="text-xl font-bold text-center mb-6">পেমেন্ট মাধ্যম বেছে নিন</h2><div class="space-y-3 max-w-sm mx-auto">${Object.keys(paymentMethods).map(key => `<button class="w-full flex items-center p-3 rounded-xl payment-method-btn" data-method-key="${key}" data-type="${type}"><img src="${paymentMethods[key].logo}" class="payment-method-img !rounded-lg" loading="lazy"><span class="text-lg font-semibold">${paymentMethods[key].name}</span><i class="fa-solid fa-chevron-right text-gray-500 ml-auto"></i></button>`).join('')}</div>`;
                 contentArea.querySelectorAll('.payment-method-btn').forEach(btn => { btn.addEventListener('click', () => { if (type === 'deposit') renderDepositForm(btn.dataset.methodKey); else if (type === 'withdraw') renderWithdrawForm(btn.dataset.methodKey); }); });
-                // GSAP Stagger
                 gsap.from(".payment-method-btn", { y: 20, opacity: 0, stagger: 0.1, duration: 0.3 });
             }
+
             function renderDepositForm(methodKey) {
                 const method = paymentMethods[methodKey]; currentPaymentData = { type: 'deposit', method: method.name, methodKey: methodKey };
                 const contentArea = document.getElementById('payment-content'); contentArea.scrollTop = 0;
-                contentArea.innerHTML = `<div class="max-w-md mx-auto"><div class="text-center mb-6"><img src="${method.logo}" class="w-20 h-20 mx-auto mb-2 object-contain" loading="lazy"><h2 class="text-2xl font-bold">Deposit via ${method.name}</h2></div><div class="bg-[#1e1e1e] border border-gray-700 rounded-xl p-4 space-y-3 mb-4"><h3 class="font-semibold text-green-400">নির্দেশনা</h3><p class="text-sm text-gray-300">আপনার ${method.name} অ্যাপ থেকে নিচের নম্বরে <strong class="text-white">${method.type}</strong> করুন।</p><div class="bg-black/30 p-3 rounded-lg flex justify-between items-center"><code id="payment-number" class="text-xl font-bold tracking-wider">${method.number}</code><button id="copy-payment-number-btn" class="bg-gray-600 hover:bg-gray-700 w-10 h-10 rounded-md flex items-center justify-center transition-colors"><i class="fa-solid fa-copy"></i></button></div></div><div class="bg-[#1e1e1e] border border-gray-700 rounded-xl p-4 space-y-4"><div><label for="payment-amount" class="form-label">টাকার পরিমাণ (Min: ${MIN_DEPOSIT} - Max: ${MAX_DEPOSIT})</label><input type="number" id="payment-amount" class="form-input" placeholder="e.g., 500" required></div><div><label for="payment-trxid" class="form-label">ট্রানজেকশন আইডি (TrxID)</label><input type="text" id="payment-trxid" class="form-input" placeholder="e.g., 9C4B8A71D3" required></div><div><label class="form-label">প্রুফ হিসেবে স্ক্রিনশট দিন (Optional)</label><div class="relative"><img id="screenshot-preview" class="hidden w-full h-auto object-cover rounded-lg mb-2 border-2 border-gray-600" loading="lazy"><label for="payment-screenshot" class="w-full"><input type="file" id="payment-screenshot" class="hidden" accept="image/*"><div id="file-label" class="form-input text-gray-400 cursor-pointer flex justify-center items-center gap-2"><i class="fa-solid fa-cloud-arrow-up"></i> <span>Select Screenshot</span></div></label></div></div></div><div class="bg-red-900/50 border border-red-700 rounded-xl p-3 text-center text-xs text-red-300 mt-4"><i class="fa-solid fa-triangle-exclamation mr-1"></i><strong>সতর্কতা:</strong> কোনো ভুল বা মিথ্যা তথ্য দিলে আপনার একাউন্ট ব্যান করা হতে পারে।</div><div class="fixed bottom-0 left-0 w-full p-4 bg-[#121212]/80 backdrop-blur-sm border-t border-gray-800"><div id="payment-swipe-confirm" class="swipe-container"><div class="swipe-track"></div><div class="swipe-handle"><i class="fa-solid fa-chevron-right text-white"></i><i class="fa-solid fa-chevron-right text-white -ml-2"></i></div><div class="swipe-text">জমা দেওয়ার জন্য সোয়াইপ করুন</div></div></div></div>`;
+                contentArea.innerHTML = `<div class="max-w-md mx-auto space-y-5"><div class="text-center"><img src="${method.logo}" class="w-20 h-20 mx-auto mb-2 object-contain" loading="lazy"><h2 class="text-2xl font-bold">Deposit via ${method.name}</h2></div><div class="bg-gradient-to-br from-[#2a2a2e] to-[#202024] border border-gray-700 rounded-2xl p-4 space-y-3 shadow-lg"><h3 class="font-semibold text-green-400">নির্দেশনা</h3><p class="text-sm text-gray-300">আপনার ${method.name} অ্যাপ থেকে নিচের নম্বরে <strong class="text-white">${method.type}</strong> করুন।</p><div class="bg-black/50 p-3 rounded-lg flex justify-between items-center border border-gray-600"><code id="payment-number" class="text-2xl font-bold tracking-wider">${method.number}</code><button id="copy-payment-number-btn" class="bg-gray-600 hover:bg-gray-500 w-10 h-10 rounded-md flex items-center justify-center transition-colors"><i class="fa-solid fa-copy"></i></button></div></div><div class="bg-[#1e1e1e] border border-gray-700 rounded-2xl p-4 space-y-4"><div><label for="payment-amount" class="form-label">টাকার পরিমাণ (Min: ${MIN_DEPOSIT} - Max: ${MAX_DEPOSIT})</label><input type="number" id="payment-amount" class="form-input" placeholder="e.g., 500" required></div><div><label for="payment-trxid" class="form-label">ট্রানজেকশন আইডি (TrxID)</label><input type="text" id="payment-trxid" class="form-input" placeholder="e.g., 9C4B8A71D3" required></div></div><div class="bg-red-900/50 border border-red-700 rounded-xl p-3 text-center text-xs text-red-300"><i class="fa-solid fa-triangle-exclamation mr-1"></i><strong>সতর্কতা:</strong> কোনো ভুল বা মিথ্যা তথ্য দিলে আপনার একাউন্ট ব্যান করা হতে পারে।</div><div class="sticky bottom-0 left-0 w-full p-4 bg-gradient-to-t from-[#121212] to-transparent"><div id="payment-swipe-confirm" class="swipe-container"><div class="swipe-track"></div><div class="swipe-handle"><i class="fa-solid fa-chevron-right text-white"></i><i class="fa-solid fa-chevron-right text-white -ml-2"></i></div><div class="swipe-text">জমা দেওয়ার জন্য সোয়াইপ করুন</div></div></div></div>`;
                 document.getElementById('copy-payment-number-btn').addEventListener('click', () => { navigator.clipboard.writeText(method.number).then(() => showModal('success', 'নম্বর কপি হয়েছে!', `${method.number} নম্বরটি আপনার ক্লিপবোর্ডে কপি করা হয়েছে।`)); });
-                document.getElementById('payment-screenshot').addEventListener('change', e => { const file = e.target.files[0]; const preview = document.getElementById('screenshot-preview'); if (file) { document.getElementById('file-label').innerHTML = `<i class="fa-solid fa-check text-green-400"></i> <span class="text-white">${file.name}</span>`; const reader = new FileReader(); reader.onload = (event) => { preview.src = event.target.result; preview.classList.remove('hidden'); }; reader.readAsDataURL(file); } else { preview.classList.add('hidden'); } });
                 initSwipeToConfirm(async (resetSwipe) => {
                     const amount = parseFloat(document.getElementById('payment-amount').value);
                     const trxId = document.getElementById('payment-trxid').value.trim().toUpperCase();
@@ -3402,7 +3503,7 @@ function renderBookingStep_PlayerSelection() {
                 const todayWithdrawals = Object.values(withdrawalsSnapshot.val() || {}).filter(w => w.timestamp.startsWith(today));
                 if (todayWithdrawals.length >= WITHDRAW_LIMIT_PER_DAY) { showModal('error', 'দৈনিক সীমা পূর্ণ', `আপনি আজ ইতিমধ্যে ${WITHDRAW_LIMIT_PER_DAY} বার টাকা উত্তোলন করেছেন। অনুগ্রহ করে আগামীকাল আবার চেষ্টা করুন।`, 'ঠিক আছে', () => startWithdrawFlow()); return; }
                 currentPaymentData = { type: 'withdraw', method: method.name, methodKey: methodKey }; const contentArea = document.getElementById('payment-content'); contentArea.scrollTop = 0;
-                contentArea.innerHTML = `<div class="max-w-md mx-auto"><div class="text-center mb-6"><img src="${method.logo}" class="w-20 h-20 mx-auto mb-2 object-contain" loading="lazy"><h2 class="text-2xl font-bold">Withdraw to ${method.name}</h2></div><div class="bg-[#1e1e1e] border border-gray-700 rounded-xl p-4 space-y-4"><div><label for="payment-amount" class="form-label">টাকার পরিমাণ (Min: ${MIN_WITHDRAW} - Max: ${MAX_WITHDRAW})</label><input type="number" id="payment-amount" class="form-input" placeholder="e.g., 300" required></div><div><label for="account-number" class="form-label">আপনার ${method.name} একাউন্ট নম্বর</label><input type="tel" id="account-number" class="form-input" placeholder="e.g., 01xxxxxxxxx" required></div></div><div class="bg-blue-900/50 border border-blue-700 rounded-xl p-3 text-center text-xs text-blue-300 mt-4"><i class="fa-solid fa-info-circle mr-1"></i>আপনার অনুরোধটি ২৪ ঘণ্টার মধ্যে প্রসেস করা হবে।</div><div class="fixed bottom-0 left-0 w-full p-4 bg-[#121212]/80 backdrop-blur-sm border-t border-gray-800"><div id="payment-swipe-confirm" class="swipe-container"><div class="swipe-track"></div><div class="swipe-handle"><i class="fa-solid fa-chevron-right text-white"></i><i class="fa-solid fa-chevron-right text-white -ml-2"></i></div><div class="swipe-text">উত্তোলনের জন্য সোয়াইপ করুন</div></div></div></div>`;
+                contentArea.innerHTML = `<div class="max-w-md mx-auto space-y-5"><div class="text-center"><img src="${method.logo}" class="w-20 h-20 mx-auto mb-2 object-contain" loading="lazy"><h2 class="text-2xl font-bold">Withdraw to ${method.name}</h2></div><div class="bg-[#1e1e1e] border border-gray-700 rounded-2xl p-4 space-y-4"><div><label for="payment-amount" class="form-label">টাকার পরিমাণ (Min: ${MIN_WITHDRAW} - Max: ${MAX_WITHDRAW})</label><input type="number" id="payment-amount" class="form-input" placeholder="e.g., 300" required></div><div><label for="account-number" class="form-label">আপনার ${method.name} একাউন্ট নম্বর</label><input type="tel" id="account-number" class="form-input" placeholder="e.g., 01xxxxxxxxx" required></div></div><div class="bg-blue-900/50 border border-blue-700 rounded-xl p-3 text-center text-xs text-blue-300"><i class="fa-solid fa-info-circle mr-1"></i>আপনার অনুরোধটি ২৪ ঘণ্টার মধ্যে প্রসেস করা হবে।</div><div class="sticky bottom-0 left-0 w-full p-4 bg-gradient-to-t from-[#121212] to-transparent"><div id="payment-swipe-confirm" class="swipe-container"><div class="swipe-track"></div><div class="swipe-handle"><i class="fa-solid fa-chevron-right text-white"></i><i class="fa-solid fa-chevron-right text-white -ml-2"></i></div><div class="swipe-text">উত্তোলনের জন্য সোয়াইপ করুন</div></div></div></div>`;
                 initSwipeToConfirm((resetSwipe) => {
                     const amount = parseFloat(document.getElementById('payment-amount').value);
                     const accountNumber = document.getElementById('account-number').value.trim();
@@ -3425,18 +3526,11 @@ function renderBookingStep_PlayerSelection() {
             }
             
             async function submitDepositRequest() {
-                const { method, amount, trxId } = currentPaymentData; let screenshotUrl = null;
-                // FIX: Get file directly from input on submit
-                const proofFile = document.getElementById('payment-screenshot').files[0];
+                const { method, amount, trxId } = currentPaymentData;
                 try {
                     showLoader('Submitting Request...');
-                    if (proofFile) {
-                        const uploadResult = await uploadImage(proofFile, 'deposit-proofs');
-                        if (uploadResult && uploadResult.url) { screenshotUrl = uploadResult.url; updateTotalStorage(uploadResult.size); } 
-                        else { throw new Error("Screenshot upload failed."); }
-                    }
                     const depositId = database.ref('deposits').push().key;
-                    await database.ref('deposits/' + depositId).set({ id: depositId, userId: auth.currentUser.uid, userName: currentUserData.name, method, amount, trxId, screenshotUrl, timestamp: new Date().toISOString(), status: 'pending' });
+                    await database.ref('deposits/' + depositId).set({ id: depositId, userId: auth.currentUser.uid, userName: currentUserData.name, method, amount, trxId, timestamp: new Date().toISOString(), status: 'pending' });
                     hideLoader();
                     window.history.back();
                     showCustomModal({ type: 'success', title: 'অনুরোধ সফল হয়েছে', message: 'আপনার জমার অনুরোধটি পর্যালোচনার জন্য পাঠানো হয়েছে। এডমিন অনুমোদন করলে আপনার ব্যালেন্সে টাকা যোগ হয়ে যাবে।', primaryButton: { text: 'ঠিক আছে' } });
@@ -3464,7 +3558,6 @@ function renderBookingStep_PlayerSelection() {
                 const activePosts = allGuildPosts.filter(post => new Date(post.timestamp).getTime() > thirtyDaysAgo).sort((a, b) => new Date(b.timestamp) - a.timestamp);
                 if (activePosts.length === 0) { container.innerHTML = `<div class="text-center text-gray-500 p-10 bg-gray-800/50 rounded-lg"><i class="fa-solid fa-users-slash text-4xl mb-4"></i><p>কোন গিল্ড পোস্ট এখন উপলব্ধ নেই।</p></div>`; return; }
                 container.innerHTML = activePosts.map(createGuildPostCardHTML).join('');
-                // GSAP Stagger
                 gsap.from("#home-guild-feed > div", { y: 50, opacity: 0, duration: 0.5, stagger: 0.1, ease: "power2.out" });
             }
 
@@ -3531,7 +3624,6 @@ function renderBookingStep_PlayerSelection() {
                 e.preventDefault();
                 const form = e.target;
                 handleFormSubmit(form, 'Posting...', async () => {
-                    // FIX: Get file directly from input on submit
                     const guildPostImageFile = document.getElementById('guild-image-upload').files[0];
                     if (!guildPostImageFile) throw new Error('Guild Image is required.');
 
@@ -3800,29 +3892,36 @@ function renderBookingStep_PlayerSelection() {
                 if (!userData) return null;
             
                 const allPosts = window.dbData.posts;
-                const { played, kills } = calculateUserStats(userData, allPosts);
+                const { played, kills, wins } = calculateUserStats(userData, allPosts);
 
                 let totalWinnings = 0;
                 const bookings = Object.values(userData.bookings || {});
                 bookings.forEach(booking => {
                     const post = allPosts[booking.postId];
                     if (post && post.status === 'completed') {
-                        const finalRankings = Object.values(post.participants || {}).map(p => { 
-                            let totalPoints = 0; 
-                            if (post.approvedResults && post.approvedResults[p.userId]) { 
-                                Object.values(post.approvedResults[p.userId]).forEach(mapResult => { 
-                                    totalPoints += calculatePoints(mapResult.kills, mapResult.position); 
-                                }); 
-                            } 
-                            return { userId: p.userId, totalPoints }; 
-                        }).sort((a, b) => b.totalPoints - a.totalPoints);
+                        if (post.details.matchType === 'Clash Squad') {
+                             if (post.csResults?.winner === userData.team?.id) {
+                                 const prizeInfo = (post.details.winningPrizes || []).find(p => p.rank === 'Top 1');
+                                 if (prizeInfo) totalWinnings += parseFloat(prizeInfo.prize) || 0;
+                             }
+                        } else {
+                            const finalRankings = Object.values(post.participants || {}).map(p => { 
+                                let totalPoints = 0; 
+                                if (post.approvedResults && post.approvedResults[p.userId]) { 
+                                    Object.values(post.approvedResults[p.userId]).forEach(mapResult => { 
+                                        totalPoints += calculatePoints(mapResult.kills, mapResult.position); 
+                                    }); 
+                                } 
+                                return { userId: p.userId, totalPoints }; 
+                            }).sort((a, b) => b.totalPoints - a.totalPoints);
 
-                        const myRankIndex = finalRankings.findIndex(r => r.userId === userId);
-                        if (myRankIndex !== -1) {
-                            const myRank = myRankIndex + 1;
-                            const prizeInfo = (post.details.winningPrizes || []).find(prize => prize.rank === `Top ${myRank}`);
-                            if (prizeInfo) {
-                                totalWinnings += parseFloat(prizeInfo.prize) || 0;
+                            const myRankIndex = finalRankings.findIndex(r => r.userId === userId);
+                            if (myRankIndex !== -1) {
+                                const myRank = myRankIndex + 1;
+                                const prizeInfo = (post.details.winningPrizes || []).find(prize => prize.rank === `Top ${myRank}`);
+                                if (prizeInfo) {
+                                    totalWinnings += parseFloat(prizeInfo.prize) || 0;
+                                }
                             }
                         }
                     }
@@ -3832,7 +3931,8 @@ function renderBookingStep_PlayerSelection() {
                     teamName: userData.team?.name || 'N/A',
                     played,
                     kills,
-                    totalWinnings
+                    totalWinnings,
+                    wins
                 };
             }
 
@@ -3863,11 +3963,15 @@ function renderBookingStep_PlayerSelection() {
                             <p class="user-profile-stat-value">${stats.played}</p>
                             <p class="user-profile-stat-label">Total Matches</p>
                         </div>
+                         <div class="user-profile-stat">
+                            <p class="user-profile-stat-value text-green-400">${stats.wins}</p>
+                            <p class="user-profile-stat-label">Total Wins</p>
+                        </div>
                         <div class="user-profile-stat">
                             <p class="user-profile-stat-value text-red-400">${stats.kills}</p>
                             <p class="user-profile-stat-label">Total Kills</p>
                         </div>
-                        <div class="user-profile-stat col-span-2">
+                        <div class="user-profile-stat">
                              <p class="user-profile-stat-value text-green-400">${stats.totalWinnings.toFixed(2)} <span class="text-lg">TK</span></p>
                             <p class="user-profile-stat-label">Total Earnings</p>
                         </div>
@@ -3893,7 +3997,6 @@ function renderBookingStep_PlayerSelection() {
                     return;
                 }
                 container.innerHTML = activePosts.map(createPlayerSquadPostCardHTML).join('');
-                // GSAP Stagger
                 gsap.from("#home-player-squad-feed > div", { y: 50, opacity: 0, duration: 0.5, stagger: 0.1, ease: "power2.out" });
             }
             
@@ -3957,7 +4060,7 @@ function renderBookingStep_PlayerSelection() {
                     }
                 });
                 
-                document.getElementById('ps-image-upload').addEventListener('change', e => {}); // Preview logic removed as it's not needed
+                document.getElementById('ps-image-upload').addEventListener('change', e => {});
                 document.getElementById('player-squad-post-form').addEventListener('submit', handlePlayerSquadPostSubmit);
             }
 
@@ -3978,7 +4081,6 @@ function renderBookingStep_PlayerSelection() {
                         throw new Error('Posts cannot contain links or promotional language.');
                     }
                     
-                    // FIX: Get file directly from input on submit
                     const playerSquadPostImageFile = document.getElementById('ps-image-upload').files[0];
                     let imageUrl = null;
                     if(playerSquadPostImageFile) {
@@ -4049,7 +4151,6 @@ function renderBookingStep_PlayerSelection() {
                     handleNavigation('redeem-content');
                 });
 
-                // NEW Lucky Spin Sidebar Link
                 document.getElementById('sidebar-lucky-spin').addEventListener('click', () => {
                     closeSidebar();
                     handleNavigation('lucky-spin-content');
@@ -4117,7 +4218,6 @@ function renderBookingStep_PlayerSelection() {
                 document.getElementById('sidebar-diamond-plus').addEventListener('click', redirectToMissions);
             }
 
-            // --- [NEW] LUCKY SPIN LOGIC (UPDATED PRO UI WITH GSAP) ---
             const spinSegments = [
                 { type: 'coin', value: 0.5, color: '#fcd34d', text: '0.5 C' },
                 { type: 'diamond', value: 0.1, color: '#22d3ee', text: '0.1 D' },
@@ -4144,26 +4244,22 @@ function renderBookingStep_PlayerSelection() {
                         <div class="mb-8 text-center">
                             <h2 class="text-4xl font-oswald font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500 drop-shadow-sm">LUCKY SPIN</h2>
                             <div class="flex items-center justify-center gap-2 mt-4 bg-gradient-to-r from-gray-800 to-gray-900 px-6 py-2 rounded-full border border-yellow-500/30 shadow-lg">
-                                <img src="${TICKET_ICON_URL}" class="w-6 h-6 drop-shadow-[0_0_8px_rgba(255,215,0,0.5)]">
+                                <img src="${TICKET_ICON_URL}" class="w-6 h-6 drop-shadow-[0_0_8px_rgba(255,215,0,0.5)]" loading="lazy">
                                 <span class="text-xl font-bold text-white tracking-wide" id="spin-ticket-count">${tickets}</span>
                             </div>
                         </div>
 
                         <div class="relative scale-90 sm:scale-100 transition-transform">
-                            <!-- New Professional Wheel Structure -->
                             <div class="wheel-container-pro">
                                 <div class="wheel-outer-rim">
-                                    <div class="wheel-pro" id="spin-wheel">
-                                        <!-- Segments generated by JS -->
-                                    </div>
+                                    <div class="wheel-pro" id="spin-wheel"></div>
                                 </div>
                                 <div class="wheel-center-cap">
                                     <i class="fa-solid fa-star text-yellow-600 text-2xl drop-shadow-sm"></i>
                                 </div>
-                                <img src="https://cdn-icons-png.flaticon.com/512/1660/1660929.png" class="wheel-pointer-pro">
+                                <img src="https://cdn-icons-png.flaticon.com/512/1660/1660929.png" class="wheel-pointer-pro" loading="lazy">
                             </div>
                             
-                            <!-- Coming Soon Overlay -->
                             <div class="absolute inset-0 flex items-center justify-center z-40 pointer-events-none">
                                 <div class="bg-black/80 text-white font-bold font-oswald text-3xl px-8 py-4 rounded-xl border border-yellow-500 shadow-[0_0_30px_rgba(255,215,0,0.3)] backdrop-blur-sm transform rotate-[-5deg]">
                                     COMING SOON
@@ -4243,7 +4339,6 @@ function renderBookingStep_PlayerSelection() {
                 const randomAdUrl = adUrls[Math.floor(Math.random() * adUrls.length)];
                 
                 if (type === 'ad') {
-                    // Show Ad Logic
                     const adScreen = document.getElementById('ad-view-screen');
                     let countdown = 30;
                     adScreen.innerHTML = `
@@ -4296,7 +4391,6 @@ function renderBookingStep_PlayerSelection() {
                 }
             }
 
-            // --- [NEW] Animated Search Header ---
             document.getElementById('home-search-btn').addEventListener('click', () => {
                 const mainHeader = document.getElementById('main-header');
                 const searchHeader = document.getElementById('home-search-header');
@@ -4325,7 +4419,7 @@ function renderBookingStep_PlayerSelection() {
 
             async function renderStorePage(){
                 const container = document.getElementById('home-store-feed');
-                container.innerHTML = ''; // Clear previous content
+                container.innerHTML = '';
                 const topupItems = window.dbData.admin?.store?.topups || {};
                 const topupDiamondsHTML = Object.entries(topupItems).filter(([id, item]) => item.type === 'diamond').map(([id, item]) => createTopupCardHTML(id, item)).join('');
 
@@ -4588,7 +4682,6 @@ function renderBookingStep_PlayerSelection() {
                              if (t.currency) {
                                  const icon = t.currency === 'coin' ? 'fa-coins text-yellow-400' : 'fa-gem text-cyan-400';
                                  const isCredit = !String(t.amount).startsWith('-');
-                                 // FIX: Show decimals for currency rewards
                                  amountHTML = `<p class="font-bold text-lg ${isCredit ? '' : 'text-red-400'}"><i class="fa-solid ${icon} mr-1"></i>${parseFloat(t.amount).toFixed(2)}</p>`;
                              } else {
                                 const isCredit = t.amount > 0;
@@ -4671,7 +4764,6 @@ function renderBookingStep_PlayerSelection() {
                     iconHtml = `<i class="fa-solid ${task.icon}"></i>`;
                 }
 
-                // Update icon logic to support tickets if needed, though not fully in DB schema yet
                 let rewardCurrencyIcon;
                 if (task.rewardType === 'diamond') {
                     rewardCurrencyIcon = 'https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Levelup%2F1762763297995.png?alt=media&token=db9ebed1-ff51-49ed-a311-0327313dae56';
@@ -4755,7 +4847,7 @@ function renderBookingStep_PlayerSelection() {
 
                         let currency = 'coins';
                         if (task.rewardType === 'diamond') currency = 'diamonds';
-                        else if (task.rewardType === 'ticket') currency = 'tickets'; // Add ticket support
+                        else if (task.rewardType === 'ticket') currency = 'tickets';
 
                         if(currency === 'tickets') {
                              await database.ref(`users/${auth.currentUser.uid}/tickets`).transaction(current => (current || 0) + task.rewardAmount);
@@ -5112,6 +5204,133 @@ function renderBookingStep_PlayerSelection() {
                 });
             }
 
+            function renderNewsFeed() {
+                const container = document.getElementById('home-news-feed');
+                const newsPosts = Object.values(window.dbData.newsPosts || {}).sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+                if(newsPosts.length === 0) {
+                    container.innerHTML = `<div class="text-center text-gray-500 p-10 bg-gray-800/50 rounded-lg"><i class="fa-solid fa-newspaper text-4xl mb-4"></i><p>No news right now. Check back later!</p></div>`;
+                    return;
+                }
+                container.innerHTML = newsPosts.map(createNewsPostCardHTML).join('');
+                initializeNewsEventListeners();
+            }
+
+            function createNewsPostCardHTML(post) {
+                const allBadges = window.dbData.admin?.config?.verifiedBadges || {};
+                let badgeHTML = '';
+                if (post.badgeIndex !== undefined && post.badgeIndex !== null) {
+                    const badgeData = allBadges[post.badgeIndex];
+                    if(badgeData){
+                        badgeHTML = badgeData.type === 'video'
+                            ? `<video src="${badgeData.url}" class="verification-badge" autoplay loop muted playsinline></video>`
+                            : `<img src="${badgeData.url}" alt="Badge" class="verification-badge" loading="lazy">`;
+                    }
+                } else {
+                     badgeHTML = `<img src="https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/1678272828555.png?alt=media&token=42395568-7313-4318-8742-553ded11a25e" alt="Verified" class="verification-badge" loading="lazy">`;
+                }
+
+                const noteHTML = post.note ? `<p class="text-gray-300 text-sm whitespace-pre-wrap leading-relaxed">${post.note}</p>` : '';
+                const imageHTML = post.imageUrl ? `<img src="${post.imageUrl}" class="w-full h-auto max-h-96 object-contain rounded-lg mt-4" alt="News Image" loading="lazy">` : '';
+                const urlHTML = post.url ? `<a href="${post.url}" target="_blank" class="block w-full mt-4 py-2.5 rounded-lg bg-blue-600/20 text-blue-300 border border-blue-600/50 font-bold text-sm hover:bg-blue-600/40 transition-colors text-center"><i class="fa-solid fa-link mr-2"></i>${post.urlText || 'Open Link'}</a>` : '';
+                
+                const userVote = currentUserData.votes?.[post.id];
+                const pollHTML = post.poll ? (userVote !== undefined ? createPollResultsHTML(post, userVote) : createPollOptionsHTML(post)) : '';
+
+                return `
+                <div class="news-post-card rounded-2xl overflow-hidden bg-gradient-to-br from-[#2a2a2a] to-[#202020] border border-gray-700" data-news-post-id="${post.id}">
+                    <div class="p-4">
+                        <div class="flex items-center gap-3">
+                            <img src="${APP_LOGO_URL}" class="w-10 h-10 rounded-full object-cover border-2 border-yellow-500" loading="lazy">
+                            <div>
+                                <div class="flex items-center">
+                                    <p class="font-semibold text-white">LEVEL UP Official</p>
+                                    ${badgeHTML}
+                                </div>
+                                <p class="text-xs text-gray-400">${timeAgo(post.timestamp)}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 pt-0 space-y-4">
+                        ${noteHTML}
+                        ${imageHTML}
+                        ${pollHTML}
+                        ${urlHTML}
+                    </div>
+                </div>`;
+            }
+
+            function createPollOptionsHTML(post) {
+                const optionsHTML = post.poll.options.map((option, index) => 
+                    `<button class="poll-option-btn w-full text-left p-3 rounded-lg font-semibold transition-colors duration-200" data-option-index="${index}">${option.text}</button>`
+                ).join('');
+                return `<div class="mt-4"><p class="font-bold mb-3">${post.poll.question}</p><div class="space-y-2">${optionsHTML}</div><button class="vote-btn w-full mt-4 py-2 action-button rounded-lg font-bold hidden">Vote</button></div>`;
+            }
+
+            function createPollResultsHTML(post, userVote) {
+                const totalVotes = Object.values(post.poll.options).reduce((sum, opt) => sum + (opt.votes || 0), 0);
+                const resultsHTML = post.poll.options.map((option, index) => {
+                    const votes = option.votes || 0;
+                    const percentage = totalVotes > 0 ? ((votes / totalVotes) * 100).toFixed(0) : 0;
+                    const isVotedOption = index === userVote;
+                    return `
+                    <div class="poll-result-item ${isVotedOption ? 'voted' : ''}">
+                        <div class="flex justify-between items-center text-sm font-semibold mb-1">
+                            <span class="flex items-center">${option.text} ${isVotedOption ? '<i class="fa-solid fa-check text-green-400 ml-2"></i>' : ''}</span>
+                            <span>${percentage}%</span>
+                        </div>
+                        <div class="poll-result-bar w-full h-2 rounded-full overflow-hidden">
+                            <div class="poll-result-fill h-full rounded-full" style="width: ${percentage}%"></div>
+                        </div>
+                    </div>`;
+                }).join('');
+                return `<div class="mt-4"><p class="font-bold mb-3">${post.poll.question}</p><div class="space-y-3">${resultsHTML}</div><p class="text-xs text-gray-500 text-center mt-3">${totalVotes} total votes</p></div>`;
+            }
+
+            function initializeNewsEventListeners() {
+                document.querySelectorAll('.news-post-card').forEach(card => {
+                    const voteBtn = card.querySelector('.vote-btn');
+                    const options = card.querySelectorAll('.poll-option-btn');
+                    let selectedOption = null;
+
+                    options.forEach(optionBtn => {
+                        optionBtn.addEventListener('click', () => {
+                            selectedOption = optionBtn.dataset.optionIndex;
+                            options.forEach(opt => opt.classList.remove('selected'));
+                            optionBtn.classList.add('selected');
+                            voteBtn.classList.remove('hidden');
+                        });
+                    });
+
+                    if (voteBtn) {
+                        voteBtn.addEventListener('click', () => {
+                            if (selectedOption !== null) {
+                                handleVote(card.dataset.newsPostId, parseInt(selectedOption));
+                            }
+                        });
+                    }
+                });
+            }
+
+            async function handleVote(postId, optionIndex) {
+                if (currentUserData.votes && currentUserData.votes[postId] !== undefined) {
+                    showModal('error', 'Already Voted', 'You have already participated in this poll.');
+                    return;
+                }
+
+                showLoader('Casting Vote...');
+                const updates = {};
+                updates[`/newsPosts/${postId}/poll/options/${optionIndex}/votes`] = firebase.database.ServerValue.increment(1);
+                updates[`/newsPosts/${postId}/poll/voters/${auth.currentUser.uid}`] = optionIndex; // Track voter
+                updates[`/users/${auth.currentUser.uid}/votes/${postId}`] = optionIndex;
+                
+                try {
+                    await database.ref().update(updates);
+                    hideLoader();
+                } catch (error) {
+                    hideLoader();
+                    handleFirebaseError(error);
+                }
+            }
         });
     </script>
 </body>
