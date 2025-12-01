@@ -1813,9 +1813,16 @@
                 const resultsContainer = document.getElementById('search-results-container'); 
                 const posts = Object.values(window.dbData.posts || {}); 
                 const filteredPosts = posts.filter(p => p.details.eventName.toLowerCase().includes(searchTerm) || p.author.name.toLowerCase().includes(searchTerm) || (p.details.tags && p.details.tags.some(t => t.toLowerCase().includes(searchTerm)))); 
-                resultsContainer.innerHTML = filteredPosts.length > 0 ? filteredPosts.map(createPostCardHTML).join('') : `<p class="text-center text-gray-500 mt-8">No results found.</p>`; 
                 
-                // GSAP Stagger Animation for search results
+                const now = Date.now();
+                const thirtyMinutes = 30 * 60 * 1000;
+                const activeAndFilteredPosts = filteredPosts.filter(post => {
+                    const matchTime = new Date(post.matchDate).getTime();
+                    return (matchTime + thirtyMinutes) > now;
+                });
+
+                resultsContainer.innerHTML = activeAndFilteredPosts.length > 0 ? activeAndFilteredPosts.map(createPostCardHTML).join('') : `<p class="text-center text-gray-500 mt-8">No results found.</p>`; 
+                
                 gsap.from(resultsContainer.children, { y: 50, opacity: 0, duration: 0.5, stagger: 0.1, ease: "power2.out" });
             }
             document.getElementById('search-input-mobile').addEventListener('input', e => {
@@ -1848,10 +1855,16 @@
                 const now = Date.now();
                 
                 const eventPosts = Object.values(window.dbData.posts || {});
+                const thirtyMinutes = 30 * 60 * 1000;
+                const activeEventPosts = eventPosts.filter(post => {
+                    const matchTime = new Date(post.matchDate).getTime();
+                    return (matchTime + thirtyMinutes) > now;
+                });
+                
                 const guildPosts = Object.values(window.dbData.guildPosts || {});
                 const playerSquadPosts = Object.values(window.dbData.playerSquadPosts || {});
                 
-                const allPosts = [...eventPosts, ...guildPosts, ...playerSquadPosts];
+                const allPosts = [...activeEventPosts, ...guildPosts, ...playerSquadPosts];
                 const boostedPosts = allPosts.filter(p => p.boostedUntil && p.boostedUntil > now);
                 const regularPosts = allPosts.filter(p => !p.boostedUntil || p.boostedUntil <= now);
                 
@@ -1876,11 +1889,19 @@
             function renderTournamentsFeed() {
                 const feed = document.getElementById('home-tournaments-feed');
                 const posts = Object.values(window.dbData.posts || {}).sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
-                if (posts.length === 0) {
+                
+                const now = Date.now();
+                const thirtyMinutes = 30 * 60 * 1000;
+                const activePosts = posts.filter(post => {
+                    const matchTime = new Date(post.matchDate).getTime();
+                    return (matchTime + thirtyMinutes) > now;
+                });
+                
+                if (activePosts.length === 0) {
                     feed.innerHTML = `<div class="text-center text-gray-500 p-10 bg-gray-800/50 rounded-lg"><i class="fa-solid fa-trophy text-4xl mb-4"></i><p>No tournaments available right now.</p></div>`;
                     return;
                 }
-                feed.innerHTML = posts.map(createPostCardHTML).join('');
+                feed.innerHTML = activePosts.map(createPostCardHTML).join('');
                 gsap.from("#home-tournaments-feed > div", { y: 50, opacity: 0, duration: 0.5, stagger: 0.1, ease: "power2.out" });
             }
             
