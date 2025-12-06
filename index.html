@@ -73,7 +73,7 @@
         /* Modals & Overlays */
         #modal-screen, #forgot-password-modal, #loading-overlay, #topup-purchase-modal, #spin-result-modal, #store-loading-overlay, #badge-modal-screen { z-index: 1000; background-color: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); }
         #store-loading-overlay { z-index: 1002; background-color: rgba(18, 18, 18, 0.95); }
-        #ad-view-screen { z-index: 1001; background-color: #121212; padding: 0;}
+        #ad-view-screen, #livestream-view-screen { z-index: 1001; background-color: #121212; padding: 0;}
         .modal-box { background-color: #242428; border: 1px solid #3a3a3a; box-shadow: 0 15px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05) inset; max-width: 380px; width: 90%; border-radius: 1.5rem; transform: scale(0.8); opacity: 0; /* For GSAP */ }
         
         /* Buttons */
@@ -125,13 +125,18 @@
         .nav-restore-right { right: 0; border-radius: 12px 0 0 12px; transform: translateX(100%); }
         .nav-restore-btn.visible { opacity: 1; pointer-events: auto; transform: translateX(0); }
 
-        /* --- FIGMA STYLE SPIN WHEEL (Optimized for GSAP) --- */
-        .wheel-container-pro { position: relative; width: 320px; height: 320px; margin: 0 auto; border-radius: 50%; background: conic-gradient(from 0deg, #FFD700, #F59E0B, #FFD700); padding: 8px; box-shadow: 0 0 30px rgba(245, 158, 11, 0.4), inset 0 0 20px rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; }
-        .wheel-outer-rim { width: 100%; height: 100%; background: #1a1a1a; border-radius: 50%; position: relative; overflow: hidden; border: 4px solid #2a2a2a; }
-        .wheel-pro { width: 100%; height: 100%; position: relative; }
-        .wheel-segment-pro { position: absolute; width: 50%; height: 50%; transform-origin: bottom right; top: 0; left: 0; clip-path: polygon(0 0, 100% 0, 100% 100%); display: flex; align-items: center; justify-content: center; box-sizing: border-box; }
-        .wheel-center-cap { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; background: radial-gradient(circle, #ffffff 0%, #e2e2e2 100%); border-radius: 50%; border: 4px solid #F59E0B; z-index: 20; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; }
-        .wheel-pointer-pro { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 40px; height: 50px; z-index: 30; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.6)); }
+        /* --- NEW LUCKY BOX STYLES --- */
+        .lucky-box-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; width: 100%; max-width: 380px; perspective: 1000px; }
+        .lucky-box { width: 100%; aspect-ratio: 1 / 1; cursor: pointer; position: relative; }
+        .lucky-box .box-flipper { width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
+        .lucky-box.flipped .box-flipper { transform: rotateY(180deg); }
+        .box-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 1rem; display: flex; align-items: center; justify-content: center; }
+        .box-front { background-image: radial-gradient(circle, #4a2a00 0%, #1a0e00 100%); border: 2px solid #ffc83d; box-shadow: 0 0 20px rgba(255, 165, 0, 0.4), inset 0 0 15px rgba(255, 215, 0, 0.3); transition: all 0.3s ease; }
+        .box-front .question-mark { font-size: 2rem; font-weight: bold; color: #ffc83d; text-shadow: 0 0 10px #ffa500; }
+        .box-back { background: #1a1a1a; border: 1px solid #444; transform: rotateY(180deg); }
+        .lucky-box-container.shuffling .lucky-box { pointer-events: none; }
+        .lucky-box-container.waiting-for-pick .box-front:hover { transform: scale(1.05); border-color: #fff; box-shadow: 0 0 30px rgba(255, 255, 255, 0.6); }
+        #lucky-box-instruction { transition: opacity 0.5s; }
 
         /* General Styles */
         .countdown-item { background-color: rgba(255,255,255,0.1); padding: 2px 5px; border-radius: 4px; }
@@ -143,6 +148,7 @@
         .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: #1DB954; box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.3); outline: none; }
         .igl-input-box { background-color: rgba(212, 175, 55, 0.1); border: 1px solid #d4af37 !important; }
         .post-card, .guild-post-card, .player-squad-post-card, .news-post-card { background: #28282B; border: 1px solid #3a3a3a; }
+        .post-card.is-booked-card { cursor: pointer; }
         .slot-progress-bar { background-color: #444; }
         .slot-progress-fill { background-image: linear-gradient(to right, #1DB954, #34d399); }
         .dashboard-page { opacity: 1; } /* GSAP handles transitions */
@@ -184,7 +190,16 @@
         .clickable-post-indicator { position: absolute; bottom: 10px; left: 10px; background-color: rgba(29, 185, 84, 0.8); color: white; border-radius: 12px; padding: 4px 8px; font-size: 10px; font-weight: bold; display: flex; align-items: center; gap: 4px; z-index: 10; pointer-events: none; }
         .post-card.highlighted-post, .guild-post-card.highlighted-post, .player-squad-post-card.highlighted-post { box-shadow: 0 0 15px 5px rgba(29, 185, 84, 0.6); border: 2px solid #1DB954; transform: scale(1.02); animation: pulse-green-glow 1.5s infinite; }
         .verification-badge { width: 1.4em; height: 1.4em; margin-left: 0.4em; vertical-align: middle; cursor: pointer; object-fit: contain; }
-        .premium-header { background: rgba(30, 30, 30, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0 0 1.5rem 1.5rem; padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        /* UPDATED: Thinner Header Style */
+        .premium-header {
+            background: rgba(18, 18, 18, 0.9);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-bottom: 1px solid #2a2a2a;
+            border-radius: 0;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
         .header-back-btn { background-color: rgba(255, 255, 255, 0.1); }
         .setting-item { background-color: #2a2a2a; border-radius: 0.75rem; padding: 0.75rem; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: background-color 0.2s, transform 0.2s; border: 1px solid #3a3a3a; width: 100%; }
         .setting-item:hover { background-color: #3a3a3a; transform: scale(1.02); }
@@ -281,8 +296,714 @@
         
         /* NEW Dispute/Report Styles */
         .dispute-card { border: 2px solid #ef4444; box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
-    </style>
-</head>
+
+        /* --- NEW LIVESTREAM OVERLAY STYLES --- */
+        #livestream-view-screen {
+            background-color: #000;
+            padding: 0;
+            position: relative; /* Anchor for overlays */
+            overflow: hidden;
+            display: block; /* Override default flex */
+        }
+        #livestream-player {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        #livestream-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 20;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent);
+            padding: 0.5rem 0.75rem;
+            border-bottom: none;
+            backdrop-filter: none;
+        }
+        #livestream-chat-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            z-index: 10;
+            background: linear-gradient(to top, #000000, rgba(0,0,0,0.8), transparent);
+            display: flex;
+            flex-direction: column;
+            pointer-events: none; /* Allow clicks to pass through to video */
+        }
+        .livestream-chat-container, .livestream-chat-form {
+            pointer-events: auto; /* Re-enable pointer events for chat elements */
+        }
+        .livestream-chat-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding: 0.75rem;
+        }
+        .livestream-chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-right: 8px; /* For scrollbar spacing */
+        }
+        .chat-message {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            max-width: 90%;
+        }
+        .chat-message img {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .chat-message-content {
+            background-color: rgba(0, 0, 0, 0.4);
+            padding: 0.4rem 0.8rem;
+            border-radius: 1rem;
+        }
+        .chat-message-author {
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: #a1a1aa;
+            margin-bottom: 0.1rem;
+        }
+        .chat-message-text {
+            font-size: 0.85rem;
+            color: white;
+            word-break: break-word;
+        }
+        .livestream-chat-form {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            position: relative;
+        }
+        .livestream-chat-input {
+            flex-grow: 1;
+            background-color: rgba(0, 0, 0, 0.5);
+            border: 1px solid #4a4a4a;
+            border-radius: 9999px;
+            padding: 0.6rem 1rem;
+            color: white;
+            font-size: 0.9rem;
+        }
+        .livestream-chat-send-btn {
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            background-image: linear-gradient(to right, #1DB954, #1ed760);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #livestream-moderation-overlay {
+            position: absolute;
+            bottom: 0.5rem;
+            left: 0.5rem;
+            right: calc(40px + 0.75rem); /* Position next to send button */
+            background: rgba(239, 68, 68, 0.9);
+            padding: 0.6rem;
+            border-radius: 9999px;
+            text-align: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+    
+    /* --- UPDATED LIVESTREAM STYLES (YouTube Style + Swipe Down) --- */
+    #livestream-view-screen {
+        background-color: #121212;
+        padding: 0;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 2000;
+        display: flex;
+        flex-direction: column;
+        transform: translateY(100%);
+        transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    #livestream-view-screen.active { transform: translateY(0); }
+    .livestream-video-container { width: 100%; aspect-ratio: 16 / 9; background: #000; position: relative; flex-shrink: 0; z-index: 10; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+    #livestream-player { width: 100%; height: 100%; border: 0; }
+    .drag-indicator-bar { width: 40px; height: 4px; background-color: rgba(255,255,255,0.3); border-radius: 2px; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); z-index: 20; pointer-events: none; }
+    .livestream-overlay-header { position: absolute; top: 0; left: 0; width: 100%; padding: 10px; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); display: flex; align-items: center; z-index: 15; }
+    .livestream-content-wrapper { flex-grow: 1; display: flex; flex-direction: column; background-color: #121212; overflow: hidden; position: relative; border-top: 1px solid #333; }
+    .livestream-chat-header { padding: 10px 15px; border-bottom: 1px solid #2a2a2a; display: flex; justify-content: space-between; align-items: center; background-color: #1e1e1e; }
+    .livestream-chat-messages { flex-grow: 1; overflow-y: auto; padding: 10px; scroll-behavior: smooth; }
+    .chat-message { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    .chat-message img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid #444; }
+    .chat-message-content { background-color: transparent; padding: 0; }
+    .chat-message-author { font-weight: 600; font-size: 0.8rem; color: #a1a1aa; margin-bottom: 2px; }
+    .chat-message-text { font-size: 0.9rem; color: white; word-break: break-word; line-height: 1.4; }
+    .livestream-chat-form { padding: 10px; background-color: #1e1e1e; display: flex; gap: 8px; align-items: center; border-top: 1px solid #333; }
+    .livestream-chat-input { flex-grow: 1; background-color: #2a2a2e; border: 1px solid #444; border-radius: 20px; padding: 10px 15px; color: white; font-size: 0.9rem; outline: none; }
+    .livestream-chat-input:focus { border-color: #1DB954; }
+    .livestream-chat-send-btn { width: 40px; height: 40px; border-radius: 50%; background-color: #1DB954; color: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    
+
+    
+    /* --- PREMIUM LIVESTREAM UI (PATCHED) --- */
+    #livestream-view-screen {
+        background-color: #000;
+        padding: 0;
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        z-index: 2000;
+        display: flex; flex-direction: column;
+        transform: translateY(100%);
+        transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    #livestream-view-screen.active { transform: translateY(0); }
+
+    .livestream-video-wrapper {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        background: #000;
+        flex-shrink: 0;
+        z-index: 50;
+    }
+
+    #yt-player-iframe { width: 100%; height: 100%; border: 0; pointer-events: none; }
+
+    /* Controls Overlay */
+    .video-controls-layer {
+        position: absolute; inset: 0;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 25%, transparent 75%, rgba(0,0,0,0.8) 100%);
+        z-index: 60;
+        display: flex; flex-direction: column; justify-content: space-between;
+        opacity: 0; pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+    .video-controls-layer.visible { opacity: 1; pointer-events: auto; }
+
+    /* Header in Video */
+    .ls-video-header {
+        padding: 15px;
+        display: flex; align-items: center; gap: 15px;
+    }
+    .ls-back-btn {
+        width: 35px; height: 35px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(5px);
+        display: flex; align-items: center; justify-content: center;
+        color: white; font-size: 1.2rem; cursor: pointer;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+    .ls-video-title {
+        color: white; font-weight: bold; font-family: 'Oswald', sans-serif;
+        font-size: 1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    /* Center Play Button */
+    .ls-center-controls {
+        position: absolute; top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex; align-items: center; justify-content: center;
+    }
+    .ls-play-btn {
+        width: 60px; height: 60px;
+        border-radius: 50%;
+        background: rgba(29, 185, 84, 0.9);
+        color: white; font-size: 1.5rem;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 0 20px rgba(29, 185, 84, 0.4);
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+    .ls-play-btn:active { transform: scale(0.95); }
+
+    /* Chat Section */
+    .ls-content-body {
+        flex-grow: 1; display: flex; flex-direction: column;
+        background: #121212; position: relative; overflow: hidden;
+    }
+    .ls-chat-container {
+        flex-grow: 1; overflow-y: auto; padding: 15px;
+        background: linear-gradient(180deg, #121212 0%, #0d0d0d 100%);
+        mask-image: linear-gradient(to bottom, transparent, black 5%); /* Fade top */
+    }
+    
+    /* Premium Chat Message */
+    .ls-chat-msg {
+        display: flex; gap: 10px; margin-bottom: 12px;
+        animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    
+    .ls-chat-avatar {
+        width: 32px; height: 32px; border-radius: 50%;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+    .ls-chat-bubble {
+        background: rgba(255,255,255,0.05);
+        padding: 8px 12px; border-radius: 0 12px 12px 12px;
+        border: 1px solid rgba(255,255,255,0.05);
+    }
+    .ls-chat-name { font-size: 0.75rem; color: #1DB954; font-weight: bold; margin-bottom: 2px; }
+    .ls-chat-text { font-size: 0.9rem; color: #eee; line-height: 1.4; }
+
+    /* Input Area */
+    .ls-input-area {
+        padding: 10px 15px;
+        background: rgba(30, 30, 30, 0.95);
+        backdrop-filter: blur(10px);
+        border-top: 1px solid rgba(255,255,255,0.1);
+        display: flex; gap: 10px; align-items: center;
+    }
+    .ls-input {
+        flex-grow: 1; background: rgba(0,0,0,0.3);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 20px; padding: 10px 15px;
+        color: white; font-size: 0.9rem; outline: none;
+    }
+    .ls-input:focus { border-color: #1DB954; }
+    .ls-send-btn {
+        width: 40px; height: 40px; border-radius: 50%;
+        background: linear-gradient(135deg, #1DB954, #1ed760);
+        color: white; display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 4px 10px rgba(29, 185, 84, 0.3);
+    }
+        
+    
+
+    /* PATCHED: Fullscreen Video Styles */
+    #ls-video-container:fullscreen { 
+        width: 100vw; height: 100vh; 
+        background: black; 
+        display: flex; align-items: center; justify-content: center;
+    }
+    #ls-video-container:-webkit-full-screen { 
+        width: 100vw; height: 100vh; 
+        background: black; 
+    }
+    
+
+    /* --- PATCHED STYLES (Full Width Chat & Loader) --- */
+    #livestream-view-screen { 
+        width: 100vw !important; 
+        height: 100vh !important; 
+        max-width: none !important;
+        left: 0 !important;
+        right: 0 !important;
+        padding: 0 !important;
+        background: #000 !important;
+        display: block !important; /* Overrides flex center alignment */
+    }
+    
+    .ls-content-body {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        flex-grow: 1;
+        background: #121212;
+    }
+
+    /* Fixed Black Close Button */
+    .ls-back-btn {
+        background-color: #000000 !important;
+        border: 1px solid #333 !important;
+        color: white !important;
+        width: 40px !important;
+        height: 40px !important;
+        z-index: 100 !important;
+    }
+
+    /* Loader Styles */
+    #ls-loading-overlay {
+        position: absolute;
+        inset: 0;
+        background-color: #000;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.5s ease;
+    }
+    .loader-pulse {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        border: 4px solid #1DB954;
+        border-top-color: transparent;
+        animation: spin 1s linear infinite;
+    }
+            
+
+    /* --- PATCHED YOUTUBE STYLE LAYOUT (FIXED) --- */
+    #livestream-view-screen {
+        display: flex !important;
+        flex-direction: column !important;
+        height: 100% !important;
+        width: 100% !important;
+        overflow: hidden !important;
+        background: #000 !important;
+    }
+
+    .livestream-video-wrapper {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        position: relative;
+        flex-shrink: 0;
+        z-index: 50;
+        background: #000;
+    }
+
+    /* Thumbnail Cover */
+    #ls-cover-layer {
+        position: absolute; inset: 0; z-index: 60;
+        background-size: cover; background-position: center;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .ls-cover-play-btn {
+        width: 60px; height: 60px; border-radius: 50%;
+        background: rgba(0,0,0,0.6); border: 2px solid white;
+        color: white; font-size: 1.5rem; display: flex; align-items: center; justify-content: center;
+        cursor: pointer; transition: transform 0.2s;
+    }
+    .ls-cover-play-btn:active { transform: scale(0.9); }
+
+    /* Loader Layer */
+    #ls-loading-layer {
+        position: absolute; inset: 0; z-index: 59;
+        background: #000;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+
+    .ls-content-body {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        background: #121212;
+        overflow: hidden;
+        position: relative;
+    }
+
+    /* Fixed Chat Area */
+    .ls-chat-container {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 10px 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        scroll-behavior: smooth;
+    }
+
+    .ls-chat-msg {
+        display: flex; gap: 10px; margin-bottom: 2px;
+        animation: fadeIn 0.3s ease; align-items: flex-start;
+    }
+    .ls-chat-avatar {
+        width: 28px; height: 28px; border-radius: 50%;
+        flex-shrink: 0; border: 1px solid #333;
+    }
+    .ls-chat-bubble {
+        background: rgba(255,255,255,0.08);
+        padding: 6px 10px; border-radius: 0 12px 12px 12px;
+        max-width: 85%;
+    }
+    .ls-chat-name { font-size: 0.75rem; color: #a1a1aa; font-weight: bold; margin-bottom: 1px; }
+    .ls-chat-text { font-size: 0.9rem; color: #fff; line-height: 1.3; word-break: break-word; }
+    
+    .ls-delete-btn {
+        font-size: 0.7rem; color: #ef4444; margin-left: 8px; cursor: pointer; opacity: 0.7;
+    }
+
+    /* Fixed Input Area */
+    .ls-input-area {
+        flex-shrink: 0;
+        padding: 10px;
+        background: #1e1e1e;
+        border-top: 1px solid #333;
+        display: flex; gap: 10px; align-items: center;
+        width: 100%;
+    }
+    
+
+    /* --- ULTIMATE LIVESTREAM CSS START --- */
+    #livestream-view-screen {
+        display: flex !important; flex-direction: column !important;
+        height: 100% !important; width: 100% !important;
+        background: #000 !important; position: fixed !important; inset: 0 !important;
+        z-index: 2000 !important;
+    }
+
+    .livestream-video-wrapper {
+        width: 100%; aspect-ratio: 16 / 9; position: relative;
+        flex-shrink: 0; background: #000;
+    }
+
+    /* Thumbnail Cover Layer */
+    #ls-cover-layer {
+        position: absolute; inset: 0; z-index: 60;
+        background-size: cover; background-position: center;
+        display: flex; align-items: center; justify-content: center;
+        background-color: #000;
+    }
+    .ls-cover-overlay {
+        position: absolute; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(2px);
+    }
+    .ls-cover-play-btn {
+        width: 70px; height: 70px; border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255,255,255,0.4);
+        backdrop-filter: blur(5px); position: relative; z-index: 10;
+        color: white; font-size: 1.8rem; display: flex; align-items: center; justify-content: center;
+        cursor: pointer; transition: all 0.2s; box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+    .ls-cover-play-btn:active { transform: scale(0.9); background: rgba(29, 185, 84, 0.8); border-color: #1DB954; }
+
+    /* Redesigned Close Button */
+    .ls-close-improved {
+        position: absolute; top: 15px; left: 15px; z-index: 100;
+        width: 35px; height: 35px; border-radius: 50%;
+        background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255,255,255,0.1);
+        color: white; display: flex; align-items: center; justify-content: center;
+        cursor: pointer; backdrop-filter: blur(4px);
+    }
+
+    /* Loading Layer */
+    #ls-loading-layer {
+        position: absolute; inset: 0; z-index: 59;
+        background: #000;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+
+    /* Chat Area - No Select */
+    .ls-content-body {
+        flex-grow: 1; display: flex; flex-direction: column;
+        background: #121212; overflow: hidden; position: relative;
+    }
+    .ls-chat-container {
+        flex-grow: 1; overflow-y: auto; padding: 10px 15px;
+        display: flex; flex-direction: column; gap: 12px;
+        scroll-behavior: smooth;
+        user-select: none; -webkit-user-select: none; /* Disable Copy */
+    }
+
+    .ls-chat-msg {
+        display: flex; gap: 10px; align-items: flex-start;
+        position: relative; animation: slideUpFade 0.3s ease;
+    }
+    @keyframes slideUpFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .ls-chat-avatar {
+        width: 32px; height: 32px; border-radius: 50%;
+        flex-shrink: 0; border: 1px solid #333;
+    }
+    .ls-chat-content { flex-grow: 1; min-width: 0; }
+    
+    .ls-chat-header-row {
+        display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;
+    }
+    .ls-chat-name { font-size: 0.75rem; color: #a1a1aa; font-weight: bold; }
+    .ls-chat-bubble {
+        background: #1f1f22; padding: 8px 12px; border-radius: 0 12px 12px 12px;
+        display: inline-block; max-width: 100%;
+    }
+    .ls-chat-text { font-size: 0.9rem; color: #eee; line-height: 1.4; word-break: break-word; }
+
+    /* 3 Dot Menu */
+    .ls-msg-menu-btn {
+        color: #555; padding: 0 5px; cursor: pointer; font-size: 0.8rem;
+    }
+    .ls-msg-menu-btn:active { color: white; }
+    
+    .ls-menu-dropdown {
+        position: absolute; right: 0; top: 20px;
+        background: #2a2a2e; border: 1px solid #444;
+        border-radius: 6px; padding: 5px; z-index: 10;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        display: none; min-width: 80px;
+    }
+    .ls-menu-dropdown.active { display: block; animation: fadeIn 0.2s; }
+    .ls-menu-item {
+        color: #ef4444; font-size: 0.75rem; font-weight: bold;
+        padding: 5px 10px; cursor: pointer; display: flex; align-items: center; gap: 5px;
+    }
+    .ls-menu-item:active { background: rgba(255,255,255,0.05); }
+
+    /* Input Area */
+    .ls-input-area {
+        flex-shrink: 0; padding: 10px 15px; background: #18181b;
+        border-top: 1px solid #27272a; display: flex; gap: 10px; align-items: center;
+    }
+    /* --- ULTIMATE LIVESTREAM CSS END --- */
+    
+
+        /* --- PREMIUM LUCKY BOX UI (PATCHED) --- */
+        .lucky-box-container { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 15px; 
+            width: 100%; 
+            max-width: 400px; 
+            margin: 0 auto;
+            perspective: 1000px; 
+        }
+        .lucky-box { 
+            width: 100%; 
+            aspect-ratio: 1 / 1; 
+            cursor: pointer; 
+            position: relative; 
+            border-radius: 16px;
+            transition: transform 0.3s ease;
+        }
+        .lucky-box:hover { transform: translateY(-5px); }
+        .lucky-box .box-flipper { 
+            width: 100%; height: 100%; 
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            transform-style: preserve-3d; 
+            position: relative;
+        }
+        .lucky-box.flipped .box-flipper { transform: rotateY(180deg); }
+        .box-face { 
+            position: absolute; width: 100%; height: 100%; 
+            backface-visibility: hidden; -webkit-backface-visibility: hidden; 
+            border-radius: 16px; 
+            display: flex; align-items: center; justify-content: center; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .box-front { 
+            background: linear-gradient(145deg, #2a2a2e, #1a1a1a);
+            border: 2px solid #3a3a3a;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+        }
+        .box-front::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%);
+            border-radius: 16px;
+        }
+        .box-front .question-mark { 
+            font-size: 2.5rem; font-weight: 900; 
+            background: linear-gradient(to bottom, #FFD700, #B8860B);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+        }
+        .box-back { 
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            transform: rotateY(180deg); 
+            border: 2px solid #fff;
+        }
+        .box-back.rare-reward { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .box-back.epic-reward { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        
+
+        /* --- ULTIMATE LUCKY BOX CSS --- */
+        .lucky-box-container { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 12px; 
+            width: 100%; 
+            max-width: 400px; 
+            margin: 0 auto;
+            perspective: 1000px; 
+            padding: 10px;
+        }
+        .lucky-box { 
+            width: 100%; 
+            aspect-ratio: 1 / 1; 
+            cursor: pointer; 
+            position: relative; 
+            transform-style: preserve-3d;
+        }
+        .lucky-box .box-flipper { 
+            width: 100%; height: 100%; 
+            transition: transform 0.6s cubic-bezier(0.4, 2.08, 0.55, 0.44); 
+            transform-style: preserve-3d; 
+            position: relative;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+            border-radius: 12px;
+        }
+        .lucky-box.flipped .box-flipper { transform: rotateY(180deg); }
+        
+        .box-face { 
+            position: absolute; width: 100%; height: 100%; 
+            backface-visibility: hidden; -webkit-backface-visibility: hidden; 
+            border-radius: 12px; 
+            display: flex; align-items: center; justify-content: center; 
+        }
+        
+        /* Premium Box Design */
+        .box-front { 
+            background: linear-gradient(135deg, #2b2b2b 0%, #1a1a1a 100%);
+            border: 1px solid #444;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.8), 0 0 10px rgba(255, 215, 0, 0.1);
+        }
+        /* Glowing edges for front box */
+        .box-front::before {
+            content: ''; position: absolute; inset: 0;
+            border-radius: 12px;
+            padding: 2px;
+            background: linear-gradient(45deg, transparent, #FFD700, transparent);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0.5;
+        }
+        
+        .box-front .question-mark { 
+            font-size: 2rem; 
+            color: #FFD700;
+            filter: drop-shadow(0 0 5px #FFD700);
+            animation: pulse-glow 2s infinite;
+        }
+
+        .box-back { 
+            background: linear-gradient(135deg, #111 0%, #222 100%);
+            transform: rotateY(180deg); 
+            border: 1px solid #333;
+            box-shadow: inset 0 0 20px rgba(29, 185, 84, 0.2);
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.6; transform: scale(0.95); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+        
+        /* Floating Animation */
+        .floating-box { animation: float 3s ease-in-out infinite; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
+        /* NEW: Lucky Box Highlight for Spinning Animation */
+        .lucky-box.box-highlight .box-flipper { 
+            transform: translateY(-8px) scale(1.08); 
+            box-shadow: 0 0 25px rgba(29, 185, 84, 0.7), 0 0 10px rgba(29, 185, 84, 0.5) inset; 
+            transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
+        }
+        .lucky-box.box-highlight .box-flipper .box-front {
+            border-color: #1DB954;
+        }
+        
+</style>
+
+        <style>
+            /* PATCHED STYLES */
+            .coin-card img, .task-reward img, .store-item-h-title img { filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.6)); }
+            .lucky-box-container { pointer-events: auto !important; } /* Fix click block */
+        </style>
+        </head>
 <body class="overflow-hidden">
     
     <!-- New Sidebar -->
@@ -304,7 +1025,7 @@
             <div class="mt-6 grid grid-cols-2 gap-3">
                  <div class="premium-balance-card coin-card">
                     <div id="sidebar-coin-plus" class="plus-btn"><i class="fa-solid fa-plus"></i></div>
-                    <img src="https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Levelup%2F1762763055321.png?alt=media&token=58051d4b-446d-4a30-b588-bed5a5f49c8d" class="icon" loading="lazy">
+                    <img src="https://cdn-icons-png.flaticon.com/512/217/217853.png" class="icon" loading="lazy">
                     <span id="sidebar-coin-balance" class="amount">0.00</span>
                 </div>
                  <div class="premium-balance-card diamond-card">
@@ -317,21 +1038,20 @@
 
         <!-- Scrollable Navigation Section -->
         <nav class="flex-grow p-2 space-y-1 overflow-y-auto no-scrollbar">
-            <a id="sidebar-stream-stats" class="sidebar-menu-item"><div class="icon-bg bg-red-500/20"><i class="fa-solid fa-chart-line text-red-300"></i></div><span>Stream Statistics</span></a>
+            
             <a id="sidebar-leaderboard" class="sidebar-menu-item"><div class="icon-bg bg-yellow-500/20"><i class="fa-solid fa-trophy text-yellow-300"></i></div><span>Leaderboard</span></a>
             <a id="sidebar-redeem" class="sidebar-menu-item"><div class="icon-bg bg-green-500/20"><i class="fa-solid fa-gift text-green-300"></i></div><span>Redeem Code</span></a>
             
             <a id="sidebar-lucky-spin" class="sidebar-menu-item">
-                <div class="icon-bg bg-pink-500/20"><i class="fa-solid fa-dharmachakra text-pink-300"></i></div>
-                <span>Lucky Spin</span>
+                <div class="icon-bg bg-pink-500/20"><i class="fa-solid fa-box text-pink-300"></i></div>
+                <span>Lucky Box</span>
             </a>
 
             <a id="sidebar-topup" class="sidebar-menu-item"><div class="icon-bg bg-orange-500/20"><i class="fa-solid fa-fire text-orange-300"></i></div><span>Free Fire TopUp</span></a>
             <a id="sidebar-store" class="sidebar-menu-item"><div class="icon-bg bg-purple-500/20"><i class="fa-solid fa-store text-purple-300"></i></div><span>Store</span></a>
             <a id="sidebar-history" class="sidebar-menu-item"><div class="icon-bg bg-blue-500/20"><i class="fa-solid fa-receipt text-blue-300"></i></div><span>History</span></a>
             <a id="sidebar-partner" class="sidebar-menu-item"><div class="icon-bg bg-green-500/20"><i class="fa-solid fa-handshake-simple text-green-300"></i></div><span class="text-green-400 font-bold">Join a Partner</span></a>
-            <a id="sidebar-my-channel" class="sidebar-menu-item"><div class="icon-bg bg-indigo-500/20"><i class="fa-solid fa-tv text-indigo-300"></i></div><span>My channel</span></a>
-            <a id="sidebar-monetize" class="sidebar-menu-item"><div class="icon-bg bg-yellow-600/20"><i class="fa-solid fa-sack-dollar text-yellow-500"></i></div><span>Monetize Earning</span></a>
+            
             <a id="sidebar-official-channel" class="sidebar-menu-item"><div class="icon-bg bg-cyan-500/20"><i class="fa-solid fa-bullhorn text-cyan-300"></i></div><span>Official Channel</span></a>
         </nav>
 
@@ -432,7 +1152,7 @@
     <div id="dashboard-screen" class="screen hidden p-0 justify-start">
         <main class="w-full h-full text-white overflow-y-auto no-scrollbar">
             <!-- Headers -->
-            <header id="main-header" class="sticky top-0 z-40 bg-[#1e1e1e]/80 backdrop-blur-md border-b border-gray-800 p-3 flex justify-between items-center gap-2 rounded-b-2xl">
+            <header id="main-header" class="sticky top-0 z-40 bg-[#121212]/90 backdrop-blur-sm border-b border-gray-800 px-3 py-2 flex justify-between items-center gap-2">
                 <div class="flex items-center gap-3">
                     <button id="sidebar-toggle" class="text-xl text-gray-300 w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10">
                         <i class="fa-solid fa-bars"></i>
@@ -447,18 +1167,18 @@
                         <i class="fa-solid fa-search"></i>
                     </button>
                     <!-- MODIFIED: Wallet button UI updated -->
-                    <div id="wallet-button" class="bg-gray-800/50 border border-gray-700 rounded-full p-2 pl-3 pr-4 flex items-center gap-3 cursor-pointer hover:border-green-500 transition-all duration-300">
-                        <i class="fa-solid fa-wallet text-xl text-green-400"></i>
+                    <div id="wallet-button" class="bg-gray-800/50 border border-gray-700 rounded-full py-1 px-3 flex items-center gap-2 cursor-pointer hover:border-green-500 transition-all duration-300">
+                        <i class="fa-solid fa-wallet text-lg text-green-400"></i>
                         <div class="text-left">
-                            <p class="text-base font-bold text-white font-oswald tracking-wider leading-none"><span id="header-wallet-balance">0.00</span> TK</p>
-                            <p class="text-[10px] text-gray-400 uppercase font-semibold">Live Balance</p>
+                            <p class="text-sm font-bold text-white font-oswald tracking-wider leading-none"><span id="header-wallet-balance">0.00</span> TK</p>
+                            <p class="text-[9px] text-gray-400 uppercase font-semibold">Live Balance</p>
                         </div>
                     </div>
                 </div>
             </header>
 
             <!-- NEW: Animated Search Header -->
-            <header id="home-search-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
+            <header id="home-search-header" class="hidden sticky top-0 z-40 premium-header py-2 px-4 flex justify-between items-center">
                  <button class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
@@ -468,168 +1188,169 @@
                 </div>
             </header>
             
-            <header id="search-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
+            <header id="search-header" class="hidden sticky top-0 z-40 premium-header py-2 px-4 flex justify-between items-center">
                 <div class="relative w-full">
                     <input id="search-input-mobile" type="text" placeholder="Search by event, sponsor, or tags..." class="w-full bg-gray-900/50 border border-gray-700 rounded-full pl-10 pr-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-green-500">
                     <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
                 </div>
             </header>
-            <header id="my-matches-header" class="hidden sticky top-0 z-40 premium-header py-4 px-4 text-center">
-                <h2 class="text-xl font-bold">My Match History</h2>
+            <header id="my-matches-header" class="hidden sticky top-0 z-40 premium-header py-2 px-4 text-center">
+                <h2 class="text-lg font-bold">My Match History</h2>
             </header>
-            <header id="team-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
+            <header id="team-header" class="hidden sticky top-0 z-40 premium-header py-2 px-4 flex justify-between items-center">
                 <button class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full back-button">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
-                <h2 class="text-xl font-bold">Manage Your Team</h2>
+                <h2 class="text-lg font-bold">Manage Your Team</h2>
                 <div class="w-10"></div>
             </header>
-            <header id="wallet-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
+            <header id="wallet-header" class="hidden sticky top-0 z-40 premium-header py-2 px-4 flex justify-between items-center">
                 <button class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full back-button">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
-                <h2 class="text-xl font-bold">My Wallet & Stats</h2>
+                <h2 class="text-lg font-bold">My Wallet & Stats</h2>
                 <div class="w-10"></div>
             </header>
-             <header id="lup-wallet-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
+             <header id="lup-wallet-header" class="hidden sticky top-0 z-40 premium-header py-2 px-4 flex justify-between items-center">
                 <button class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full back-button">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
-                <h2 class="text-xl font-bold">L-UP Wallet</h2>
+                <h2 class="text-lg font-bold">L-UP Wallet</h2>
                 <div class="w-10"></div>
             </header>
-            <header id="topup-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
+            <header id="topup-header" class="hidden sticky top-0 z-40 premium-header py-2 px-4 flex justify-between items-center">
                 <button class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full back-button">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
-                <h2 class="text-xl font-bold">Free Fire TopUp</h2>
+                <h2 class="text-lg font-bold">Free Fire TopUp</h2>
                 <div class="w-10"></div>
             </header>
-            <header id="profile-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
+            <header id="profile-header" class="hidden sticky top-0 z-40 premium-header py-2 px-4 flex justify-between items-center">
                 <button class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full back-button">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
-                <h2 class="text-xl font-bold">Profile</h2>
+                <h2 class="text-lg font-bold">Profile</h2>
                 <div class="w-10"></div>
             </header>
-            <header id="mailbox-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
+            <header id="mailbox-header" class="hidden sticky top-0 z-40 premium-header py-2 px-4 flex justify-between items-center">
                 <button class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full back-button">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
-                <h2 class="text-xl font-bold">Mailbox</h2>
+                <h2 class="text-lg font-bold">Mailbox</h2>
                 <div class="w-10"></div>
             </header>
-            <header id="history-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
+            <header id="history-header" class="hidden sticky top-0 z-40 premium-header py-2 px-4 flex justify-between items-center">
                 <button class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full back-button">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
-                <h2 class="text-xl font-bold">Transaction History</h2>
+                <h2 class="text-lg font-bold">Transaction History</h2>
                 <div class="w-10"></div>
             </header>
-             <header id="redeem-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
+             <header id="redeem-header" class="hidden sticky top-0 z-40 premium-header py-2 px-4 flex justify-between items-center">
                 <button class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full back-button">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
-                <h2 class="text-xl font-bold">Redeem Code</h2>
+                <h2 class="text-lg font-bold">Redeem Code</h2>
                 <div class="w-10"></div>
             </header>
-            <header id="edit-profile-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
+            <header id="edit-profile-header" class="hidden sticky top-0 z-40 premium-header py-2 px-4 flex justify-between items-center">
                 <button class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full back-button">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
-                <h2 class="text-xl font-bold">Edit Profile</h2>
+                <h2 class="text-lg font-bold">Edit Profile</h2>
                 <div class="w-10"></div>
             </header>
-            <header id="change-password-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
+            <header id="change-password-header" class="hidden sticky top-0 z-40 premium-header py-2 px-4 flex justify-between items-center">
                 <button class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full back-button">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
-                <h2 class="text-xl font-bold">Change Password</h2>
+                <h2 class="text-lg font-bold">Change Password</h2>
                 <div class="w-10"></div>
             </header>
-            <header id="manage-posts-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
+            <header id="manage-posts-header" class="hidden sticky top-0 z-40 premium-header py-2 px-4 flex justify-between items-center">
                 <button class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full back-button">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
-                <h2 class="text-xl font-bold">My Community Posts</h2>
+                <h2 class="text-lg font-bold">My Community Posts</h2>
                 <div class="w-10"></div>
             </header>
-             <header id="lucky-spin-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
+             <header id="lucky-spin-header" class="hidden sticky top-0 z-40 premium-header py-2 px-4 flex justify-between items-center">
                 <button class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full back-button">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
-                <h2 class="text-xl font-bold">Lucky Spin</h2>
+                <h2 class="text-lg font-bold">Lucky Box</h2>
                 <div class="w-10"></div>
             </header>
-            <header id="official-channel-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
+            <header id="official-channel-header" class="hidden sticky top-0 z-40 premium-header py-2 px-4 flex justify-between items-center">
                 <button class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full back-button">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
-                <h2 class="text-xl font-bold">Official Channel</h2>
+                <h2 class="text-lg font-bold">Official Channel</h2>
                 <div class="w-10"></div>
             </header>
 
             <!-- [NEW] Headers for integrated pages -->
-            <header id="booking-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
+            <header id="booking-header" class="hidden sticky top-0 z-40 premium-header py-2 px-4 flex justify-between items-center">
                 <button class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full back-button"><i class="fa-solid fa-arrow-left"></i></button>
-                <h2 class="text-xl font-bold">Book Match</h2>
+                <h2 class="text-lg font-bold">Book Match</h2>
                 <div class="w-10"></div>
             </header>
-            <header id="participant-list-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
+            <header id="participant-list-header" class="hidden sticky top-0 z-40 premium-header py-2 px-4 flex justify-between items-center">
                 <button class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full back-button"><i class="fa-solid fa-arrow-left"></i></button>
-                <h2 id="participant-list-header-title" class="text-xl font-bold">Participants</h2>
+                <h2 id="participant-list-header-title" class="text-lg font-bold">Participants</h2>
                 <div class="w-10"></div>
             </header>
-            <header id="results-submission-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
+            <header id="results-submission-header" class="hidden sticky top-0 z-40 premium-header py-2 px-4 flex justify-between items-center">
                 <button class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full back-button"><i class="fa-solid fa-arrow-left"></i></button>
-                <h2 id="results-submission-header-title" class="text-xl font-bold">Match Details</h2>
+                <h2 id="results-submission-header-title" class="text-lg font-bold">Match Details</h2>
                 <div class="w-10"></div>
             </header>
-             <header id="sponsor-profile-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
+             <header id="sponsor-profile-header" class="hidden sticky top-0 z-40 premium-header py-2 px-4 flex justify-between items-center">
                 <button class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full back-button"><i class="fa-solid fa-arrow-left"></i></button>
-                <h2 class="text-xl font-bold">Sponsor Profile</h2>
+                <h2 class="text-lg font-bold">Sponsor Profile</h2>
                 <div class="w-10"></div>
             </header>
-            <header id="user-profile-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
+            <header id="user-profile-header" class="hidden sticky top-0 z-40 premium-header py-2 px-4 flex justify-between items-center">
                 <button class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full back-button"><i class="fa-solid fa-arrow-left"></i></button>
-                <h2 class="text-xl font-bold">User Profile</h2>
+                <h2 class="text-lg font-bold">User Profile</h2>
                 <div class="w-10"></div>
             </header>
-            <header id="guild-post-form-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
+            <header id="guild-post-form-header" class="hidden sticky top-0 z-40 premium-header py-2 px-4 flex justify-between items-center">
                 <button class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full back-button"><i class="fa-solid fa-arrow-left"></i></button>
-                <h2 class="text-xl font-bold">Create Guild Post</h2>
+                <h2 class="text-lg font-bold">Create Guild Post</h2>
                 <div class="w-10"></div>
             </header>
-            <header id="guild-application-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
+            <header id="guild-application-header" class="hidden sticky top-0 z-40 premium-header py-2 px-4 flex justify-between items-center">
                 <button class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full back-button"><i class="fa-solid fa-arrow-left"></i></button>
-                <h2 class="text-xl font-bold">Guild Application</h2>
+                <h2 class="text-lg font-bold">Guild Application</h2>
                 <div class="w-10"></div>
             </header>
-            <header id="player-squad-post-form-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
+            <header id="player-squad-post-form-header" class="hidden sticky top-0 z-40 premium-header py-2 px-4 flex justify-between items-center">
                 <button class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full back-button"><i class="fa-solid fa-arrow-left"></i></button>
-                <h2 class="text-xl font-bold">Need Player/Squad</h2>
+                <h2 class="text-lg font-bold">Need Player/Squad</h2>
                 <div class="w-10"></div>
             </header>
-            <header id="payment-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
+            <header id="payment-header" class="hidden sticky top-0 z-40 premium-header py-2 px-4 flex justify-between items-center">
                 <button class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full back-button"><i class="fa-solid fa-arrow-left"></i></button>
-                <h2 class="text-xl font-bold">Payment</h2>
+                <h2 class="text-lg font-bold">Payment</h2>
                 <div class="w-10"></div>
             </header>
-            <header id="redeem-task-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
+            <header id="redeem-task-header" class="hidden sticky top-0 z-40 premium-header py-2 px-4 flex justify-between items-center">
                 <button class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full back-button"><i class="fa-solid fa-arrow-left"></i></button>
-                <h2 class="text-xl font-bold">Complete Task</h2>
+                <h2 class="text-lg font-bold">Complete Task</h2>
                 <div class="w-10"></div>
             </header>
-            <header id="partner-header" class="hidden sticky top-0 z-40 premium-header py-3 px-4 flex justify-between items-center">
+            
+            <header id="partner-header" class="hidden sticky top-0 z-40 premium-header py-2 px-4 flex justify-between items-center">
                 <button class="header-back-btn text-gray-300 text-xl w-10 h-10 flex items-center justify-center rounded-full back-button"><i class="fa-solid fa-arrow-left"></i></button>
-                <h2 class="text-xl font-bold">Become a Partner</h2>
+                <h2 class="text-lg font-bold">Become a Partner</h2>
                 <div class="w-10"></div>
             </header>
 
             <!-- Page Content Area -->
             <div class="w-full">
                 <div id="home-content" class="dashboard-page">
-                    <div id="home-tabs" class="px-4 py-2 flex items-center gap-4 overflow-x-auto no-scrollbar sticky top-[68px] bg-[#121212] z-30">
+                    <div id="home-tabs" class="px-4 py-2 flex items-center gap-4 overflow-x-auto no-scrollbar sticky top-[52px] bg-[#121212] z-30">
                         <button class="home-tab-link active-home-tab" data-target="post-feed">All</button>
                         <button class="home-tab-link" data-target="home-news-feed">News</button>
                         <button class="home-tab-link" data-target="home-tournaments-feed">Tournament</button>
@@ -639,7 +1360,7 @@
                         <button class="home-tab-link" data-target="home-missions-feed">Missions</button>
                         <button class="home-tab-link" data-target="home-store-feed">Store</button>
                     </div>
-                    <div id="slider-wrapper" class="p-4">
+                    <div id="slider-wrapper" class="px-4 pt-2 pb-4">
                         <div class="relative w-full overflow-hidden shadow-lg rounded-xl">
                             <h2 class="absolute top-4 left-0 bg-gradient-to-r from-green-500 to-green-600 text-white text-xs font-bold uppercase tracking-wider px-5 py-2 rounded-r-full shadow-lg z-10">Promotion</h2>
                             <div class="flex" id="slider-container"></div>
@@ -652,7 +1373,7 @@
                     <div id="home-tournaments-feed" class="home-tab-content space-y-6 px-4"></div>
                     <div id="home-guild-feed" class="home-tab-content space-y-6 px-4"></div>
                     <div id="home-player-squad-feed" class="home-tab-content space-y-6 px-4"></div>
-                    <div id="home-livestream-feed" class="home-tab-content px-4"></div>
+                    <div id="home-livestream-feed" class="home-tab-content px-4 space-y-4"></div>
                     <div id="home-missions-feed" class="home-tab-content space-y-4 px-4"></div>
                     <div id="home-store-feed" class="home-tab-content px-4"></div>
                 </div>
@@ -836,7 +1557,7 @@
                 <div id="mailbox-content" class="dashboard-page hidden"></div>
                 <div id="history-content" class="dashboard-page hidden p-4"></div>
                 <div id="redeem-content" class="dashboard-page hidden p-4"></div>
-                <div id="lucky-spin-content" class="dashboard-page hidden p-4"></div>
+                <div id="lucky-spin-content" class="dashboard-page hidden"></div>
                 <div id="official-channel-content" class="dashboard-page hidden p-6">
                     <div class="bg-[#1e1e1e] p-8 rounded-2xl border border-gray-700 text-center flex flex-col items-center max-w-sm mx-auto">
                         <div class="bg-cyan-500/10 p-6 rounded-full mb-6">
@@ -892,6 +1613,7 @@
                         <button id="delete-account-btn" class="w-full py-3 rounded-xl bg-red-800 hover:bg-red-700 text-white font-bold transition-colors">Delete My Account</button>
                     </div>
                 </div>
+                
                 <div id="coming-soon-content" class="dashboard-page hidden p-6 text-center flex flex-col justify-center items-center h-[calc(100vh-100px)] overflow-y-hidden">
                     <i class="fa-solid fa-tools text-6xl text-green-500 mb-6"></i>
                     <h1 class="text-4xl font-bold">Coming Soon!</h1>
@@ -967,6 +1689,7 @@
     </div>
     
     <div id="ad-view-screen" class="screen hidden !justify-start"></div>
+    <div id="livestream-view-screen" class="screen hidden"></div>
 
     <div id="topup-purchase-modal" class="screen hidden !justify-center"></div>
 
@@ -987,7 +1710,7 @@
             <a href="#" id="nav-home" class="nav-item active"><i class="fa-solid fa-house nav-icon"></i><span class="nav-label">Home</span></a>
             <a href="#" id="nav-search" class="nav-item"><i class="fa-solid fa-magnifying-glass nav-icon"></i><span class="nav-label">Search</span></a>
             <a href="#" id="nav-my-matches" class="nav-item"><i class="fa-solid fa-trophy nav-icon"></i><span class="nav-label">My Matches</span></a>
-            <a href="#" id="nav-reels" class="nav-item"><i class="fa-brands fa-youtube nav-icon"></i><span class="nav-label">Reels</span></a>
+            <a href="#" id="nav-reels" class="nav-item"><i class="fa-solid fa-ranking-star nav-icon text-yellow-500"></i><span class="nav-label">Leaderboard</span></a>
             <a href="#" id="nav-profile" class="nav-item"><i class="fa-solid fa-user nav-icon"></i><span class="nav-label">Profile</span></a>
         </nav>
     </div>
@@ -1183,11 +1906,10 @@
         const database = firebase.database();
         const storage = firebase.storage();
         
-        window.dbData = { users: {}, posts: {}, newsPosts: {}, sliderImages: [], admin: {}, guildPosts: {}, playerSquadPosts: {}, redeemCodes: {} };
+        window.dbData = { users: {}, posts: {}, newsPosts: {}, sliderImages: [], admin: {}, guildPosts: {}, playerSquadPosts: {}, redeemCodes: {}, liveStreams: {} };
         const DEFAULT_AVATAR = "https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/dfdc00fc6bb93771364bbf5000dad222.jpg?alt=media&token=ff33f08b-1b2e-424e-b636-f664d8044bed";
         const DEFAULT_TEAM_LOGO = "https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/dfdc00fc6bb93771364bbf5000dad222.jpg?alt=media&token=ff33f08b-1b2e-424e-b636-f664d8044bed";
         const APP_LOGO_URL = "https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/dfdc00fc6bb93771364bbf5000dad222.jpg?alt=media&token=ff33f08b-1b2e-424e-b636-f664d8044bed";
-        const TICKET_ICON_URL = "https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Levelup%2F1763773281834.png?alt=media&token=36f63d74-e431-4e15-9997-9c6919fdc92c";
         const MIN_DEPOSIT = 20; const MAX_DEPOSIT = 5000; const MIN_WITHDRAW = 50; const MAX_WITHDRAW = 500; const WITHDRAW_LIMIT_PER_DAY = 2;
         const paymentMethods = {
             bkash: { name: 'bKash', logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQ_HdpMiHFyZ_YfUCB_-vNcDujA8hYsYys91VA0TCyzQ&s=10', number: '01647712206', type: 'Send Money' },
@@ -1254,11 +1976,12 @@
             });
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
+        
+    document.addEventListener('DOMContentLoaded', () => {
             // --- DOM Element Assignment ---
             loadingOverlay = document.getElementById('loading-overlay');
             loadingTextEl = document.getElementById('loading-text');
-            const screens = { splash: document.getElementById('splash-screen'), auth: document.getElementById('auth-container'), dashboard: document.getElementById('dashboard-screen'), modal: document.getElementById('modal-screen'), forgot: document.getElementById('forgot-password-modal'), topupPurchase: document.getElementById('topup-purchase-modal'), adView: document.getElementById('ad-view-screen') };
+            const screens = { splash: document.getElementById('splash-screen'), auth: document.getElementById('auth-container'), dashboard: document.getElementById('dashboard-screen'), modal: document.getElementById('modal-screen'), forgot: document.getElementById('forgot-password-modal'), topupPurchase: document.getElementById('topup-purchase-modal'), adView: document.getElementById('ad-view-screen'), livestreamView: document.getElementById('livestream-view-screen') };
             const navContainer = document.querySelector('.nav-container');
             let currentUserData = null;
             
@@ -1272,8 +1995,7 @@
                     'profile-content', 'team-form-content', 'wallet-content', 'lup-wallet-screen', 
                     'topup-screen', 'mailbox-content', 'history-content', 'redeem-content',
                     'lucky-spin-content', 'edit-profile-content', 'change-password-content', 
-                    'manage-posts-content', 'official-channel-content', 'partner-content', 'payment-content'
-                ])
+                    'manage-posts-content', 'official-channel-content', 'partner-content', 'payment-content'])
             };
             const ALL_NAV_PAGES = new Set(Object.values(NAV_PAGE_MAP).flatMap(s => [...s]));
             let navigationHistory = [];
@@ -1346,8 +2068,8 @@
                     updateActiveNavItem(pageId);
 
                     const renderFunctionMap = {
-                        'home-content': () => { renderAllPosts(); renderNewsFeed(); renderTournamentsFeed(); renderHomeGuildPosts(); renderHomePlayerSquadPosts(); renderMissionsPage(); renderStorePage(); },
-                        'my-matches-content': renderMyMatchesPage, 'manage-posts-content': renderManageNeedPage, 'lucky-spin-content': renderLuckySpinPage,
+                        'home-content': () => { renderAllPosts(); renderNewsFeed(); renderTournamentsFeed(); renderHomeGuildPosts(); renderHomePlayerSquadPosts(); renderMissionsPage(); renderStorePage(); renderHomeLiveStreamFeed(); },
+                        'my-matches-content': renderMyMatchesPage, 'manage-posts-content': renderManageNeedPage, 'lucky-spin-content': renderLuckyBoxPage,
                         'history-content': renderHistoryPage, 'redeem-content': renderRedeemPage, 'wallet-content': renderWalletPage, 'lup-wallet-screen': renderLupWalletPage,
                         'topup-screen': renderTopUpPage, 'mailbox-content': renderMailbox, 'search-content': () => { document.getElementById('search-results-container').innerHTML = '<p class="text-center text-gray-500 mt-8">Type at least 3 characters to search.</p>'; },
                         'partner-content': renderPartnerScreen
@@ -1584,7 +2306,7 @@
             
             function setupRealtimeListener(user) {
                 database.ref().on('value', snapshot => {
-                    window.dbData = snapshot.val() || { users: {}, posts: {}, newsPosts: {}, sliderImages: [], admin: {}, guildPosts: {}, playerSquadPosts: {}, redeemCodes: {} };
+                    window.dbData = snapshot.val() || { users: {}, posts: {}, newsPosts: {}, sliderImages: [], admin: {}, guildPosts: {}, playerSquadPosts: {}, redeemCodes: {}, liveStreams: {} };
                     const currentUserDataFromDb = window.dbData.users?.[user.uid];
                     if (!currentUserDataFromDb) { auth.signOut(); return; }
 
@@ -1594,10 +2316,10 @@
                     const currentPageId = navigationHistory[navigationHistory.length - 1];
                     // Re-render current page to reflect new data
                     const renderFunctionMap = {
-                        'home-content': () => { renderAllPosts(); renderNewsFeed(); renderTournamentsFeed(); renderHomeGuildPosts(); renderHomePlayerSquadPosts(); renderMissionsPage(); renderStorePage(); },
+                        'home-content': () => { renderAllPosts(); renderNewsFeed(); renderTournamentsFeed(); renderHomeGuildPosts(); renderHomePlayerSquadPosts(); renderMissionsPage(); renderStorePage(); renderHomeLiveStreamFeed(); },
                         'my-matches-content': renderMyMatchesPage,
                         'manage-posts-content': renderManageNeedPage,
-                        'lucky-spin-content': renderLuckySpinPage,
+                        'lucky-spin-content': renderLuckyBoxPage,
                         'history-content': renderHistoryPage,
                         'redeem-content': renderRedeemPage,
                         'profile-content': () => updateProfileStats(currentUserDataFromDb, window.dbData.posts),
@@ -1782,7 +2504,7 @@
                     const user = userCredential.user;
                     const fullName = form.querySelector('#signup-fullname').value;
                     await user.updateProfile({ displayName: fullName });
-                    const newUserDbData = { userId: Math.floor(100000000 + Math.random() * 900000000), name: fullName, email: email, whatsapp: '+880' + form.querySelector('#signup-whatsapp').value, gender: form.querySelector('input[name="gender"]:checked').value, avatar: DEFAULT_AVATAR, role: 'user', wallet: { live: 0, event: 0, coins: 0, diamonds: 0 }, tickets: 5, team: null, bookings: {}, mailbox: {}, transactions: {}, storePurchaseCounters: {}, referralCode: generateReferralCode(), spinStats: { adSpins: 0, lastAdSpin: 0 }, missionProgress: {}, votes: {} };
+                    const newUserDbData = { userId: Math.floor(100000000 + Math.random() * 900000000), name: fullName, email: email, whatsapp: '+880' + form.querySelector('#signup-whatsapp').value, gender: form.querySelector('input[name="gender"]:checked').value, avatar: DEFAULT_AVATAR, role: 'user', wallet: { live: 0, event: 0, coins: 0, diamonds: 0 }, tickets: 5, team: null, bookings: {}, mailbox: {}, transactions: {}, storePurchaseCounters: {}, referralCode: generateReferralCode(), spinStats: { adSpins: 0, lastAdSpin: 0, boxSpins: 0 }, missionProgress: {}, votes: {} };
                     await database.ref('users/' + user.uid).set(newUserDbData);
                     localStorage.setItem('accountCreated', 'true');
                     showCustomModal({ type: 'success', title: 'Registration Successful!', message: 'Welcome to LEVEL UP! You got 5 free tickets.', autoClose: 2500 });
@@ -1907,7 +2629,6 @@
             
             const createPostCardHTML = (post) => {
                 const isBooked = currentUserData?.bookings && !!currentUserData.bookings[post.id];
-                if (isBooked) return '';
 
                 const sponsorData = window.dbData.users?.[post.authorId];
                 const allBadges = window.dbData.admin?.config?.verifiedBadges || {};
@@ -1937,7 +2658,9 @@
                 const formatTime = (timeStr) => { if (!timeStr) return 'N/A'; let [hours, minutes] = timeStr.split(':'); const ampm = hours >= 12 ? 'PM' : 'AM'; hours = hours % 12; hours = hours ? hours : 12; return `${hours}:${minutes} ${ampm}`; }; 
                 const isFull = (post.slots.booked || 0) >= post.slots.total; 
                 let buttonHTML; 
-                if(isFull) { 
+                if (isBooked) {
+                    buttonHTML = `<button class="booking-btn text-white font-bold py-3 px-6 rounded-lg text-base" disabled style="background-image: none; background-color: #dc2626;">BOOKED</button>`;
+                } else if(isFull) { 
                     buttonHTML = `<button class="booking-btn text-white font-bold py-3 px-6 rounded-lg text-base" disabled style="background: #880808;">SLOT FULL</button>`; 
                 } else { 
                     buttonHTML = `<button class="booking-btn text-white font-bold py-3 px-6 rounded-lg text-base" data-post-id="${post.id}">BOOK</button>`; 
@@ -1948,8 +2671,10 @@
                     : `<p class="font-oswald text-2xl font-bold text-green-400">FREE</p>`;
 
                 const mapsInfo = post.details.matchType === 'Clash Squad' ? '' : `<div class="col-span-2"><strong class="text-gray-400 text-xs uppercase">Maps:</strong> <span class="text-white font-semibold block">${post.details.numMatches} | ${post.details.maps.join(', ')}</span></div>`;
+                
+                const cardClasses = `post-card rounded-2xl overflow-hidden ${isBooked ? 'is-booked-card' : ''}`;
 
-                return `<div class="post-card rounded-2xl overflow-hidden" data-post-id-wrapper="${post.id}">
+                return `<div class="${cardClasses}" data-post-id-wrapper="${post.id}">
                     <div class="p-4">
                         <div class="flex justify-between items-start gap-4">
                             <div class="flex items-center gap-3 cursor-pointer sponsor-profile-trigger" data-sponsor-id="${post.authorId}">
@@ -2353,6 +3078,12 @@
                 const sponsorTrigger = e.target.closest('.sponsor-profile-trigger');
                 const userTrigger = e.target.closest('.user-profile-trigger');
                 const verifiedBadge = e.target.closest('.verification-badge');
+                const bookedCard = e.target.closest('.is-booked-card');
+
+                if (bookedCard && !bookBtn && !sponsorTrigger && !verifiedBadge) {
+                    handleNavigation('my-matches-content');
+                    return;
+                }
 
                 if (verifiedBadge) {
                     e.preventDefault(); e.stopPropagation();
@@ -3136,7 +3867,7 @@
                 Object.values(userTransactions).forEach(ut => {
                      let amount = ut.amount;
                     let isReward = false;
-                    if (ut.type === 'Spin Reward' || ut.type === 'Mission Reward') {
+                    if (ut.type === 'Spin Reward' || ut.type === 'Mission Reward' || ut.type === 'Box Reward') {
                          isReward = true;
                          amount = `+${ut.amount} ${ut.currency}`;
                     }
@@ -3623,6 +4354,7 @@
                 const applyBtn = e.target.closest('.guild-apply-btn'); 
                 const manageBtn = e.target.closest('.manage-my-guild-post-btn');
                 const contactBtn = e.target.closest('.contact-squad-post-btn');
+                const liveStreamCard = e.target.closest('.livestream-card');
                 if (applyBtn) { const postId = applyBtn.dataset.guildPostId; startGuildApplicationFlow(postId); }
                 if(manageBtn) { handleNavigation('manage-posts-content'); }
                 if(contactBtn) {
@@ -3630,6 +4362,10 @@
                     if (number) {
                         window.open(`https://wa.me/${number}`, '_blank');
                     }
+                }
+                if (liveStreamCard) {
+                    const streamId = liveStreamCard.dataset.streamId;
+                    openLiveStream(streamId);
                 }
             });
 
@@ -4140,7 +4876,7 @@
                     handleNavigation('profile-content');
                 });
 
-                const comingSoonItems = ['sidebar-stream-stats', 'sidebar-my-channel', 'sidebar-monetize'];
+                const comingSoonItems = ['sidebar-stream-stats', 'sidebar-my-channel', ''];
                 comingSoonItems.forEach(id => {
                     document.getElementById(id)?.addEventListener('click', (e) => {
                         e.preventDefault();
@@ -4239,177 +4975,251 @@
                 document.getElementById('sidebar-diamond-plus').addEventListener('click', redirectToMissions);
             }
 
-            const spinSegments = [
-                { type: 'coin', value: 0.5, color: '#fcd34d', text: '0.5 C' },
-                { type: 'diamond', value: 0.1, color: '#22d3ee', text: '0.1 D' },
-                { type: 'bad_luck', value: 0, color: '#ef4444', text: 'Sad' },
-                { type: 'coin', value: 5, color: '#f59e0b', text: '5 C' },
-                { type: 'diamond', value: 0.5, color: '#06b6d4', text: '0.5 D' },
-                { type: 'bad_luck', value: 0, color: '#b91c1c', text: 'Sad' },
-                { type: 'coin', value: 50, color: '#d97706', text: '50 C' },
-                { type: 'diamond', value: 1, color: '#0891b2', text: '1 D' },
-                { type: 'coin', value: 1, color: '#fbbf24', text: '1 C' },
-                { type: 'jackpot', value: 25, color: '#a855f7', text: 'JACKPOT' }
+            const luckyBoxPrizes = [
+                { type: 'coin', value: 100, id: '100C' },
+                { type: 'bad_luck', value: 0, id: 'BL1' },
+                { type: 'diamond', value: 25, id: '25D' }, // IMPOSSIBLE PRIZE
+                { type: 'diamond', value: 0.01, id: '0.01D' }, // REPLACED 5 COINS
+                { type: 'bad_luck', value: 0, id: 'BL2' },
+                { type: 'coin', value: 0.5, id: '0.5C' },
+                { type: 'coin', value: 0.1, id: '0.1C' },
+                { type: 'coin', value: 1, id: '1C' }
             ];
 
-            function renderLuckySpinPage() {
+            function renderLuckyBoxPage() {
                 const container = document.getElementById('lucky-spin-content');
                 const tickets = currentUserData.tickets || 0;
-                const lastAdSpin = currentUserData.spinStats?.lastAdSpin || 0;
-                const now = Date.now();
-                const adCooldown = 3 * 60 * 1000; // 3 minutes
-                const canAdSpin = (now - lastAdSpin) > adCooldown;
-
+                
                 container.innerHTML = `
-                    <div class="flex flex-col items-center justify-center min-h-[80vh] p-4">
-                        <div class="mb-8 text-center">
-                            <h2 class="text-4xl font-oswald font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500 drop-shadow-sm">LUCKY SPIN</h2>
-                            <div class="flex items-center justify-center gap-2 mt-4 bg-gradient-to-r from-gray-800 to-gray-900 px-6 py-2 rounded-full border border-yellow-500/30 shadow-lg">
-                                <img src="${TICKET_ICON_URL}" class="w-6 h-6 drop-shadow-[0_0_8px_rgba(255,215,0,0.5)]" loading="lazy">
-                                <span class="text-xl font-bold text-white tracking-wide" id="spin-ticket-count">${tickets}</span>
-                            </div>
-                        </div>
+                    <div class="flex flex-col items-center justify-center min-h-[85vh] p-4 text-center relative overflow-hidden">
+                        
+                        <!-- Ambient Background Glow -->
+                        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-purple-600/20 rounded-full blur-[80px] -z-10 pointer-events-none"></div>
 
-                        <div class="relative scale-90 sm:scale-100 transition-transform">
-                            <div class="wheel-container-pro">
-                                <div class="wheel-outer-rim">
-                                    <div class="wheel-pro" id="spin-wheel"></div>
-                                </div>
-                                <div class="wheel-center-cap">
-                                    <i class="fa-solid fa-star text-yellow-600 text-2xl drop-shadow-sm"></i>
-                                </div>
-                                <img src="https://cdn-icons-png.flaticon.com/512/1660/1660929.png" class="wheel-pointer-pro" loading="lazy">
-                            </div>
-                            
-                            <div class="absolute inset-0 flex items-center justify-center z-40 pointer-events-none">
-                                <div class="bg-black/80 text-white font-bold font-oswald text-3xl px-8 py-4 rounded-xl border border-yellow-500 shadow-[0_0_30px_rgba(255,215,0,0.3)] backdrop-blur-sm transform rotate-[-5deg]">
-                                    COMING SOON
-                                </div>
-                            </div>
+                        <!-- Header Area -->
+                        <div class="mb-8 relative z-10">
+                            <h2 class="text-5xl font-oswald font-bold text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 to-yellow-600 drop-shadow-sm filter drop-shadow(0 4px 0px rgba(0,0,0,0.5))">MYSTERY CRATE</h2>
+                            <p class="text-xs text-gray-400 tracking-[0.3em] font-bold mt-2 uppercase">Try Your Luck</p>
                         </div>
+                        
+                        <!-- Game Board -->
+                        <div class="bg-[#121212]/80 backdrop-blur-md border border-gray-800 p-6 rounded-3xl w-full max-w-sm shadow-2xl relative z-10">
+                             
+                             <!-- Ticket Balance Badge -->
+                             <div class="flex justify-between items-center mb-6 bg-gradient-to-r from-gray-900 to-gray-800 p-2 px-4 rounded-full border border-gray-700 shadow-inner">
+                                <span class="text-gray-400 text-[10px] font-bold tracking-wider">BALANCE</span>
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-ticket text-xl text-yellow-300 filter drop-shadow-lg"></i>
+                                    <span class="text-xl font-bold text-white font-oswald" id="lucky-box-ticket-count">${tickets}</span>
+                                </div>
+                            </div>
 
-                        <div class="w-full max-w-xs space-y-4 mt-12">
-                            <button class="w-full py-4 rounded-2xl bg-gradient-to-b from-gray-700 to-gray-800 border-b-4 border-gray-900 text-gray-400 text-xl font-bold shadow-xl cursor-not-allowed tracking-wider font-oswald" disabled>
-                                SPIN NOW
+                            <!-- The Grid -->
+                            <div id="lucky-box-game-container" class="mb-8 w-full">
+                                <div class="lucky-box-container">
+                                    ${Array(8).fill(0).map((_, i) => `
+                                        <div class="lucky-box floating-box" style="animation-delay: ${i * 0.1}s" data-box-id="${i}">
+                                            <div class="box-flipper">
+                                                <div class="box-face box-front">
+                                                    <span class="question-mark"><i class="fa-solid fa-question"></i></span>
+                                                </div>
+                                                <div class="box-face box-back"></div>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+
+                            <p id="lucky-box-instruction" class="text-green-400 font-bold text-xs tracking-widest uppercase mb-4 h-4"></p>
+
+                            <!-- Play Button -->
+                            <button id="play-lucky-box-btn" class="w-full py-4 rounded-xl bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-400 hover:to-orange-500 text-white text-lg font-bold tracking-wider font-oswald shadow-[0_4px_0_rgb(160,80,0)] active:shadow-none active:translate-y-1 transition-all disabled:opacity-50 disabled:cursor-not-allowed" ${tickets < 1 ? 'disabled' : ''}>
+                                OPEN CRATE <span class="text-sm font-normal opacity-80 ml-1">(1 Ticket)</span>
                             </button>
-                            
-                            <div class="relative">
-                                <button id="spin-btn-ad" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-gray-800 to-gray-900 border border-gray-700 text-white font-bold flex items-center justify-center gap-3 hover:border-green-500/50 transition-all disabled:opacity-50 shadow-lg" ${!canAdSpin ? 'disabled' : ''}>
-                                    <div class="bg-green-500/20 p-1.5 rounded-full"><i class="fa-solid fa-video text-green-400"></i></div>
-                                    <span>Watch Ad (+1 Ticket)</span>
-                                </button>
-                                <p id="ad-spin-timer" class="text-xs text-center text-yellow-500 font-semibold mt-2 ${canAdSpin ? 'hidden' : ''}">Cooldown...</p>
-                            </div>
                         </div>
-                    </div>
-                `;
-
-                initSpinWheel();
+                    </div>`;
                 
-                if (!canAdSpin) {
-                    const timerEl = document.getElementById('ad-spin-timer');
-                    const btn = document.getElementById('spin-btn-ad');
-                    const interval = setInterval(() => {
-                        const remaining = adCooldown - (Date.now() - lastAdSpin);
-                        if (remaining <= 0) {
-                            clearInterval(interval);
-                            btn.disabled = false;
-                            timerEl.classList.add('hidden');
-                        } else {
-                            const m = Math.floor(remaining / 60000);
-                            const s = Math.floor((remaining % 60000) / 1000);
-                            timerEl.textContent = `Next ad available in: ${m}m ${s}s`;
-                        }
-                    }, 1000);
+                document.getElementById('play-lucky-box-btn').addEventListener('click', handleLuckyBoxPlay);
+            }
+            function getLuckyBoxPrize() {
+                const boxSpins = currentUserData.spinStats?.boxSpins || 0;
+
+                // Pity timer for 100 Coins
+                if (boxSpins + 1 === 1000) {
+                    return luckyBoxPrizes.find(p => p.id === '100C');
                 }
 
-                document.getElementById('spin-btn-ad').addEventListener('click', () => handleSpin('ad'));
+                // Weighted probability for regular spins
+                const weightedPrizes = [
+                    { id: 'BL1', weight: 40 }, 
+                    { id: '0.1C', weight: 35 },
+                    { id: '0.5C', weight: 10 },
+                    { id: '1C', weight: 8 },
+                    { id: '0.01D', weight: 7 },
+                    { id: '25D', weight: 0 }, // Impossible to win
+                ];
+
+                const totalWeight = weightedPrizes.reduce((sum, p) => sum + p.weight, 0);
+                let random = Math.random() * totalWeight;
+                
+                for (const prize of weightedPrizes) {
+                    if (random < prize.weight) {
+                        return luckyBoxPrizes.find(p => p.id === prize.id);
+                    }
+                    random -= prize.weight;
+                }
             }
 
-            function initSpinWheel() {
-                const wheel = document.getElementById('spin-wheel');
-                if(!wheel) return;
-                wheel.innerHTML = '';
-                const deg = 360 / 10;
+            // --- UPDATED LUCKY BOX SPIN LOGIC ---
+            async function handleLuckyBoxPlay() {
+                const playBtn = document.getElementById('play-lucky-box-btn');
+                if (playBtn.disabled) return;
+
+                const userTickets = currentUserData.tickets || 0;
+                if (userTickets < 1) {
+                    showModal('error', 'No Tickets!', 'You need at least 1 ticket to play.');
+                    return;
+                }
+
+                playBtn.disabled = true;
+                const instruction = document.getElementById('lucky-box-instruction');
                 
-                spinSegments.forEach((seg, i) => {
-                    const segment = document.createElement('div');
-                    segment.className = 'wheel-segment-pro';
-                    segment.style.backgroundColor = seg.color;
-                    segment.style.transform = `rotate(${i * deg}deg)`;
-                    
-                    const content = document.createElement('div');
-                    content.className = 'absolute top-[20%] left-[50%] flex items-center origin-bottom';
-                    content.style.height = '50%';
-                    content.style.transform = `translateX(-50%) rotate(${deg/2}deg)`; 
-                    
-                    const textSpan = document.createElement('span');
-                    textSpan.textContent = seg.text;
-                    textSpan.className = 'font-bold text-black text-[11px] uppercase tracking-tighter whitespace-nowrap';
-                    textSpan.style.writingMode = 'vertical-rl';
-                    textSpan.style.transform = 'rotate(180deg)';
-                    
-                    content.appendChild(textSpan);
-                    segment.appendChild(content);
-                    wheel.appendChild(segment);
+                // 1. Decrement ticket and increment spin count
+                const boxSpins = (currentUserData.spinStats?.boxSpins || 0) + 1;
+                await database.ref(`users/${auth.currentUser.uid}`).update({
+                    'tickets': firebase.database.ServerValue.increment(-1),
+                    'spinStats/boxSpins': boxSpins
                 });
-            }
-
-            async function handleSpin(type) {
-                const adUrls = (window.dbData.admin?.settings?.adUrls || ['https://google.com']).filter(u => u); 
-                const randomAdUrl = adUrls[Math.floor(Math.random() * adUrls.length)];
                 
-                if (type === 'ad') {
-                    const adScreen = document.getElementById('ad-view-screen');
-                    let countdown = 30;
-                    adScreen.innerHTML = `
-                        <header class="w-full p-4 bg-[#1e1e1e] flex justify-between items-center z-10">
-                            <h2 class="font-bold text-white">Watch to Earn Ticket</h2>
-                            <div class="flex items-center gap-2 text-white font-bold"><span id="spin-ad-timer">${countdown}</span>s</div>
-                        </header>
-                        <iframe src="${randomAdUrl}" class="w-full flex-grow border-0"></iframe>
-                    `;
-                    adScreen.classList.remove('hidden');
+                const winningPrize = getLuckyBoxPrize();
+                let prizePool = [...luckyBoxPrizes].sort(() => Math.random() - 0.5);
+                const boxes = document.querySelectorAll('.lucky-box');
+                
+                // Assign prizes visually for the reveal
+                boxes.forEach((box, i) => {
+                    box.dataset.prize = JSON.stringify(prizePool[i]);
+                });
+
+                // Find a random box index to place the winning prize for the spin animation
+                const winningBoxIndex = Math.floor(Math.random() * boxes.length);
+                boxes[winningBoxIndex].dataset.prize = JSON.stringify(winningPrize);
+
+                instruction.textContent = "Spinning...";
+
+                // 2. Wheel of Fortune style animation
+                let spinCount = 0;
+                const totalSpins = 30 + Math.floor(Math.random() * 5); // Randomize total spins a bit
+                let currentBoxIndex = 0;
+                let delay = 50;
+
+                function spin() {
+                    boxes.forEach(box => box.classList.remove('box-highlight'));
+                    boxes[currentBoxIndex].classList.add('box-highlight');
                     
-                    const timerEl = document.getElementById('spin-ad-timer');
-                    const interval = setInterval(() => {
-                        countdown--;
-                        if(timerEl) timerEl.textContent = countdown;
-                        if (countdown <= 0) {
-                            clearInterval(interval);
-                            adScreen.classList.add('hidden');
-                            executeAdReward(); 
-                        }
-                    }, 1000);
-                    return; 
-                } 
-            }
+                    currentBoxIndex = (currentBoxIndex + 1) % boxes.length;
+                    spinCount++;
 
-            async function executeAdReward() {
-                showLoader("Rewarding Ticket...");
-                const updates = {};
-                updates[`users/${auth.currentUser.uid}/tickets`] = firebase.database.ServerValue.increment(1);
-                updates[`users/${auth.currentUser.uid}/spinStats/lastAdSpin`] = firebase.database.ServerValue.TIMESTAMP;
+                    // Slow down the spin towards the end
+                    if (spinCount > totalSpins - 10) {
+                        delay += 30;
+                    }
 
-                const txRef = database.ref(`users/${auth.currentUser.uid}/transactions`).push();
-                updates[`users/${auth.currentUser.uid}/transactions/${txRef.key}`] = {
-                    id: txRef.key,
-                    type: 'Ad Reward',
-                    description: `Watched Ad for Ticket`,
-                    amount: 1,
-                    currency: 'ticket',
-                    timestamp: new Date().toISOString()
-                };
+                    if (spinCount < totalSpins) {
+                        setTimeout(spin, delay);
+                    } else {
+                        // Land on the winning box
+                        boxes.forEach(box => box.classList.remove('box-highlight'));
+                        boxes[winningBoxIndex].classList.add('box-highlight');
+                        
+                        // Flip all boxes to reveal prizes
+                        setTimeout(() => {
+                            instruction.textContent = "Revealing...";
+                            boxes.forEach((boxEl, i) => {
+                                const prize = JSON.parse(boxEl.dataset.prize);
+                                const backFace = boxEl.querySelector('.box-back');
+                                if(prize.type === 'bad_luck') {
+                                    backFace.innerHTML = `<i class="fa-solid fa-xmark text-4xl text-red-500"></i>`;
+                                } else if (prize.type === 'coin') {
+                                    backFace.innerHTML = `<div class="text-center"><i class="fa-solid fa-coins text-3xl text-yellow-400"></i><p class="font-bold text-white mt-1">${prize.value}</p></div>`;
+                                } else if (prize.type === 'diamond') {
+                                    backFace.innerHTML = `<div class="text-center"><i class="fa-solid fa-gem text-3xl text-cyan-400"></i><p class="font-bold text-white mt-1">${prize.value}</p></div>`;
+                                }
+                                setTimeout(() => boxEl.classList.add('flipped'), i * 100);
+                            });
+                        }, 500);
 
-                try {
-                    await database.ref().update(updates);
-                    hideLoader();
-                    showModal('success', 'Ticket Earned!', 'You have received 1 ticket for watching the ad.');
-                    renderLuckySpinPage();
-                } catch(e) { 
-                    console.error(e); 
-                    hideLoader();
+                        // Show result modal after reveal
+                        setTimeout(() => {
+                            showLuckyBoxResult(winningPrize);
+                            resetLuckyBoxUI();
+                        }, 2500);
+                    }
                 }
+                spin();
+            }
+            
+            async function showLuckyBoxResult(prize) {
+                 const modal = document.getElementById('spin-result-modal');
+                 let lottieSrc, title, message, textColorClass;
+
+                if (prize.type === 'bad_luck') {
+                    lottieSrc = 'https://lottie.host/81a8c39e-b9b2-4d56-a193-a4147c2b53b8/D6p2Dvr9ge.lottie'; // Sad face
+                    title = "Better Luck Next Time!";
+                    message = "You didn't win a prize this time. Keep trying!";
+                    textColorClass = 'text-gray-400';
+                } else {
+                    const isCoin = prize.type === 'coin';
+                    lottieSrc = isCoin 
+                        ? 'https://lottie.host/79013f99-a417-48f0-a979-99a38f45033c/5QzE2fP5n3.lottie' // Coin
+                        : 'https://lottie.host/4a29a657-3721-4f91-b371-fd72545d62ba/k0H5G5jO1u.lottie'; // Diamond
+                    title = "Congratulations!";
+                    textColorClass = isCoin ? 'text-yellow-400' : 'text-cyan-400';
+                    const prizeIcon = isCoin ? '🪙' : '💎';
+                    message = `You won <strong class="${textColorClass}">${prize.value} ${prize.type.charAt(0).toUpperCase() + prize.type.slice(1)}s! ${prizeIcon}</strong>`;
+                    
+                    // Update user's wallet in Firebase
+                    const currency = prize.type === 'diamond' ? 'diamonds' : 'coins';
+                    await database.ref(`users/${auth.currentUser.uid}/wallet/${currency}`).transaction(current => (current || 0) + prize.value);
+                    await addTransaction(auth.currentUser.uid, {
+                        type: 'Box Reward',
+                        description: 'From Lucky Box',
+                        amount: prize.value,
+                        currency: prize.type
+                    });
+                }
+                
+                 modal.innerHTML = `
+                    <div class="modal-box text-white text-center p-6 flex flex-col items-center">
+                        <dotlottie-wc src="${lottieSrc}" autoplay style="width: 250px; height: 250px; margin-top: -50px;"></dotlottie-wc>
+                        <h3 class="text-3xl font-bold font-oswald -mt-8">${title}</h3>
+                        <p class="text-gray-300 text-lg mt-2">${message}</p>
+                        <button id="close-spin-result-btn" class="w-full py-3 mt-6 action-button rounded-lg">Continue</button>
+                    </div>
+                 `;
+                 modal.classList.remove('hidden');
+                 if(prize.type !== 'bad_luck') confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+
+                 gsap.fromTo(modal.querySelector('.modal-box'), 
+                    { scale: 0.7, opacity: 0 }, 
+                    { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.7)" }
+                 );
+
+                 document.getElementById('close-spin-result-btn').addEventListener('click', () => {
+                     modal.classList.add('hidden');
+                 });
+            }
+            
+            function resetLuckyBoxUI() {
+                const container = document.getElementById('lucky-spin-content');
+                const tickets = currentUserData.tickets || 0;
+                document.getElementById('play-lucky-box-btn').disabled = tickets < 1;
+                document.getElementById('lucky-box-ticket-count').textContent = tickets;
+                document.getElementById('lucky-box-instruction').textContent = "";
+                document.querySelectorAll('.lucky-box').forEach(box => {
+                    box.classList.remove('flipped', 'box-highlight');
+                    box.querySelector('.box-back').innerHTML = '';
+                    delete box.dataset.prize;
+                });
             }
 
             document.getElementById('home-search-btn').addEventListener('click', () => {
@@ -4789,15 +5599,19 @@
                 if (task.rewardType === 'diamond') {
                     rewardCurrencyIcon = 'https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Levelup%2F1762763297995.png?alt=media&token=db9ebed1-ff51-49ed-a311-0327313dae56';
                 } else if (task.rewardType === 'ticket') {
-                    rewardCurrencyIcon = TICKET_ICON_URL;
+                    rewardCurrencyIcon = "fa-solid fa-ticket"; // Updated Icon
                 } else {
-                    rewardCurrencyIcon = 'https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Levelup%2F1762763055321.png?alt=media&token=58051d4b-446d-4a30-b588-bed5a5f49c8d';
+                    rewardCurrencyIcon = 'https://cdn-icons-png.flaticon.com/512/217/217853.png';
                 }
                 
                 const buttonText = task.type === 'redeem' ? 'View' : 'Watch';
                 
                 let currentCount = userProgress.lastCompletedDate === todayBst ? userProgress.count : 0;
                 
+                const rewardIconHTML = task.rewardType === 'ticket' 
+                    ? `<i class="${rewardCurrencyIcon} text-yellow-300"></i>` 
+                    : `<img src="${rewardCurrencyIcon}" alt="${task.rewardType}" loading="lazy">`;
+
                 return `
                     <div class="task-card">
                         <div class="task-icon-container">
@@ -4807,7 +5621,7 @@
                         <div class="flex-grow">
                             <h4 class="font-bold text-white">${task.title}</h4>
                             <div class="task-reward mt-1">
-                                Win <img src="${rewardCurrencyIcon}" alt="${task.rewardType}" loading="lazy">
+                                Win ${rewardIconHTML}
                                 <span>${task.rewardAmount}</span>
                             </div>
                         </div>
@@ -4901,9 +5715,10 @@
 
             function renderRedeemTaskPage(taskId, task) {
                 const contentArea = document.getElementById('redeem-task-content');
-                const rewardCurrencyIcon = task.rewardType === 'diamond' 
-                    ? 'https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Levelup%2F1762763297995.png?alt=media&token=db9ebed1-ff51-49ed-a311-0327313dae56' 
-                    : 'https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Levelup%2F1762763055321.png?alt=media&token=58051d4b-446d-4a30-b588-bed5a5f49c8d';
+                const rewardIconHTML = task.rewardType === 'ticket'
+                    ? `<i class="fa-solid fa-ticket text-yellow-300"></i>`
+                    : `<img src="${task.rewardType === 'diamond' ? 'https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Levelup%2F1762763297995.png?alt=media&token=db9ebed1-ff51-49ed-a311-0327313dae56' : 'https://cdn-icons-png.flaticon.com/512/217/217853.png'}" class="w-5 h-5" loading="lazy">`;
+
 
                 contentArea.innerHTML = `
                     <div class="space-y-6">
@@ -4923,7 +5738,7 @@
                              <form id="submit-redeem-code-form" class="space-y-3">
                                 <input type="text" id="redeem-task-code-input" class="form-input text-center" placeholder="Enter code here..." required>
                                 <button type="submit" class="w-full py-3 action-button rounded-lg font-bold flex items-center justify-center gap-2">
-                                    Claim <img src="${rewardCurrencyIcon}" class="w-5 h-5" loading="lazy"> ${task.rewardAmount}
+                                    Claim ${rewardIconHTML} ${task.rewardAmount}
                                 </button>
                              </form>
                         </div>
@@ -4957,8 +5772,12 @@
                             return progress;
                         });
 
-                        const currency = task.rewardType === 'diamond' ? 'diamonds' : 'coins';
-                        await database.ref(`users/${auth.currentUser.uid}/wallet/${currency}`).transaction(current => (current || 0) + task.rewardAmount);
+                        const currency = task.rewardType === 'diamond' ? 'diamonds' : (task.rewardType === 'ticket' ? 'tickets' : 'coins');
+                        if(currency === 'tickets') {
+                             await database.ref(`users/${auth.currentUser.uid}/tickets`).transaction(current => (current || 0) + task.rewardAmount);
+                        } else {
+                             await database.ref(`users/${auth.currentUser.uid}/wallet/${currency}`).transaction(current => (current || 0) + task.rewardAmount);
+                        }
                         await addTransaction(auth.currentUser.uid, {
                             type: 'Mission Reward',
                             description: `Completed: ${task.title}`,
@@ -4996,7 +5815,7 @@
                 <div class="p-4 space-y-6">
                     <div class="grid grid-cols-2 gap-4">
                         <div class="bg-gradient-to-br from-yellow-700 to-yellow-900 border border-yellow-600 rounded-2xl p-4 text-center">
-                            <img src="https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/Levelup%2F1762763055321.png?alt=media&token=58051d4b-446d-4a30-b588-bed5a5f49c8d" class="w-12 h-12 mx-auto mb-2" loading="lazy">
+                            <img src="https://cdn-icons-png.flaticon.com/512/217/217853.png" class="w-12 h-12 mx-auto mb-2" loading="lazy">
                             <p class="text-3xl font-bold font-oswald text-yellow-300">${formatNumberCompact(coins)}</p>
                             <p class="text-xs text-yellow-400">Coins</p>
                         </div>
@@ -5243,8 +6062,8 @@
                     const badgeData = allBadges[post.badgeIndex];
                     if(badgeData){
                         badgeHTML = badgeData.type === 'video'
-                            ? `<video src="${badgeData.url}" class="verification-badge" autoplay loop muted playsinline></video>`
-                            : `<img src="${badgeData.url}" alt="Badge" class="verification-badge" loading="lazy">`;
+                            ? `<video src="${badgeData.url}" class="verification-badge" data-badge-index="${post.badgeIndex}" autoplay loop muted playsinline></video>`
+                            : `<img src="${badgeData.url}" alt="Badge" class="verification-badge" data-badge-index="${post.badgeIndex}" loading="lazy">`;
                     }
                 } else {
                      badgeHTML = `<img src="https://firebasestorage.googleapis.com/v0/b/viptask-5c1fc.appspot.com/o/1678272828555.png?alt=media&token=42395568-7313-4318-8742-553ded11a25e" alt="Verified" class="verification-badge" loading="lazy">`;
@@ -5352,7 +6171,812 @@
                     handleFirebaseError(error);
                 }
             }
+
+            // --- NEW LIVE STREAM FUNCTIONS ---
+            function renderHomeLiveStreamFeed() {
+                const container = document.getElementById('home-livestream-feed');
+                const liveStreams = Object.entries(window.dbData.liveStreams || {}).filter(([id, stream]) => stream.status === 'live');
+                
+                if (liveStreams.length === 0) {
+                    container.innerHTML = `<div class="text-center text-gray-500 p-10 bg-gray-800/50 rounded-lg"><i class="fa-solid fa-video-slash text-4xl mb-4"></i><p>No one is live right now.</p></div>`;
+                    return;
+                }
+
+                container.innerHTML = liveStreams.map(([id, stream]) => createLiveStreamCardHTML(id, stream)).join('');
+            }
+
+            function createLiveStreamCardHTML(id, stream) {
+                return `
+                <div class="post-card rounded-2xl overflow-hidden cursor-pointer livestream-card" data-stream-id="${id}">
+                    <div class="relative">
+                        <img src="${stream.thumbnail}" class="w-full aspect-video object-cover" loading="lazy">
+                        <div class="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-md animate-pulse">LIVE</div>
+                    </div>
+                    <div class="p-3">
+                        <h3 class="font-bold text-white truncate">${stream.title}</h3>
+                    </div>
+                </div>`;
+            }
+
+            
+            
+    // --- GLOBAL PLAYER VARIABLE ---
+    let ytPlayer = null;
+
+    
+    // --- PREMIUM LIVE STREAM FUNCTION ---
+    let lsControlTimeout;
+    
+    function openLiveStream(streamId) {
+        const streamData = window.dbData.liveStreams[streamId];
+        if (!streamData) return;
+        
+        const livestreamScreen = document.getElementById('livestream-view-screen');
+        livestreamScreen.dataset.streamId = streamId;
+        
+        // Extract Video ID
+        let videoId = streamData.youtubeUrl;
+        if (videoId.includes('v=')) { videoId = videoId.split('v=')[1]?.split('&')[0]; } 
+        else if (videoId.includes('youtu.be/')) { videoId = videoId.split('youtu.be/')[1]; }
+
+        livestreamScreen.innerHTML = `
+            <!-- 3 SEC LOADER -->
+            <div id="ls-loading-overlay">
+                <div class="loader-pulse"></div>
+                <p class="text-green-500 font-bold mt-4 animate-pulse tracking-widest">CONNECTING LIVE...</p>
+            </div>
+                
+            <div class="livestream-video-wrapper bg-black" id="ls-video-container">
+                <!-- YouTube Iframe -->
+                <div id="yt-player-placeholder"></div>
+                
+                <!-- Click Layer (To toggle controls) -->
+                <div id="ls-click-layer" style="position: absolute; inset: 0; z-index: 55;"></div>
+
+                <!-- Controls Overlay (Hidden by default) -->
+                <div id="ls-controls" class="video-controls-layer">
+                    <!-- Header -->
+                    <div class="ls-video-header">
+                        <div class="ls-back-btn" id="ls-close-btn"><i class="fa-solid fa-xmark"></i></div>
+                        <div class="ls-video-title">${streamData.title}</div>
+                    </div>
+
+                    <!-- Center Play/Pause -->
+                    <div class="ls-center-controls">
+                        <div id="ls-play-pause-btn" class="ls-play-btn">
+                            <i class="fa-solid fa-pause" id="ls-play-icon"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Bottom Spacer (For Gradient) -->
+                    <div style="height: 50px;"></div>
+                </div>
+            </div>
+
+            <!-- Chat & Content -->
+            <div class="ls-content-body">
+                <div class="p-3 border-b border-gray-800 flex justify-between items-center bg-[#181818]">
+                    <div class="text-sm font-bold text-gray-300"><i class="fa-solid fa-comments text-green-500 mr-2"></i>Live Chat</div>
+                    <div class="text-xs text-gray-500"><i class="fa-solid fa-eye mr-1"></i>Watching</div>
+                </div>
+
+                <div class="ls-chat-container no-scrollbar" id="ls-chat-box"></div>
+                
+                <form class="ls-input-area" id="ls-chat-form">
+                    <input type="text" class="ls-input" placeholder="Say something..." autocomplete="off">
+                    <button type="submit" class="ls-send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+                </form>
+            </div>
+        `;
+
+        livestreamScreen.classList.remove('hidden');
+        requestAnimationFrame(() => { livestreamScreen.classList.add('active'); });
+
+        // --- PATCHED LOGIC (Loader & Swipe) ---
+        
+        // 1. Remove Loader after 3 Seconds
+        setTimeout(() => {
+            const loader = document.getElementById('ls-loading-overlay');
+            if(loader) {
+                loader.style.opacity = '0';
+                setTimeout(() => loader.remove(), 500);
+            }
+        }, 3000);
+
+        // 2. Swipe Gestures
+        const vidContainer = document.getElementById('ls-video-container');
+        let tSY = 0; // Touch Start Y
+        
+        if(vidContainer) {
+            vidContainer.addEventListener('touchstart', e => tSY = e.touches[0].clientY, {passive: true});
+            vidContainer.addEventListener('touchend', e => {
+                const tEY = e.changedTouches[0].clientY;
+                if(tEY - tSY > 100) { // Swipe Down
+                    closeLiveStream(streamId);
+                }
+                if(tSY - tEY > 100) { // Swipe Up (Fullscreen)
+                     if (!document.fullscreenElement) {
+                        if (vidContainer.requestFullscreen) vidContainer.requestFullscreen();
+                        else if (vidContainer.webkitRequestFullscreen) vidContainer.webkitRequestFullscreen();
+                    }
+                }
+            }, {passive: true});
+        }
+            
+
+        // --- Logic: Show/Hide Controls ---
+        const controlsLayer = document.getElementById('ls-controls');
+        const clickLayer = document.getElementById('ls-click-layer');
+        const playBtn = document.getElementById('ls-play-pause-btn');
+        const playIcon = document.getElementById('ls-play-icon');
+
+        function showControls() {
+            controlsLayer.classList.add('visible');
+            resetControlTimer();
+        }
+
+        function hideControls() {
+            controlsLayer.classList.remove('visible');
+        }
+
+        function resetControlTimer() {
+            clearTimeout(lsControlTimeout);
+            lsControlTimeout = setTimeout(() => {
+                hideControls();
+            }, 5000); // 5 Seconds Logic
+        }
+
+        function togglePlayPause() {
+            if (ytPlayer && typeof ytPlayer.getPlayerState === 'function') {
+                const state = ytPlayer.getPlayerState();
+                if (state === 1) { // Playing -> Pause
+                    ytPlayer.pauseVideo();
+                    playIcon.className = 'fa-solid fa-play';
+                } else { // Paused -> Play
+                    ytPlayer.playVideo();
+                    playIcon.className = 'fa-solid fa-pause';
+                }
+                resetControlTimer(); // Keep controls visible while interacting
+            }
+        }
+
+        // Tap Video -> Toggle Controls
+        clickLayer.addEventListener('click', () => {
+            if (controlsLayer.classList.contains('visible')) {
+                hideControls();
+            } else {
+                showControls();
+            }
         });
+
+        // Tap Play Button -> Toggle Video
+        playBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent bubbling to clickLayer
+            togglePlayPause();
+        });
+
+        // Close Button
+        document.getElementById('ls-close-btn').addEventListener('click', () => closeLiveStream(streamId));
+
+        // Chat Form
+        document.getElementById('ls-chat-form').addEventListener('submit', (e) => handleLiveChatSubmit(e, streamId));
+
+        // --- PATCHED: Swipe Gestures (Up: Fullscreen, Down: Close) ---
+        const videoContainer = document.getElementById('ls-video-container');
+        let touchStartY = 0;
+        let touchStartX = 0;
+
+        videoContainer.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+            touchStartX = e.touches[0].clientX;
+        }, { passive: true });
+
+        videoContainer.addEventListener('touchend', (e) => {
+            const touchEndY = e.changedTouches[0].clientY;
+            const touchEndX = e.changedTouches[0].clientX;
+            
+            const diffY = touchEndY - touchStartY;
+            const diffX = touchEndX - touchStartX;
+
+            // Ensure vertical swipe is dominant
+            if (Math.abs(diffY) > Math.abs(diffX)) {
+                if (diffY > 100) { 
+                    // Swipe Down -> Close
+                    closeLiveStream(streamId);
+                } else if (diffY < -100) { 
+                    // Swipe Up -> Fullscreen
+                    if (!document.fullscreenElement) {
+                        if (videoContainer.requestFullscreen) videoContainer.requestFullscreen();
+                        else if (videoContainer.webkitRequestFullscreen) videoContainer.webkitRequestFullscreen();
+                    }
+                }
+            }
+        });
+            
+
+        // Load Player
+        if (!window.YT) {
+            const tag = document.createElement('script');
+            tag.src = "https://www.youtube.com/iframe_api";
+            const firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+            window.onYouTubeIframeAPIReady = () => { initYTPlayer(videoId); };
+        } else {
+            initYTPlayer(videoId);
+        }
+
+        // --- Chat Listener ---
+        const chatRef = database.ref(`liveStreams/${streamId}/chat`);
+        const chatBox = document.getElementById('ls-chat-box');
+        
+        // Remove old listener if any (safety)
+        chatRef.off();
+
+        chatRef.on('child_added', snapshot => {
+            const msg = snapshot.val();
+            const msgKey = snapshot.key;
+            
+            const div = document.createElement('div');
+            div.className = 'ls-chat-msg';
+            div.id = `msg-${msgKey}`;
+            div.innerHTML = `
+                <img src="${msg.userAvatar}" class="ls-chat-avatar">
+                <div class="ls-chat-bubble">
+                    <p class="ls-chat-name">${msg.userName}</p>
+                    <p class="ls-chat-text">${msg.text}</p>
+                </div>
+            `;
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+
+        chatRef.on('child_removed', snapshot => {
+            const el = document.getElementById(`msg-${snapshot.key}`);
+            if(el) el.remove();
+        });
+    }
+
+    function initYTPlayer(videoId) {
+        if (ytPlayer) { ytPlayer.destroy(); } // Cleanup old
+        ytPlayer = new YT.Player('yt-player-placeholder', {
+            height: '100%',
+            width: '100%',
+            videoId: videoId,
+            playerVars: {
+                'autoplay': 1,
+                'controls': 0, // No controls
+                'modestbranding': 1,
+                'rel': 0,
+                'showinfo': 0,
+                'disablekb': 1,
+                'fs': 0,
+                'playsinline': 1 // Crucial for mobile
+            },
+            events: {
+                'onReady': onPlayerReady
+            }
+        });
+    }
+
+    function onPlayerReady(event) {
+        event.target.playVideo(); // Auto Play
+        // Ensure iframe doesn't intercept clicks
+        const iframe = document.getElementById('yt-player-placeholder'); 
+        if(iframe) { 
+            iframe.id = 'yt-player-iframe'; 
+            iframe.style.pointerEvents = 'none'; 
+        } 
+    }
+
+    function renderSingleChatMessage(msg, key, streamId) {
+        const container = document.querySelector('.livestream-chat-messages');
+        if (!container) return;
+
+        const isMe = msg.userId === auth.currentUser.uid;
+        
+        const div = document.createElement('div');
+        div.className = 'chat-message';
+        div.id = `msg-${key}`;
+        div.innerHTML = `
+            <img src="${msg.userAvatar}" alt="Av">
+            <div class="chat-message-content">
+                <div class="flex items-center gap-2">
+                    <p class="chat-message-author">${msg.userName}</p>
+                    ${isMe ? `<button class="chat-delete-btn" onclick="deleteMyMessage('${streamId}', '${key}')"><i class="fa-solid fa-trash"></i></button>` : ''}
+                </div>
+                <p class="chat-message-text">${msg.text}</p>
+            </div>
+        `;
+        
+        container.appendChild(div);
+        container.scrollTop = container.scrollHeight;
+    }
+
+    // Global function for onclick
+    window.deleteMyMessage = function(streamId, msgKey) {
+        if(confirm("Delete this message?")) {
+            database.ref(`liveStreams/${streamId}/chat/${msgKey}`).remove();
+        }
+    };
+
+    function showPlayPauseIcon(type) {
+        // Optional: Could add a temporary central icon animation here
+        console.log(type === 'play' ? "Resuming" : "Pausing");
+    }
+    
+
+            
+            
+    function closeLiveStream(streamId) {
+        if (streamId) { 
+            database.ref(`liveStreams/${streamId}/chat`).off(); 
+        }
+        
+        // Stop Video
+        if (ytPlayer && typeof ytPlayer.stopVideo === 'function') {
+            ytPlayer.stopVideo();
+            ytPlayer.destroy();
+            ytPlayer = null;
+        }
+
+        const livestreamScreen = document.getElementById('livestream-view-screen');
+        livestreamScreen.style.transition = 'transform 0.3s ease-in';
+        livestreamScreen.classList.remove('active');
+        
+        setTimeout(() => {
+            livestreamScreen.classList.add('hidden');
+            livestreamScreen.innerHTML = '';
+            livestreamScreen.dataset.streamId = '';
+            livestreamScreen.style.transform = '';
+            livestreamScreen.style.transition = '';
+        }, 300);
+    }
+    
+            
+            async function handleLiveChatSubmit(e, streamId) {
+                e.preventDefault();
+                const form = e.currentTarget;
+                const input = form.querySelector('input');
+                const message = input.value.trim();
+                
+                if (!message) return;
+                
+                const messageData = {
+                    userId: auth.currentUser.uid,
+                    userName: currentUserData.name,
+                    userAvatar: currentUserData.avatar || DEFAULT_AVATAR,
+                    text: message,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                };
+                
+                try {
+                    input.value = '';
+                    await database.ref(`liveStreams/${streamId}/chat`).push(messageData);
+                } catch (error) {
+                    console.error("Chat send error:", error);
+                    input.value = message;
+                }
+            }
+
+            /* Removed in favor of child_added listener inside openLiveStream */
+
+        });
+    </script>
+<script>
+    // --- PATCHED LIVESTREAM LOGIC START ---
+    let ytPlayer = null;
+    let lsControlTimeout;
+    
+    function openLiveStream(streamId) {
+        const streamData = window.dbData.liveStreams[streamId];
+        if (!streamData) return;
+        
+        const livestreamScreen = document.getElementById('livestream-view-screen');
+        livestreamScreen.dataset.streamId = streamId;
+        
+        // Extract Video ID
+        let videoId = streamData.youtubeUrl;
+        if (videoId.includes('v=')) { videoId = videoId.split('v=')[1]?.split('&')[0]; } 
+        else if (videoId.includes('youtu.be/')) { videoId = videoId.split('youtu.be/')[1]; }
+
+        livestreamScreen.innerHTML = `
+            <div class="livestream-video-wrapper" id="ls-video-container">
+                <!-- 1. Thumbnail Cover (Click to Play) -->
+                <div id="ls-cover-layer" style="background-image: url('${streamData.thumbnail}');">
+                    <div class="ls-cover-play-btn" onclick="startStreamSequence('${videoId}')"><i class="fa-solid fa-play"></i></div>
+                    <div class="absolute top-2 left-2 flex gap-2">
+                        <div class="bg-black/50 p-2 rounded-full cursor-pointer text-white" onclick="closeLiveStream('${streamId}')"><i class="fa-solid fa-arrow-left"></i></div>
+                    </div>
+                </div>
+
+                <!-- 2. Loading Layer (Hidden initially) -->
+                <div id="ls-loading-layer" class="hidden">
+                    <div class="loader-pulse" style="border-color: #ef4444;"></div>
+                    <p class="text-white text-xs font-bold mt-3 animate-pulse">CONNECTING LIVE...</p>
+                </div>
+
+                <!-- 3. YouTube Player -->
+                <div id="yt-player-placeholder"></div>
+            </div>
+
+            <!-- Chat & Content -->
+            <div class="ls-content-body">
+                <div class="p-2 border-b border-gray-800 flex justify-between items-center bg-[#181818]">
+                    <div class="text-xs font-bold text-gray-400">Top Chat <i class="fa-solid fa-caret-down"></i></div>
+                    <div class="text-xs text-red-500 font-bold flex items-center gap-1"><span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span> LIVE</div>
+                </div>
+
+                <div class="ls-chat-container no-scrollbar" id="ls-chat-box">
+                    <div class="text-center text-gray-600 text-sm mt-10">Welcome to live chat!</div>
+                </div>
+                
+                <form class="ls-input-area" id="ls-chat-form">
+                    <img src="${currentUserData.avatar || DEFAULT_AVATAR}" class="w-8 h-8 rounded-full border border-gray-600">
+                    <input type="text" class="ls-input" placeholder="Chat as ${currentUserData.name}..." autocomplete="off">
+                    <button type="submit" class="ls-send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+                </form>
+            </div>
+        `;
+
+        livestreamScreen.classList.remove('hidden');
+        requestAnimationFrame(() => { livestreamScreen.classList.add('active'); });
+
+        // Chat Listener
+        const chatRef = database.ref(`liveStreams/${streamId}/chat`);
+        const chatBox = document.getElementById('ls-chat-box');
+        chatRef.off();
+
+        chatRef.on('child_added', snapshot => {
+            const msg = snapshot.val();
+            const msgKey = snapshot.key;
+            const isMe = msg.userId === auth.currentUser.uid;
+            
+            const div = document.createElement('div');
+            div.className = 'ls-chat-msg';
+            div.id = `msg-${msgKey}`;
+            div.innerHTML = `
+                <img src="${msg.userAvatar}" class="ls-chat-avatar">
+                <div class="ls-chat-bubble">
+                    <p class="ls-chat-name" style="color: ${isMe ? '#1DB954' : '#a1a1aa'}">${msg.userName} 
+                        ${isMe ? `<span class="ls-delete-btn" onclick="deleteMyMessage('${streamId}', '${msgKey}')"><i class="fa-solid fa-trash"></i></span>` : ''}
+                    </p>
+                    <p class="ls-chat-text">${msg.text}</p>
+                </div>
+            `;
+            chatBox.appendChild(div);
+            // Auto Scroll to bottom logic
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+
+        chatRef.on('child_removed', snapshot => {
+            const el = document.getElementById(`msg-${snapshot.key}`);
+            if(el) el.remove();
+        });
+
+        // Chat Submit
+        document.getElementById('ls-chat-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const input = e.target.querySelector('input');
+            const txt = input.value.trim();
+            if(!txt) return;
+            
+            database.ref(`liveStreams/${streamId}/chat`).push({
+                userId: auth.currentUser.uid,
+                userName: currentUserData.name,
+                userAvatar: currentUserData.avatar || DEFAULT_AVATAR,
+                text: txt,
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            });
+            input.value = '';
+            // Force scroll to bottom after sending
+            setTimeout(() => { chatBox.scrollTop = chatBox.scrollHeight; }, 100);
+        });
+    }
+
+    // New Global Function to handle sequence
+    window.startStreamSequence = function(videoId) {
+        const cover = document.getElementById('ls-cover-layer');
+        const loader = document.getElementById('ls-loading-layer');
+        
+        // 1. Hide Cover, Show Loader
+        cover.style.display = 'none';
+        loader.classList.remove('hidden');
+
+        // 2. Wait 3 seconds then init player
+        setTimeout(() => {
+            initYTPlayer(videoId);
+        }, 3000);
+    }
+
+    // Global Delete Function
+    window.deleteMyMessage = function(streamId, msgKey) {
+        if(confirm("Delete this message?")) {
+            database.ref(`liveStreams/${streamId}/chat/${msgKey}`).remove();
+        }
+    }
+
+    function initYTPlayer(videoId) {
+        if (ytPlayer) { ytPlayer.destroy(); }
+        ytPlayer = new YT.Player('yt-player-placeholder', {
+            height: '100%', width: '100%',
+            videoId: videoId,
+            playerVars: { 'autoplay': 1, 'controls': 1, 'modestbranding': 1, 'playsinline': 1, 'rel': 0 },
+            events: {
+                'onReady': onPlayerReady,
+                'onStateChange': onPlayerStateChange
+            }
+        });
+    }
+
+    function onPlayerReady(event) {
+        event.target.playVideo();
+        // Hide loader immediately on ready, but state change handles buffering
+    }
+
+    function onPlayerStateChange(event) {
+        const loader = document.getElementById('ls-loading-layer');
+        if(!loader) return;
+
+        // State 3 = Buffering, -1 = Unstarted
+        if (event.data === 3 || event.data === -1) {
+            loader.classList.remove('hidden');
+        } 
+        // State 1 = Playing
+        else if (event.data === 1) {
+            loader.classList.add('hidden');
+        }
+    }
+    // --- PATCHED LIVESTREAM LOGIC END ---
+    </script>
+<script>
+    /* --- ULTIMATE LIVESTREAM LOGIC START --- */
+    let ytPlayer = null;
+    let currentStreamId = null;
+    let isAppInBackground = false;
+
+    // Visibility Change Listener (Handle App Background)
+    document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === 'visible') {
+            // User came back to app
+            if (currentStreamId && ytPlayer) {
+                isAppInBackground = false;
+                // Force Pause logic to show thumbnail
+                forceShowThumbnailState(); 
+            }
+        } else {
+            // User left app
+            isAppInBackground = true;
+            if (ytPlayer && typeof ytPlayer.pauseVideo === 'function') {
+                ytPlayer.pauseVideo();
+            }
+        }
+    });
+
+    function openLiveStream(streamId) {
+        currentStreamId = streamId;
+        const streamData = window.dbData.liveStreams[streamId];
+        if (!streamData) return;
+        
+        const livestreamScreen = document.getElementById('livestream-view-screen');
+        livestreamScreen.dataset.streamId = streamId;
+        
+        // Extract Video ID
+        let videoId = streamData.youtubeUrl;
+        if (videoId.includes('v=')) { videoId = videoId.split('v=')[1]?.split('&')[0]; } 
+        else if (videoId.includes('youtu.be/')) { videoId = videoId.split('youtu.be/')[1]; }
+
+        livestreamScreen.innerHTML = `
+            <div class="livestream-video-wrapper" id="ls-video-container">
+                <!-- 1. Thumbnail Cover (With Redesigned Close Button) -->
+                <div id="ls-cover-layer" style="background-image: url('${streamData.thumbnail}');">
+                    <div class="ls-cover-overlay"></div>
+                    <div class="ls-close-improved" onclick="closeLiveStream('${streamId}')">
+                        <i class="fa-solid fa-xmark"></i>
+                    </div>
+                    <div class="ls-cover-play-btn" onclick="startStreamSequence('${videoId}')">
+                        <i class="fa-solid fa-play"></i>
+                    </div>
+                </div>
+
+                <!-- 2. Loading Layer (3s Buffer) -->
+                <div id="ls-loading-layer" class="hidden">
+                    <dotlottie-wc src="https://lottie.host/e21415f9-b849-4323-8646-a2e3f1699933/i57m53VT2e.lottie" autoplay loop style="width: 100px; height: 100px;"></dotlottie-wc>
+                    <p class="text-white text-xs font-bold mt-2 animate-pulse tracking-widest text-green-400">CONNECTING LIVE...</p>
+                </div>
+
+                <!-- 3. YouTube Player -->
+                <div id="yt-player-placeholder"></div>
+            </div>
+
+            <!-- Chat Content -->
+            <div class="ls-content-body">
+                <div class="p-2 border-b border-gray-800 flex justify-between items-center bg-[#141414]">
+                    <div class="text-xs font-bold text-gray-400 uppercase tracking-wide px-2">Live Chat</div>
+                    <div class="bg-red-600/10 border border-red-600/30 px-2 py-0.5 rounded text-[10px] text-red-500 font-bold flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></span> LIVE
+                    </div>
+                </div>
+
+                <div class="ls-chat-container no-scrollbar" id="ls-chat-box"></div>
+                
+                <form class="ls-input-area" id="ls-chat-form">
+                    <img src="${currentUserData.avatar || DEFAULT_AVATAR}" class="w-8 h-8 rounded-full border border-gray-600 object-cover">
+                    <input type="text" class="ls-input" placeholder="Chat here..." autocomplete="off">
+                    <button type="submit" class="ls-send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+                </form>
+            </div>
+        `;
+
+        livestreamScreen.classList.remove('hidden');
+        requestAnimationFrame(() => { livestreamScreen.classList.add('active'); });
+
+        // Load Chat
+        loadLiveChat(streamId);
+        
+        // Ensure Global Click closes menus
+        document.addEventListener('click', closeAllMenus);
+    }
+
+    function startStreamSequence(videoId) {
+        const cover = document.getElementById('ls-cover-layer');
+        const loader = document.getElementById('ls-loading-layer');
+        
+        // 1. Hide Cover, Show Loader
+        cover.style.display = 'none';
+        loader.classList.remove('hidden');
+
+        // 2. Init Player immediately but hidden behind loader
+        if(!ytPlayer) initYTPlayer(videoId);
+        else ytPlayer.playVideo();
+
+        // 3. Keep Loader for EXACTLY 3 Seconds then Reveal Video
+        setTimeout(() => {
+            loader.classList.add('hidden');
+        }, 3000);
+    }
+
+    function forceShowThumbnailState() {
+        const cover = document.getElementById('ls-cover-layer');
+        const loader = document.getElementById('ls-loading-layer');
+        
+        if(cover) cover.style.display = 'flex'; // Show Thumbnail
+        if(loader) loader.classList.add('hidden'); // Hide Loader
+        
+        if (ytPlayer && typeof ytPlayer.pauseVideo === 'function') {
+            ytPlayer.pauseVideo();
+        }
+    }
+
+    function initYTPlayer(videoId) {
+        if (ytPlayer) { ytPlayer.destroy(); }
+        ytPlayer = new YT.Player('yt-player-placeholder', {
+            height: '100%', width: '100%',
+            videoId: videoId,
+            playerVars: { 
+                'autoplay': 1, 'controls': 1, 'modestbranding': 1, 
+                'playsinline': 1, 'rel': 0, 'fs': 0, 'iv_load_policy': 3 
+            },
+            events: {
+                'onStateChange': onPlayerStateChange
+            }
+        });
+    }
+
+    function onPlayerStateChange(event) {
+        const loader = document.getElementById('ls-loading-layer');
+        const cover = document.getElementById('ls-cover-layer');
+        
+        // State 2 (Paused) or 0 (Ended) -> Show Thumbnail
+        if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
+            if(!isAppInBackground) { // Only if user manually paused
+                cover.style.display = 'flex';
+                loader.classList.add('hidden');
+            }
+        }
+        
+        // State 3 (Buffering) -> Show Loader
+        if (event.data === YT.PlayerState.BUFFERING) {
+             loader.classList.remove('hidden');
+        }
+        
+        // State 1 (Playing) -> Ensure loader hidden (after our 3s timer logic handles initial load)
+        if (event.data === YT.PlayerState.PLAYING) {
+             // We let startStreamSequence handle the initial 3s. 
+             // But if buffering happened later, we hide it here.
+             setTimeout(() => {
+                 if(cover.style.display === 'none') loader.classList.add('hidden');
+             }, 500); 
+        }
+    }
+
+    function loadLiveChat(streamId) {
+        const chatRef = database.ref(`liveStreams/${streamId}/chat`);
+        const chatBox = document.getElementById('ls-chat-box');
+        chatRef.off();
+
+        chatRef.on('child_added', snapshot => {
+            const msg = snapshot.val();
+            const msgKey = snapshot.key;
+            const isMe = msg.userId === auth.currentUser.uid;
+            
+            const div = document.createElement('div');
+            div.className = 'ls-chat-msg';
+            div.id = `msg-${msgKey}`;
+            
+            // 3 Dot Logic
+            const menuHTML = isMe ? `
+                <div class="relative">
+                    <i class="fa-solid fa-ellipsis-vertical ls-msg-menu-btn" onclick="toggleMsgMenu(event, '${msgKey}')"></i>
+                    <div id="menu-${msgKey}" class="ls-menu-dropdown">
+                        <div class="ls-menu-item" onclick="deleteMyMessage('${streamId}', '${msgKey}')">
+                            <i class="fa-solid fa-trash"></i> Delete
+                        </div>
+                    </div>
+                </div>
+            ` : '';
+
+            div.innerHTML = `
+                <img src="${msg.userAvatar}" class="ls-chat-avatar">
+                <div class="ls-chat-content">
+                    <div class="ls-chat-header-row">
+                        <span class="ls-chat-name" style="color: ${isMe ? '#1DB954' : '#a1a1aa'}">${msg.userName}</span>
+                        ${menuHTML}
+                    </div>
+                    <div class="ls-chat-bubble">
+                        <p class="ls-chat-text">${msg.text}</p>
+                    </div>
+                </div>
+            `;
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+
+        chatRef.on('child_removed', snapshot => {
+            const el = document.getElementById(`msg-${snapshot.key}`);
+            if(el) {
+                gsap.to(el, { opacity: 0, height: 0, duration: 0.3, onComplete: () => el.remove() });
+            }
+        });
+        
+        // Chat Submit
+        const form = document.getElementById('ls-chat-form');
+        form.onsubmit = (e) => {
+            e.preventDefault();
+            const input = form.querySelector('input');
+            const txt = input.value.trim();
+            if(!txt) return;
+            database.ref(`liveStreams/${streamId}/chat`).push({
+                userId: auth.currentUser.uid,
+                userName: currentUserData.name,
+                userAvatar: currentUserData.avatar || DEFAULT_AVATAR,
+                text: txt,
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            });
+            input.value = '';
+            setTimeout(() => { chatBox.scrollTop = chatBox.scrollHeight; }, 100);
+        };
+    }
+
+    // Helper: Toggle 3 Dot Menu
+    window.toggleMsgMenu = function(e, msgKey) {
+        e.stopPropagation();
+        // Close others
+        document.querySelectorAll('.ls-menu-dropdown').forEach(el => el.classList.remove('active'));
+        const menu = document.getElementById(`menu-${msgKey}`);
+        if(menu) menu.classList.toggle('active');
+    }
+
+    function closeAllMenus() {
+        document.querySelectorAll('.ls-menu-dropdown').forEach(el => el.classList.remove('active'));
+    }
+
+    // Helper: Delete Message
+    window.deleteMyMessage = function(streamId, msgKey) {
+        if(confirm("Delete this message?")) {
+            database.ref(`liveStreams/${streamId}/chat/${msgKey}`).remove();
+        }
+    }
+    /* --- ULTIMATE LIVESTREAM LOGIC END --- */
     </script>
 </body>
 </html>
